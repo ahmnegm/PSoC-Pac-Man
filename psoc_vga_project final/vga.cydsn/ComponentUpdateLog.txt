@@ -1,0 +1,20 @@
+Last Modified Date & Time: 04/30/2020 04:32:33
+
+vga: TopDesign.cysch
+	VGA_CLK [v2.10] to [v2.20]
+	HSYNC_OUT [v1.90] to [v2.20]
+	RX [v1.90] to [v2.20]
+	TX [v1.90] to [v2.20]
+	VGA [v1.90] to [v2.20]
+	VSYNC_OUT [v1.90] to [v2.20]
+	PIXEL [v1.70] to [v1.80]
+	HORIZ [v3.0] to [v3.30]
+	HSYNC [v3.0] to [v3.30]
+	VERT [v3.0] to [v3.30]
+	VSYNC [v3.0] to [v3.30]
+	UART [v2.30] to [v2.50]
+
+vga: vga.cydwr
+	cy_boot [v4.0] to [v5.90]
+
+

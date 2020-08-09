@@ -1,0 +1,1044 @@
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"CapSense_Controller_PM.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	CapSense_Controller_backup
+  20              		.bss
+  21              		.align	2
+  22              		.type	CapSense_Controller_backup, %object
+  23              		.size	CapSense_Controller_backup, 2
+  24              	CapSense_Controller_backup:
+  25 0000 0000     		.space	2
+  26              		.section	.text.CapSense_Controller_SaveConfig,"ax",%progbits
+  27              		.align	2
+  28              		.global	CapSense_Controller_SaveConfig
+  29              		.thumb
+  30              		.thumb_func
+  31              		.type	CapSense_Controller_SaveConfig, %function
+  32              	CapSense_Controller_SaveConfig:
+  33              	.LFB0:
+  34              		.file 1 "Generated_Source\\PSoC5\\CapSense_Controller_PM.c"
+   1:Generated_Source\PSoC5/CapSense_Controller_PM.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * File Name: CapSense_Controller_PM.c
+   3:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Version 3.50
+   4:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+   5:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Description:
+   6:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  This file provides Sleep APIs for CapSense CSD Component.
+   7:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+   8:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Note:
+   9:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  10:Generated_Source\PSoC5/CapSense_Controller_PM.c **** ********************************************************************************
+  11:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Copyright 2008-2013, Cypress Semiconductor Corporation.  All rights reserved.
+  12:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  13:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  14:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * the software package with which this file was provided.
+  15:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *******************************************************************************/
+  16:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+  17:Generated_Source\PSoC5/CapSense_Controller_PM.c **** #include "CapSense_Controller.h"
+  18:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+  19:Generated_Source\PSoC5/CapSense_Controller_PM.c **** CapSense_Controller_BACKUP_STRUCT CapSense_Controller_backup =
+  20:Generated_Source\PSoC5/CapSense_Controller_PM.c **** {   
+  21:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     0x00u, /* enableState; */
+  22:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     
+  23:Generated_Source\PSoC5/CapSense_Controller_PM.c **** };
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 2
+
+
+  24:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+  25:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+  26:Generated_Source\PSoC5/CapSense_Controller_PM.c **** /*******************************************************************************
+  27:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Function Name: CapSense_Controller_SaveConfig
+  28:Generated_Source\PSoC5/CapSense_Controller_PM.c **** ********************************************************************************
+  29:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  30:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Summary:
+  31:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Saves customer configuration of CapSense none-retention registers. Resets 
+  32:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  all sensors to an inactive state.
+  33:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  34:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Parameters:
+  35:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  None
+  36:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  37:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Return:
+  38:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  None
+  39:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  40:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Side Effects:
+  41:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Function CapSense_Controller_SaveConfig disconnects all sensors from the
+  42:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Analog MUX Bus and puts them into inactive state. Call this function
+  43:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  during the active scan can cause unpredictable component behavior.
+  44:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  45:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Note:
+  46:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  This function should be called after completion of all scans.
+  47:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  48:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Global Variables:
+  49:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  CapSense_Controller_backup - used to save component state before enter sleep 
+  50:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  mode and none-retention registers.
+  51:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  52:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Reentrant:
+  53:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Yes.
+  54:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  55:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *******************************************************************************/
+  56:Generated_Source\PSoC5/CapSense_Controller_PM.c **** void CapSense_Controller_SaveConfig(void) 
+  57:Generated_Source\PSoC5/CapSense_Controller_PM.c **** {    
+  35              		.loc 1 57 0
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 1, uses_anonymous_args = 0
+  39 0000 80B5     		push	{r7, lr}
+  40              		.cfi_def_cfa_offset 8
+  41              		.cfi_offset 7, -8
+  42              		.cfi_offset 14, -4
+  43 0002 00AF     		add	r7, sp, #0
+  44              		.cfi_def_cfa_register 7
+  58:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+  59:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     /* Set CONTROL_REG */
+  60:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     CapSense_Controller_backup.ctrlReg = CapSense_Controller_CONTROL_REG;
+  45              		.loc 1 60 0
+  46 0004 044B     		ldr	r3, .L2
+  47 0006 1B78     		ldrb	r3, [r3]
+  48 0008 DAB2     		uxtb	r2, r3
+  49 000a 044B     		ldr	r3, .L2+4
+  50 000c 5A70     		strb	r2, [r3, #1]
+  61:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+  62:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     /* Clear all sensors */
+  63:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     CapSense_Controller_ClearSensors();
+  51              		.loc 1 63 0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 3
+
+
+  52 000e FFF7FEFF 		bl	CapSense_Controller_ClearSensors
+  64:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     
+  65:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     /* The pins disable is customer concern: Cmod and Rb */
+  66:Generated_Source\PSoC5/CapSense_Controller_PM.c **** }
+  53              		.loc 1 66 0
+  54 0012 00BF     		nop
+  55 0014 80BD     		pop	{r7, pc}
+  56              	.L3:
+  57 0016 00BF     		.align	2
+  58              	.L2:
+  59 0018 72640040 		.word	1073767538
+  60 001c 00000000 		.word	CapSense_Controller_backup
+  61              		.cfi_endproc
+  62              	.LFE0:
+  63              		.size	CapSense_Controller_SaveConfig, .-CapSense_Controller_SaveConfig
+  64              		.section	.text.CapSense_Controller_Sleep,"ax",%progbits
+  65              		.align	2
+  66              		.global	CapSense_Controller_Sleep
+  67              		.thumb
+  68              		.thumb_func
+  69              		.type	CapSense_Controller_Sleep, %function
+  70              	CapSense_Controller_Sleep:
+  71              	.LFB1:
+  67:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+  68:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+  69:Generated_Source\PSoC5/CapSense_Controller_PM.c **** /*******************************************************************************
+  70:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Function Name: CapSense_Controller_Sleep
+  71:Generated_Source\PSoC5/CapSense_Controller_PM.c **** ********************************************************************************
+  72:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  73:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Summary:
+  74:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Disables Active mode power template bits for number of component used within 
+  75:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  CapSense. Calls CapSense_Controller_SaveConfig() function to save customer 
+  76:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  configuration of CapSense none-retention registers and resets all sensors 
+  77:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  to an inactive state.
+  78:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  79:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Parameters:
+  80:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  None
+  81:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  82:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Return:
+  83:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  None
+  84:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  85:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Side Effects:
+  86:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Function CapSense_Controller_Sleep disconnects all sensors from the
+  87:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Analog MUX Bus and puts them into inactive state. Call this function
+  88:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  during the active scan can cause unpredictable component behavior.
+  89:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  90:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Note:
+  91:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  This function should be called after completion of all scans.
+  92:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  93:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Global Variables:
+  94:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  CapSense_Controller_backup - used to save component state before enter sleep 
+  95:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  mode and none-retention registers.
+  96:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+  97:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Reentrant:
+  98:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  No
+  99:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 100:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *******************************************************************************/
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 4
+
+
+ 101:Generated_Source\PSoC5/CapSense_Controller_PM.c **** void CapSense_Controller_Sleep(void) 
+ 102:Generated_Source\PSoC5/CapSense_Controller_PM.c **** {
+  72              		.loc 1 102 0
+  73              		.cfi_startproc
+  74              		@ args = 0, pretend = 0, frame = 0
+  75              		@ frame_needed = 1, uses_anonymous_args = 0
+  76 0000 80B5     		push	{r7, lr}
+  77              		.cfi_def_cfa_offset 8
+  78              		.cfi_offset 7, -8
+  79              		.cfi_offset 14, -4
+  80 0002 00AF     		add	r7, sp, #0
+  81              		.cfi_def_cfa_register 7
+ 103:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     /* Check and save enable state */
+ 104:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     if(CapSense_Controller_IS_CAPSENSE_ENABLE(CapSense_Controller_CONTROL_REG))
+  82              		.loc 1 104 0
+  83 0004 094B     		ldr	r3, .L7
+  84 0006 1B78     		ldrb	r3, [r3]
+  85 0008 DBB2     		uxtb	r3, r3
+  86 000a 5BB2     		sxtb	r3, r3
+  87 000c 002B     		cmp	r3, #0
+  88 000e 05DA     		bge	.L5
+ 105:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     {
+ 106:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_backup.enableState = 1u;
+  89              		.loc 1 106 0
+  90 0010 074B     		ldr	r3, .L7+4
+  91 0012 0122     		movs	r2, #1
+  92 0014 1A70     		strb	r2, [r3]
+ 107:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_Stop();
+  93              		.loc 1 107 0
+  94 0016 FFF7FEFF 		bl	CapSense_Controller_Stop
+  95 001a 02E0     		b	.L6
+  96              	.L5:
+ 108:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     }
+ 109:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     else
+ 110:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     {
+ 111:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_backup.enableState = 0u;
+  97              		.loc 1 111 0
+  98 001c 044B     		ldr	r3, .L7+4
+  99 001e 0022     		movs	r2, #0
+ 100 0020 1A70     		strb	r2, [r3]
+ 101              	.L6:
+ 112:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     }
+ 113:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     
+ 114:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     CapSense_Controller_SaveConfig();
+ 102              		.loc 1 114 0
+ 103 0022 FFF7FEFF 		bl	CapSense_Controller_SaveConfig
+ 115:Generated_Source\PSoC5/CapSense_Controller_PM.c **** }
+ 104              		.loc 1 115 0
+ 105 0026 00BF     		nop
+ 106 0028 80BD     		pop	{r7, pc}
+ 107              	.L8:
+ 108 002a 00BF     		.align	2
+ 109              	.L7:
+ 110 002c 72640040 		.word	1073767538
+ 111 0030 00000000 		.word	CapSense_Controller_backup
+ 112              		.cfi_endproc
+ 113              	.LFE1:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 5
+
+
+ 114              		.size	CapSense_Controller_Sleep, .-CapSense_Controller_Sleep
+ 115              		.section	.text.CapSense_Controller_RestoreConfig,"ax",%progbits
+ 116              		.align	2
+ 117              		.global	CapSense_Controller_RestoreConfig
+ 118              		.thumb
+ 119              		.thumb_func
+ 120              		.type	CapSense_Controller_RestoreConfig, %function
+ 121              	CapSense_Controller_RestoreConfig:
+ 122              	.LFB2:
+ 116:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+ 117:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+ 118:Generated_Source\PSoC5/CapSense_Controller_PM.c **** /*******************************************************************************
+ 119:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Function Name: CapSense_Controller_RestoreConfig
+ 120:Generated_Source\PSoC5/CapSense_Controller_PM.c **** ********************************************************************************
+ 121:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 122:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Summary:
+ 123:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Restores CapSense configuration and non-retention register values.
+ 124:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 125:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Parameters:
+ 126:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  None
+ 127:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 128:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Return:
+ 129:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  None
+ 130:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 131:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Side Effects:
+ 132:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Must be called only after CapSense_Controller_SaveConfig() routine. Otherwise 
+ 133:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  the component configuration will be overwritten with its initial setting.
+ 134:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  This finction modifies the CONTROL_REG register. 
+ 135:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 136:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Note:
+ 137:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  This function should be called after completion of all scans.
+ 138:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 139:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Global Variables:
+ 140:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  CapSense_Controller_backup - used to save component state before enter sleep 
+ 141:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  mode and none-retention registers.
+ 142:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 143:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *******************************************************************************/
+ 144:Generated_Source\PSoC5/CapSense_Controller_PM.c **** void CapSense_Controller_RestoreConfig(void) 
+ 145:Generated_Source\PSoC5/CapSense_Controller_PM.c **** {       
+ 123              		.loc 1 145 0
+ 124              		.cfi_startproc
+ 125              		@ args = 0, pretend = 0, frame = 0
+ 126              		@ frame_needed = 1, uses_anonymous_args = 0
+ 127              		@ link register save eliminated.
+ 128 0000 80B4     		push	{r7}
+ 129              		.cfi_def_cfa_offset 4
+ 130              		.cfi_offset 7, -4
+ 131 0002 00AF     		add	r7, sp, #0
+ 132              		.cfi_def_cfa_register 7
+ 146:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     /* Set PRS */
+ 147:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #if (CapSense_Controller_PRS_OPTIONS == CapSense_Controller_PRS_8BITS)        
+ 148:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         /* Write FIFO with seed */
+ 149:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_SEED_COPY_REG = CapSense_Controller_MEASURE_FULL_RANGE_LOW;            
+ 150:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     
+ 151:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #elif (CapSense_Controller_PRS_OPTIONS == CapSense_Controller_PRS_16BITS)
+ 152:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         /* Write FIFO with seed */
+ 153:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CY_SET_REG16(CapSense_Controller_SEED_COPY_PTR, CapSense_Controller_MEASURE_FULL_RANGE);   
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 6
+
+
+ 133              		.loc 1 153 0
+ 134 0004 0E4B     		ldr	r3, .L10
+ 135 0006 4FF6FF72 		movw	r2, #65535
+ 136 000a 1A80     		strh	r2, [r3]	@ movhi
+ 154:Generated_Source\PSoC5/CapSense_Controller_PM.c ****                 
+ 155:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #elif (CapSense_Controller_PRS_OPTIONS == CapSense_Controller_PRS_16BITS_4X)
+ 156:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         
+ 157:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         /* Write FIFO with seed */
+ 158:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_SEED_COPY_A__F1_REG = CapSense_Controller_MEASURE_FULL_RANGE_LOW;      
+ 159:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_SEED_COPY_A__F0_REG =CapSense_Controller_MEASURE_FULL_RANGE_LOW;       
+ 160:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         
+ 161:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #else
+ 162:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         /* Do nothing = config without PRS */
+ 163:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #endif  /* (CapSense_Controller_PRS_OPTIONS == CapSense_Controller_PRS_8BITS) */
+ 164:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     
+ 165:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     /* Set the Measure */
+ 166:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #if (CapSense_Controller_IMPLEMENTATION_CH0 == CapSense_Controller_MEASURE_IMPLEMENTATION_FF)
+ 167:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         /* Window PWM  - FF Timer register are retention */
+ 168:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         /* Raw Counter - FF Timer register are retention */
+ 169:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #else
+ 170:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         
+ 171:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         /* Window PWM */
+ 172:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_PWM_CH0_PERIOD_LO_REG    = CapSense_Controller_MEASURE_FULL_RANGE_LOW; 
+ 137              		.loc 1 172 0
+ 138 000c 0D4B     		ldr	r3, .L10+4
+ 139 000e FF22     		movs	r2, #255
+ 140 0010 1A70     		strb	r2, [r3]
+ 173:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         
+ 174:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         /* Raw Counter */
+ 175:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_RAW_CH0_PERIOD_HI_REG    = CapSense_Controller_MEASURE_FULL_RANGE_LOW; 
+ 141              		.loc 1 175 0
+ 142 0012 0D4B     		ldr	r3, .L10+8
+ 143 0014 FF22     		movs	r2, #255
+ 144 0016 1A70     		strb	r2, [r3]
+ 176:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_RAW_CH0_PERIOD_LO_REG    = CapSense_Controller_MEASURE_FULL_RANGE_LOW; 
+ 145              		.loc 1 176 0
+ 146 0018 0C4B     		ldr	r3, .L10+12
+ 147 001a FF22     		movs	r2, #255
+ 148 001c 1A70     		strb	r2, [r3]
+ 177:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     
+ 178:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #endif  /* (CapSense_Controller_IMPLEMENTATION_CH0 == CapSense_Controller_MEASURE_IMPLEMENTATIO
+ 179:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     
+ 180:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #if (CapSense_Controller_DESIGN_TYPE == CapSense_Controller_TWO_CHANNELS_DESIGN)
+ 181:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         #if (CapSense_Controller_IMPLEMENTATION_CH1 == CapSense_Controller_MEASURE_IMPLEMENTATION_F
+ 182:Generated_Source\PSoC5/CapSense_Controller_PM.c ****             /* Window PWM  - FF Timer register are retention */
+ 183:Generated_Source\PSoC5/CapSense_Controller_PM.c ****             /* Raw Counter - FF Timer register are retention */
+ 184:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         #else
+ 185:Generated_Source\PSoC5/CapSense_Controller_PM.c ****             
+ 186:Generated_Source\PSoC5/CapSense_Controller_PM.c ****             /* Window PWM */
+ 187:Generated_Source\PSoC5/CapSense_Controller_PM.c ****             CapSense_Controller_PWM_CH1_PERIOD_LO_REG    = CapSense_Controller_MEASURE_FULL_RANGE_L
+ 188:Generated_Source\PSoC5/CapSense_Controller_PM.c ****             
+ 189:Generated_Source\PSoC5/CapSense_Controller_PM.c ****             /* Raw Counter */
+ 190:Generated_Source\PSoC5/CapSense_Controller_PM.c ****             CapSense_Controller_RAW_CH1_PERIOD_HI_REG    = CapSense_Controller_MEASURE_FULL_RANGE_L
+ 191:Generated_Source\PSoC5/CapSense_Controller_PM.c ****             CapSense_Controller_RAW_CH1_PERIOD_LO_REG    = CapSense_Controller_MEASURE_FULL_RANGE_L
+ 192:Generated_Source\PSoC5/CapSense_Controller_PM.c ****             
+ 193:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         #endif  /* (CapSense_Controller_IMPLEMENTATION_CH1 == CapSense_Controller_MEASURE_IMPLEMENT
+ 194:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 7
+
+
+ 195:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #endif  /* (CapSense_Controller_DESIGN_TYPE == TWO_CHANNELS_DESIGN)*/
+ 196:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+ 197:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     /* Set CONTROL_REG */
+ 198:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     CapSense_Controller_CONTROL_REG = CapSense_Controller_backup.ctrlReg;
+ 149              		.loc 1 198 0
+ 150 001e 0C4B     		ldr	r3, .L10+16
+ 151 0020 0C4A     		ldr	r2, .L10+20
+ 152 0022 5278     		ldrb	r2, [r2, #1]	@ zero_extendqisi2
+ 153 0024 1A70     		strb	r2, [r3]
+ 199:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+ 200:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     /* Enable window generation */
+ 201:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #if (CapSense_Controller_DESIGN_TYPE == CapSense_Controller_ONE_CHANNEL_DESIGN)
+ 202:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_CONTROL_REG |= CapSense_Controller_CTRL_WINDOW_EN__CH0;
+ 154              		.loc 1 202 0
+ 155 0026 0A4A     		ldr	r2, .L10+16
+ 156 0028 094B     		ldr	r3, .L10+16
+ 157 002a 1B78     		ldrb	r3, [r3]
+ 158 002c DBB2     		uxtb	r3, r3
+ 159 002e 43F00403 		orr	r3, r3, #4
+ 160 0032 DBB2     		uxtb	r3, r3
+ 161 0034 1370     		strb	r3, [r2]
+ 203:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #elif (CapSense_Controller_DESIGN_TYPE == CapSense_Controller_TWO_CHANNELS_DESIGN) 
+ 204:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_CONTROL_REG |= (CapSense_Controller_CTRL_WINDOW_EN__CH0 | CapSense_Cont
+ 205:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     #endif  /* CapSense_Controller_DESIGN_TYPE */
+ 206:Generated_Source\PSoC5/CapSense_Controller_PM.c ****  
+ 207:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     /* The pins enable are customer concern: Cmod and Rb */
+ 208:Generated_Source\PSoC5/CapSense_Controller_PM.c ****  }
+ 162              		.loc 1 208 0
+ 163 0036 00BF     		nop
+ 164 0038 BD46     		mov	sp, r7
+ 165              		.cfi_def_cfa_register 13
+ 166              		@ sp needed
+ 167 003a 80BC     		pop	{r7}
+ 168              		.cfi_restore 7
+ 169              		.cfi_def_cfa_offset 0
+ 170 003c 7047     		bx	lr
+ 171              	.L11:
+ 172 003e 00BF     		.align	2
+ 173              	.L10:
+ 174 0040 42640040 		.word	1073767490
+ 175 0044 47650040 		.word	1073767751
+ 176 0048 54640040 		.word	1073767508
+ 177 004c 44640040 		.word	1073767492
+ 178 0050 72640040 		.word	1073767538
+ 179 0054 00000000 		.word	CapSense_Controller_backup
+ 180              		.cfi_endproc
+ 181              	.LFE2:
+ 182              		.size	CapSense_Controller_RestoreConfig, .-CapSense_Controller_RestoreConfig
+ 183              		.section	.text.CapSense_Controller_Wakeup,"ax",%progbits
+ 184              		.align	2
+ 185              		.global	CapSense_Controller_Wakeup
+ 186              		.thumb
+ 187              		.thumb_func
+ 188              		.type	CapSense_Controller_Wakeup, %function
+ 189              	CapSense_Controller_Wakeup:
+ 190              	.LFB3:
+ 209:Generated_Source\PSoC5/CapSense_Controller_PM.c ****  
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 8
+
+
+ 210:Generated_Source\PSoC5/CapSense_Controller_PM.c **** 
+ 211:Generated_Source\PSoC5/CapSense_Controller_PM.c **** /*******************************************************************************
+ 212:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Function Name: CapSense_Controller_Wakeup
+ 213:Generated_Source\PSoC5/CapSense_Controller_PM.c **** ********************************************************************************
+ 214:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 215:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Summary:
+ 216:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Restores CapSense configuration and non-retention register values. 
+ 217:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Restores enabled state of component by setting Active mode power template 
+ 218:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  bits for number of component used within CapSense.
+ 219:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 220:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Parameters:
+ 221:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  None
+ 222:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 223:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Return:
+ 224:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  None
+ 225:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 226:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Side Effects:
+ 227:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  Must be called only after CapSense_Controller_SaveConfig() routine. Otherwise 
+ 228:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  the component configuration will be overwritten with its initial setting.
+ 229:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  This finction modifies the CONTROL_REG register. 
+ 230:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 231:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Note:
+ 232:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  This function should be called after completion of all scans.
+ 233:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 234:Generated_Source\PSoC5/CapSense_Controller_PM.c **** * Global Variables:
+ 235:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  CapSense_Controller_backup - used to save component state before enter sleep 
+ 236:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *  mode and none-retention registers.
+ 237:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *
+ 238:Generated_Source\PSoC5/CapSense_Controller_PM.c **** *******************************************************************************/
+ 239:Generated_Source\PSoC5/CapSense_Controller_PM.c **** void CapSense_Controller_Wakeup(void) 
+ 240:Generated_Source\PSoC5/CapSense_Controller_PM.c **** {
+ 191              		.loc 1 240 0
+ 192              		.cfi_startproc
+ 193              		@ args = 0, pretend = 0, frame = 0
+ 194              		@ frame_needed = 1, uses_anonymous_args = 0
+ 195 0000 80B5     		push	{r7, lr}
+ 196              		.cfi_def_cfa_offset 8
+ 197              		.cfi_offset 7, -8
+ 198              		.cfi_offset 14, -4
+ 199 0002 00AF     		add	r7, sp, #0
+ 200              		.cfi_def_cfa_register 7
+ 241:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     CapSense_Controller_RestoreConfig();
+ 201              		.loc 1 241 0
+ 202 0004 FFF7FEFF 		bl	CapSense_Controller_RestoreConfig
+ 242:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     
+ 243:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     /* Restore CapSense Enable state */
+ 244:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     if (CapSense_Controller_backup.enableState != 0u)
+ 203              		.loc 1 244 0
+ 204 0008 034B     		ldr	r3, .L15
+ 205 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 206 000c 002B     		cmp	r3, #0
+ 207 000e 01D0     		beq	.L14
+ 245:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     {
+ 246:Generated_Source\PSoC5/CapSense_Controller_PM.c ****         CapSense_Controller_Enable();
+ 208              		.loc 1 246 0
+ 209 0010 FFF7FEFF 		bl	CapSense_Controller_Enable
+ 210              	.L14:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 9
+
+
+ 247:Generated_Source\PSoC5/CapSense_Controller_PM.c ****     }
+ 248:Generated_Source\PSoC5/CapSense_Controller_PM.c **** }
+ 211              		.loc 1 248 0
+ 212 0014 00BF     		nop
+ 213 0016 80BD     		pop	{r7, pc}
+ 214              	.L16:
+ 215              		.align	2
+ 216              	.L15:
+ 217 0018 00000000 		.word	CapSense_Controller_backup
+ 218              		.cfi_endproc
+ 219              	.LFE3:
+ 220              		.size	CapSense_Controller_Wakeup, .-CapSense_Controller_Wakeup
+ 221              		.text
+ 222              	.Letext0:
+ 223              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 224              		.file 3 "Generated_Source\\PSoC5\\CapSense_Controller.h"
+ 225              		.section	.debug_info,"",%progbits
+ 226              	.Ldebug_info0:
+ 227 0000 46010000 		.4byte	0x146
+ 228 0004 0400     		.2byte	0x4
+ 229 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 230 000a 04       		.byte	0x4
+ 231 000b 01       		.uleb128 0x1
+ 232 000c D3000000 		.4byte	.LASF25
+ 233 0010 0C       		.byte	0xc
+ 234 0011 9D000000 		.4byte	.LASF26
+ 235 0015 8F010000 		.4byte	.LASF27
+ 236 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 237 001d 00000000 		.4byte	0
+ 238 0021 00000000 		.4byte	.Ldebug_line0
+ 239 0025 02       		.uleb128 0x2
+ 240 0026 01       		.byte	0x1
+ 241 0027 06       		.byte	0x6
+ 242 0028 00020000 		.4byte	.LASF0
+ 243 002c 02       		.uleb128 0x2
+ 244 002d 01       		.byte	0x1
+ 245 002e 08       		.byte	0x8
+ 246 002f 61010000 		.4byte	.LASF1
+ 247 0033 02       		.uleb128 0x2
+ 248 0034 02       		.byte	0x2
+ 249 0035 05       		.byte	0x5
+ 250 0036 76020000 		.4byte	.LASF2
+ 251 003a 02       		.uleb128 0x2
+ 252 003b 02       		.byte	0x2
+ 253 003c 07       		.byte	0x7
+ 254 003d ED010000 		.4byte	.LASF3
+ 255 0041 02       		.uleb128 0x2
+ 256 0042 04       		.byte	0x4
+ 257 0043 05       		.byte	0x5
+ 258 0044 E4010000 		.4byte	.LASF4
+ 259 0048 02       		.uleb128 0x2
+ 260 0049 04       		.byte	0x4
+ 261 004a 07       		.byte	0x7
+ 262 004b 74000000 		.4byte	.LASF5
+ 263 004f 02       		.uleb128 0x2
+ 264 0050 08       		.byte	0x8
+ 265 0051 05       		.byte	0x5
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 10
+
+
+ 266 0052 00000000 		.4byte	.LASF6
+ 267 0056 02       		.uleb128 0x2
+ 268 0057 08       		.byte	0x8
+ 269 0058 07       		.byte	0x7
+ 270 0059 86000000 		.4byte	.LASF7
+ 271 005d 03       		.uleb128 0x3
+ 272 005e 04       		.byte	0x4
+ 273 005f 05       		.byte	0x5
+ 274 0060 696E7400 		.ascii	"int\000"
+ 275 0064 02       		.uleb128 0x2
+ 276 0065 04       		.byte	0x4
+ 277 0066 07       		.byte	0x7
+ 278 0067 1A000000 		.4byte	.LASF8
+ 279 006b 04       		.uleb128 0x4
+ 280 006c 6E000000 		.4byte	.LASF9
+ 281 0070 02       		.byte	0x2
+ 282 0071 E401     		.2byte	0x1e4
+ 283 0073 2C000000 		.4byte	0x2c
+ 284 0077 04       		.uleb128 0x4
+ 285 0078 80020000 		.4byte	.LASF10
+ 286 007c 02       		.byte	0x2
+ 287 007d E501     		.2byte	0x1e5
+ 288 007f 3A000000 		.4byte	0x3a
+ 289 0083 02       		.uleb128 0x2
+ 290 0084 04       		.byte	0x4
+ 291 0085 04       		.byte	0x4
+ 292 0086 CD000000 		.4byte	.LASF11
+ 293 008a 02       		.uleb128 0x2
+ 294 008b 08       		.byte	0x8
+ 295 008c 04       		.byte	0x4
+ 296 008d DD010000 		.4byte	.LASF12
+ 297 0091 02       		.uleb128 0x2
+ 298 0092 01       		.byte	0x1
+ 299 0093 08       		.byte	0x8
+ 300 0094 6F010000 		.4byte	.LASF13
+ 301 0098 04       		.uleb128 0x4
+ 302 0099 69000000 		.4byte	.LASF14
+ 303 009d 02       		.byte	0x2
+ 304 009e 8E02     		.2byte	0x28e
+ 305 00a0 A4000000 		.4byte	0xa4
+ 306 00a4 05       		.uleb128 0x5
+ 307 00a5 6B000000 		.4byte	0x6b
+ 308 00a9 04       		.uleb128 0x4
+ 309 00aa D7010000 		.4byte	.LASF15
+ 310 00ae 02       		.byte	0x2
+ 311 00af 8F02     		.2byte	0x28f
+ 312 00b1 B5000000 		.4byte	0xb5
+ 313 00b5 05       		.uleb128 0x5
+ 314 00b6 77000000 		.4byte	0x77
+ 315 00ba 02       		.uleb128 0x2
+ 316 00bb 08       		.byte	0x8
+ 317 00bc 04       		.byte	0x4
+ 318 00bd 6A020000 		.4byte	.LASF16
+ 319 00c1 02       		.uleb128 0x2
+ 320 00c2 04       		.byte	0x4
+ 321 00c3 07       		.byte	0x7
+ 322 00c4 87020000 		.4byte	.LASF17
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 11
+
+
+ 323 00c8 06       		.uleb128 0x6
+ 324 00c9 02       		.byte	0x2
+ 325 00ca 03       		.byte	0x3
+ 326 00cb 84       		.byte	0x84
+ 327 00cc E9000000 		.4byte	0xe9
+ 328 00d0 07       		.uleb128 0x7
+ 329 00d1 0E000000 		.4byte	.LASF18
+ 330 00d5 03       		.byte	0x3
+ 331 00d6 86       		.byte	0x86
+ 332 00d7 6B000000 		.4byte	0x6b
+ 333 00db 00       		.byte	0
+ 334 00dc 07       		.uleb128 0x7
+ 335 00dd 46000000 		.4byte	.LASF19
+ 336 00e1 03       		.byte	0x3
+ 337 00e2 89       		.byte	0x89
+ 338 00e3 6B000000 		.4byte	0x6b
+ 339 00e7 01       		.byte	0x1
+ 340 00e8 00       		.byte	0
+ 341 00e9 08       		.uleb128 0x8
+ 342 00ea 0C020000 		.4byte	.LASF20
+ 343 00ee 03       		.byte	0x3
+ 344 00ef 8A       		.byte	0x8a
+ 345 00f0 C8000000 		.4byte	0xc8
+ 346 00f4 09       		.uleb128 0x9
+ 347 00f5 27000000 		.4byte	.LASF21
+ 348 00f9 01       		.byte	0x1
+ 349 00fa 38       		.byte	0x38
+ 350 00fb 00000000 		.4byte	.LFB0
+ 351 00ff 20000000 		.4byte	.LFE0-.LFB0
+ 352 0103 01       		.uleb128 0x1
+ 353 0104 9C       		.byte	0x9c
+ 354 0105 09       		.uleb128 0x9
+ 355 0106 50020000 		.4byte	.LASF22
+ 356 010a 01       		.byte	0x1
+ 357 010b 65       		.byte	0x65
+ 358 010c 00000000 		.4byte	.LFB1
+ 359 0110 34000000 		.4byte	.LFE1-.LFB1
+ 360 0114 01       		.uleb128 0x1
+ 361 0115 9C       		.byte	0x9c
+ 362 0116 0A       		.uleb128 0xa
+ 363 0117 2E020000 		.4byte	.LASF23
+ 364 011b 01       		.byte	0x1
+ 365 011c 90       		.byte	0x90
+ 366 011d 00000000 		.4byte	.LFB2
+ 367 0121 58000000 		.4byte	.LFE2-.LFB2
+ 368 0125 01       		.uleb128 0x1
+ 369 0126 9C       		.byte	0x9c
+ 370 0127 09       		.uleb128 0x9
+ 371 0128 74010000 		.4byte	.LASF24
+ 372 012c 01       		.byte	0x1
+ 373 012d EF       		.byte	0xef
+ 374 012e 00000000 		.4byte	.LFB3
+ 375 0132 1C000000 		.4byte	.LFE3-.LFB3
+ 376 0136 01       		.uleb128 0x1
+ 377 0137 9C       		.byte	0x9c
+ 378 0138 0B       		.uleb128 0xb
+ 379 0139 4E000000 		.4byte	.LASF28
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 12
+
+
+ 380 013d 01       		.byte	0x1
+ 381 013e 13       		.byte	0x13
+ 382 013f E9000000 		.4byte	0xe9
+ 383 0143 05       		.uleb128 0x5
+ 384 0144 03       		.byte	0x3
+ 385 0145 00000000 		.4byte	CapSense_Controller_backup
+ 386 0149 00       		.byte	0
+ 387              		.section	.debug_abbrev,"",%progbits
+ 388              	.Ldebug_abbrev0:
+ 389 0000 01       		.uleb128 0x1
+ 390 0001 11       		.uleb128 0x11
+ 391 0002 01       		.byte	0x1
+ 392 0003 25       		.uleb128 0x25
+ 393 0004 0E       		.uleb128 0xe
+ 394 0005 13       		.uleb128 0x13
+ 395 0006 0B       		.uleb128 0xb
+ 396 0007 03       		.uleb128 0x3
+ 397 0008 0E       		.uleb128 0xe
+ 398 0009 1B       		.uleb128 0x1b
+ 399 000a 0E       		.uleb128 0xe
+ 400 000b 55       		.uleb128 0x55
+ 401 000c 17       		.uleb128 0x17
+ 402 000d 11       		.uleb128 0x11
+ 403 000e 01       		.uleb128 0x1
+ 404 000f 10       		.uleb128 0x10
+ 405 0010 17       		.uleb128 0x17
+ 406 0011 00       		.byte	0
+ 407 0012 00       		.byte	0
+ 408 0013 02       		.uleb128 0x2
+ 409 0014 24       		.uleb128 0x24
+ 410 0015 00       		.byte	0
+ 411 0016 0B       		.uleb128 0xb
+ 412 0017 0B       		.uleb128 0xb
+ 413 0018 3E       		.uleb128 0x3e
+ 414 0019 0B       		.uleb128 0xb
+ 415 001a 03       		.uleb128 0x3
+ 416 001b 0E       		.uleb128 0xe
+ 417 001c 00       		.byte	0
+ 418 001d 00       		.byte	0
+ 419 001e 03       		.uleb128 0x3
+ 420 001f 24       		.uleb128 0x24
+ 421 0020 00       		.byte	0
+ 422 0021 0B       		.uleb128 0xb
+ 423 0022 0B       		.uleb128 0xb
+ 424 0023 3E       		.uleb128 0x3e
+ 425 0024 0B       		.uleb128 0xb
+ 426 0025 03       		.uleb128 0x3
+ 427 0026 08       		.uleb128 0x8
+ 428 0027 00       		.byte	0
+ 429 0028 00       		.byte	0
+ 430 0029 04       		.uleb128 0x4
+ 431 002a 16       		.uleb128 0x16
+ 432 002b 00       		.byte	0
+ 433 002c 03       		.uleb128 0x3
+ 434 002d 0E       		.uleb128 0xe
+ 435 002e 3A       		.uleb128 0x3a
+ 436 002f 0B       		.uleb128 0xb
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 13
+
+
+ 437 0030 3B       		.uleb128 0x3b
+ 438 0031 05       		.uleb128 0x5
+ 439 0032 49       		.uleb128 0x49
+ 440 0033 13       		.uleb128 0x13
+ 441 0034 00       		.byte	0
+ 442 0035 00       		.byte	0
+ 443 0036 05       		.uleb128 0x5
+ 444 0037 35       		.uleb128 0x35
+ 445 0038 00       		.byte	0
+ 446 0039 49       		.uleb128 0x49
+ 447 003a 13       		.uleb128 0x13
+ 448 003b 00       		.byte	0
+ 449 003c 00       		.byte	0
+ 450 003d 06       		.uleb128 0x6
+ 451 003e 13       		.uleb128 0x13
+ 452 003f 01       		.byte	0x1
+ 453 0040 0B       		.uleb128 0xb
+ 454 0041 0B       		.uleb128 0xb
+ 455 0042 3A       		.uleb128 0x3a
+ 456 0043 0B       		.uleb128 0xb
+ 457 0044 3B       		.uleb128 0x3b
+ 458 0045 0B       		.uleb128 0xb
+ 459 0046 01       		.uleb128 0x1
+ 460 0047 13       		.uleb128 0x13
+ 461 0048 00       		.byte	0
+ 462 0049 00       		.byte	0
+ 463 004a 07       		.uleb128 0x7
+ 464 004b 0D       		.uleb128 0xd
+ 465 004c 00       		.byte	0
+ 466 004d 03       		.uleb128 0x3
+ 467 004e 0E       		.uleb128 0xe
+ 468 004f 3A       		.uleb128 0x3a
+ 469 0050 0B       		.uleb128 0xb
+ 470 0051 3B       		.uleb128 0x3b
+ 471 0052 0B       		.uleb128 0xb
+ 472 0053 49       		.uleb128 0x49
+ 473 0054 13       		.uleb128 0x13
+ 474 0055 38       		.uleb128 0x38
+ 475 0056 0B       		.uleb128 0xb
+ 476 0057 00       		.byte	0
+ 477 0058 00       		.byte	0
+ 478 0059 08       		.uleb128 0x8
+ 479 005a 16       		.uleb128 0x16
+ 480 005b 00       		.byte	0
+ 481 005c 03       		.uleb128 0x3
+ 482 005d 0E       		.uleb128 0xe
+ 483 005e 3A       		.uleb128 0x3a
+ 484 005f 0B       		.uleb128 0xb
+ 485 0060 3B       		.uleb128 0x3b
+ 486 0061 0B       		.uleb128 0xb
+ 487 0062 49       		.uleb128 0x49
+ 488 0063 13       		.uleb128 0x13
+ 489 0064 00       		.byte	0
+ 490 0065 00       		.byte	0
+ 491 0066 09       		.uleb128 0x9
+ 492 0067 2E       		.uleb128 0x2e
+ 493 0068 00       		.byte	0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 14
+
+
+ 494 0069 3F       		.uleb128 0x3f
+ 495 006a 19       		.uleb128 0x19
+ 496 006b 03       		.uleb128 0x3
+ 497 006c 0E       		.uleb128 0xe
+ 498 006d 3A       		.uleb128 0x3a
+ 499 006e 0B       		.uleb128 0xb
+ 500 006f 3B       		.uleb128 0x3b
+ 501 0070 0B       		.uleb128 0xb
+ 502 0071 27       		.uleb128 0x27
+ 503 0072 19       		.uleb128 0x19
+ 504 0073 11       		.uleb128 0x11
+ 505 0074 01       		.uleb128 0x1
+ 506 0075 12       		.uleb128 0x12
+ 507 0076 06       		.uleb128 0x6
+ 508 0077 40       		.uleb128 0x40
+ 509 0078 18       		.uleb128 0x18
+ 510 0079 9642     		.uleb128 0x2116
+ 511 007b 19       		.uleb128 0x19
+ 512 007c 00       		.byte	0
+ 513 007d 00       		.byte	0
+ 514 007e 0A       		.uleb128 0xa
+ 515 007f 2E       		.uleb128 0x2e
+ 516 0080 00       		.byte	0
+ 517 0081 3F       		.uleb128 0x3f
+ 518 0082 19       		.uleb128 0x19
+ 519 0083 03       		.uleb128 0x3
+ 520 0084 0E       		.uleb128 0xe
+ 521 0085 3A       		.uleb128 0x3a
+ 522 0086 0B       		.uleb128 0xb
+ 523 0087 3B       		.uleb128 0x3b
+ 524 0088 0B       		.uleb128 0xb
+ 525 0089 27       		.uleb128 0x27
+ 526 008a 19       		.uleb128 0x19
+ 527 008b 11       		.uleb128 0x11
+ 528 008c 01       		.uleb128 0x1
+ 529 008d 12       		.uleb128 0x12
+ 530 008e 06       		.uleb128 0x6
+ 531 008f 40       		.uleb128 0x40
+ 532 0090 18       		.uleb128 0x18
+ 533 0091 9742     		.uleb128 0x2117
+ 534 0093 19       		.uleb128 0x19
+ 535 0094 00       		.byte	0
+ 536 0095 00       		.byte	0
+ 537 0096 0B       		.uleb128 0xb
+ 538 0097 34       		.uleb128 0x34
+ 539 0098 00       		.byte	0
+ 540 0099 03       		.uleb128 0x3
+ 541 009a 0E       		.uleb128 0xe
+ 542 009b 3A       		.uleb128 0x3a
+ 543 009c 0B       		.uleb128 0xb
+ 544 009d 3B       		.uleb128 0x3b
+ 545 009e 0B       		.uleb128 0xb
+ 546 009f 49       		.uleb128 0x49
+ 547 00a0 13       		.uleb128 0x13
+ 548 00a1 3F       		.uleb128 0x3f
+ 549 00a2 19       		.uleb128 0x19
+ 550 00a3 02       		.uleb128 0x2
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 15
+
+
+ 551 00a4 18       		.uleb128 0x18
+ 552 00a5 00       		.byte	0
+ 553 00a6 00       		.byte	0
+ 554 00a7 00       		.byte	0
+ 555              		.section	.debug_aranges,"",%progbits
+ 556 0000 34000000 		.4byte	0x34
+ 557 0004 0200     		.2byte	0x2
+ 558 0006 00000000 		.4byte	.Ldebug_info0
+ 559 000a 04       		.byte	0x4
+ 560 000b 00       		.byte	0
+ 561 000c 0000     		.2byte	0
+ 562 000e 0000     		.2byte	0
+ 563 0010 00000000 		.4byte	.LFB0
+ 564 0014 20000000 		.4byte	.LFE0-.LFB0
+ 565 0018 00000000 		.4byte	.LFB1
+ 566 001c 34000000 		.4byte	.LFE1-.LFB1
+ 567 0020 00000000 		.4byte	.LFB2
+ 568 0024 58000000 		.4byte	.LFE2-.LFB2
+ 569 0028 00000000 		.4byte	.LFB3
+ 570 002c 1C000000 		.4byte	.LFE3-.LFB3
+ 571 0030 00000000 		.4byte	0
+ 572 0034 00000000 		.4byte	0
+ 573              		.section	.debug_ranges,"",%progbits
+ 574              	.Ldebug_ranges0:
+ 575 0000 00000000 		.4byte	.LFB0
+ 576 0004 20000000 		.4byte	.LFE0
+ 577 0008 00000000 		.4byte	.LFB1
+ 578 000c 34000000 		.4byte	.LFE1
+ 579 0010 00000000 		.4byte	.LFB2
+ 580 0014 58000000 		.4byte	.LFE2
+ 581 0018 00000000 		.4byte	.LFB3
+ 582 001c 1C000000 		.4byte	.LFE3
+ 583 0020 00000000 		.4byte	0
+ 584 0024 00000000 		.4byte	0
+ 585              		.section	.debug_line,"",%progbits
+ 586              	.Ldebug_line0:
+ 587 0000 C8000000 		.section	.debug_str,"MS",%progbits,1
+ 587      02006C00 
+ 587      00000201 
+ 587      FB0E0D00 
+ 587      01010101 
+ 588              	.LASF6:
+ 589 0000 6C6F6E67 		.ascii	"long long int\000"
+ 589      206C6F6E 
+ 589      6720696E 
+ 589      7400
+ 590              	.LASF18:
+ 591 000e 656E6162 		.ascii	"enableState\000"
+ 591      6C655374 
+ 591      61746500 
+ 592              	.LASF8:
+ 593 001a 756E7369 		.ascii	"unsigned int\000"
+ 593      676E6564 
+ 593      20696E74 
+ 593      00
+ 594              	.LASF21:
+ 595 0027 43617053 		.ascii	"CapSense_Controller_SaveConfig\000"
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 16
+
+
+ 595      656E7365 
+ 595      5F436F6E 
+ 595      74726F6C 
+ 595      6C65725F 
+ 596              	.LASF19:
+ 597 0046 6374726C 		.ascii	"ctrlReg\000"
+ 597      52656700 
+ 598              	.LASF28:
+ 599 004e 43617053 		.ascii	"CapSense_Controller_backup\000"
+ 599      656E7365 
+ 599      5F436F6E 
+ 599      74726F6C 
+ 599      6C65725F 
+ 600              	.LASF14:
+ 601 0069 72656738 		.ascii	"reg8\000"
+ 601      00
+ 602              	.LASF9:
+ 603 006e 75696E74 		.ascii	"uint8\000"
+ 603      3800
+ 604              	.LASF5:
+ 605 0074 6C6F6E67 		.ascii	"long unsigned int\000"
+ 605      20756E73 
+ 605      69676E65 
+ 605      6420696E 
+ 605      7400
+ 606              	.LASF7:
+ 607 0086 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 607      206C6F6E 
+ 607      6720756E 
+ 607      7369676E 
+ 607      65642069 
+ 608              	.LASF26:
+ 609 009d 47656E65 		.ascii	"Generated_Source\\PSoC5\\CapSense_Controller_PM.c\000"
+ 609      72617465 
+ 609      645F536F 
+ 609      75726365 
+ 609      5C50536F 
+ 610              	.LASF11:
+ 611 00cd 666C6F61 		.ascii	"float\000"
+ 611      7400
+ 612              	.LASF25:
+ 613 00d3 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 613      43313120 
+ 613      352E342E 
+ 613      31203230 
+ 613      31363036 
+ 614 0106 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 614      20726576 
+ 614      6973696F 
+ 614      6E203233 
+ 614      37373135 
+ 615 0139 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 615      66756E63 
+ 615      74696F6E 
+ 615      2D736563 
+ 615      74696F6E 
+ 616              	.LASF1:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 17
+
+
+ 617 0161 756E7369 		.ascii	"unsigned char\000"
+ 617      676E6564 
+ 617      20636861 
+ 617      7200
+ 618              	.LASF13:
+ 619 016f 63686172 		.ascii	"char\000"
+ 619      00
+ 620              	.LASF24:
+ 621 0174 43617053 		.ascii	"CapSense_Controller_Wakeup\000"
+ 621      656E7365 
+ 621      5F436F6E 
+ 621      74726F6C 
+ 621      6C65725F 
+ 622              	.LASF27:
+ 623 018f 433A5C55 		.ascii	"C:\\Users\\Ahmad Negm\\Desktop\\6.115\\FP\\psoc_vga"
+ 623      73657273 
+ 623      5C41686D 
+ 623      6164204E 
+ 623      65676D5C 
+ 624 01bc 5F70726F 		.ascii	"_project Dev Kit\\vga.cydsn\000"
+ 624      6A656374 
+ 624      20446576 
+ 624      204B6974 
+ 624      5C766761 
+ 625              	.LASF15:
+ 626 01d7 72656731 		.ascii	"reg16\000"
+ 626      3600
+ 627              	.LASF12:
+ 628 01dd 646F7562 		.ascii	"double\000"
+ 628      6C6500
+ 629              	.LASF4:
+ 630 01e4 6C6F6E67 		.ascii	"long int\000"
+ 630      20696E74 
+ 630      00
+ 631              	.LASF3:
+ 632 01ed 73686F72 		.ascii	"short unsigned int\000"
+ 632      7420756E 
+ 632      7369676E 
+ 632      65642069 
+ 632      6E7400
+ 633              	.LASF0:
+ 634 0200 7369676E 		.ascii	"signed char\000"
+ 634      65642063 
+ 634      68617200 
+ 635              	.LASF20:
+ 636 020c 43617053 		.ascii	"CapSense_Controller_BACKUP_STRUCT\000"
+ 636      656E7365 
+ 636      5F436F6E 
+ 636      74726F6C 
+ 636      6C65725F 
+ 637              	.LASF23:
+ 638 022e 43617053 		.ascii	"CapSense_Controller_RestoreConfig\000"
+ 638      656E7365 
+ 638      5F436F6E 
+ 638      74726F6C 
+ 638      6C65725F 
+ 639              	.LASF22:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccrljUXp.s 			page 18
+
+
+ 640 0250 43617053 		.ascii	"CapSense_Controller_Sleep\000"
+ 640      656E7365 
+ 640      5F436F6E 
+ 640      74726F6C 
+ 640      6C65725F 
+ 641              	.LASF16:
+ 642 026a 6C6F6E67 		.ascii	"long double\000"
+ 642      20646F75 
+ 642      626C6500 
+ 643              	.LASF2:
+ 644 0276 73686F72 		.ascii	"short int\000"
+ 644      7420696E 
+ 644      7400
+ 645              	.LASF10:
+ 646 0280 75696E74 		.ascii	"uint16\000"
+ 646      313600
+ 647              	.LASF17:
+ 648 0287 73697A65 		.ascii	"sizetype\000"
+ 648      74797065 
+ 648      00
+ 649              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

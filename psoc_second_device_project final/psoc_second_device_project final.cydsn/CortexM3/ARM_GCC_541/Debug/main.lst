@@ -1,0 +1,807 @@
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.main,"ax",%progbits
+  20              		.align	2
+  21              		.global	main
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	main, %function
+  25              	main:
+  26              	.LFB64:
+  27              		.file 1 "main.c"
+   1:main.c        **** /* ========================================
+   2:main.c        ****  *
+   3:main.c        ****  * Copyright YOUR COMPANY, THE YEAR
+   4:main.c        ****  * All Rights Reserved
+   5:main.c        ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:main.c        ****  *
+   7:main.c        ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:main.c        ****  * WHICH IS THE PROPERTY OF your company.
+   9:main.c        ****  *
+  10:main.c        ****  * ========================================
+  11:main.c        **** */
+  12:main.c        **** #include "project.h"
+  13:main.c        **** #include <stdio.h>
+  14:main.c        **** #include <stdlib.h>
+  15:main.c        **** 
+  16:main.c        **** int main(void)
+  17:main.c        **** {
+  28              		.loc 1 17 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 10B5     		push	{r4, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+  18:main.c        ****     CyGlobalIntEnable;
+  36              		.loc 1 18 0
+  37              		.syntax unified
+  38              	@ 18 "main.c" 1
+  39 0002 62B6     		CPSIE   i
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 2
+
+
+  40              	@ 0 "" 2
+  19:main.c        ****     
+  20:main.c        ****     //UART
+  21:main.c        ****     UART_Start();
+  41              		.loc 1 21 0
+  42              		.thumb
+  43              		.syntax unified
+  44 0004 FFF7FEFF 		bl	UART_Start
+  45              	.LVL0:
+  22:main.c        ****     
+  23:main.c        ****     //LCD
+  24:main.c        ****     LCD_Char_1_Start();					// initialize lcd
+  46              		.loc 1 24 0
+  47 0008 FFF7FEFF 		bl	LCD_Char_1_Start
+  48              	.LVL1:
+  25:main.c        **** 	LCD_Char_1_ClearDisplay();
+  49              		.loc 1 25 0
+  50 000c 0120     		movs	r0, #1
+  51 000e FFF7FEFF 		bl	LCD_Char_1_WriteControl
+  52              	.LVL2:
+  53              	.L2:
+  54              	.LBB2:
+  26:main.c        **** 
+  27:main.c        ****     for(;;)
+  28:main.c        ****     {
+  29:main.c        ****         if (!(UART_ReadRxStatus() & UART_RX_STS_FIFO_NOTEMPTY)) {
+  55              		.loc 1 29 0
+  56 0012 FFF7FEFF 		bl	UART_ReadRxStatus
+  57              	.LVL3:
+  58 0016 10F0200F 		tst	r0, #32
+  59 001a FAD0     		beq	.L2
+  30:main.c        ****             continue;
+  31:main.c        ****         }
+  32:main.c        ****         
+  33:main.c        ****         //get score via UART
+  34:main.c        ****         uint8 score = UART_GetChar();
+  60              		.loc 1 34 0
+  61 001c FFF7FEFF 		bl	UART_GetChar
+  62              	.LVL4:
+  63 0020 0446     		mov	r4, r0
+  64              	.LVL5:
+  35:main.c        ****         
+  36:main.c        ****         //display score on LCD screen
+  37:main.c        ****         LCD_Char_1_ClearDisplay();
+  65              		.loc 1 37 0
+  66 0022 0120     		movs	r0, #1
+  67 0024 FFF7FEFF 		bl	LCD_Char_1_WriteControl
+  68              	.LVL6:
+  38:main.c        ****         LCD_Char_1_PrintString("Score: ");
+  69              		.loc 1 38 0
+  70 0028 0448     		ldr	r0, .L5
+  71 002a FFF7FEFF 		bl	LCD_Char_1_PrintString
+  72              	.LVL7:
+  39:main.c        **** 		LCD_Char_1_PrintNumber(score);
+  73              		.loc 1 39 0
+  74 002e 2046     		mov	r0, r4
+  75 0030 FFF7FEFF 		bl	LCD_Char_1_PrintU32Number
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 3
+
+
+  76              	.LVL8:
+  40:main.c        ****         
+  41:main.c        ****         //artificial delay for LCD screen
+  42:main.c        ****         CyDelay(55);
+  77              		.loc 1 42 0
+  78 0034 3720     		movs	r0, #55
+  79 0036 FFF7FEFF 		bl	CyDelay
+  80              	.LVL9:
+  81 003a EAE7     		b	.L2
+  82              	.L6:
+  83              		.align	2
+  84              	.L5:
+  85 003c 00000000 		.word	.LC0
+  86              	.LBE2:
+  87              		.cfi_endproc
+  88              	.LFE64:
+  89              		.size	main, .-main
+  90              		.section	.rodata.str1.4,"aMS",%progbits,1
+  91              		.align	2
+  92              	.LC0:
+  93 0000 53636F72 		.ascii	"Score: \000"
+  93      653A2000 
+  94              		.text
+  95              	.Letext0:
+  96              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+  97              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+  98              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+  99              		.file 5 "Generated_Source\\PSoC5/UART.h"
+ 100              		.file 6 "Generated_Source\\PSoC5/LCD_Char_1.h"
+ 101              		.file 7 "Generated_Source\\PSoC5/CyLib.h"
+ 102              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
+ 103              		.section	.debug_info,"",%progbits
+ 104              	.Ldebug_info0:
+ 105 0000 D8010000 		.4byte	0x1d8
+ 106 0004 0400     		.2byte	0x4
+ 107 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 108 000a 04       		.byte	0x4
+ 109 000b 01       		.uleb128 0x1
+ 110 000c DB000000 		.4byte	.LASF26
+ 111 0010 0C       		.byte	0xc
+ 112 0011 0D020000 		.4byte	.LASF27
+ 113 0015 18000000 		.4byte	.LASF28
+ 114 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 115 001d 00000000 		.4byte	0
+ 116 0021 00000000 		.4byte	.Ldebug_line0
+ 117 0025 02       		.uleb128 0x2
+ 118 0026 01       		.byte	0x1
+ 119 0027 06       		.byte	0x6
+ 120 0028 4F020000 		.4byte	.LASF0
+ 121 002c 02       		.uleb128 0x2
+ 122 002d 01       		.byte	0x1
+ 123 002e 08       		.byte	0x8
+ 124 002f A6010000 		.4byte	.LASF1
+ 125 0033 02       		.uleb128 0x2
+ 126 0034 02       		.byte	0x2
+ 127 0035 05       		.byte	0x5
+ 128 0036 19020000 		.4byte	.LASF2
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 4
+
+
+ 129 003a 02       		.uleb128 0x2
+ 130 003b 02       		.byte	0x2
+ 131 003c 07       		.byte	0x7
+ 132 003d 7B010000 		.4byte	.LASF3
+ 133 0041 03       		.uleb128 0x3
+ 134 0042 97000000 		.4byte	.LASF9
+ 135 0046 02       		.byte	0x2
+ 136 0047 3F       		.byte	0x3f
+ 137 0048 4C000000 		.4byte	0x4c
+ 138 004c 02       		.uleb128 0x2
+ 139 004d 04       		.byte	0x4
+ 140 004e 05       		.byte	0x5
+ 141 004f 29020000 		.4byte	.LASF4
+ 142 0053 02       		.uleb128 0x2
+ 143 0054 04       		.byte	0x4
+ 144 0055 07       		.byte	0x7
+ 145 0056 69010000 		.4byte	.LASF5
+ 146 005a 02       		.uleb128 0x2
+ 147 005b 08       		.byte	0x8
+ 148 005c 05       		.byte	0x5
+ 149 005d FF010000 		.4byte	.LASF6
+ 150 0061 02       		.uleb128 0x2
+ 151 0062 08       		.byte	0x8
+ 152 0063 07       		.byte	0x7
+ 153 0064 AD000000 		.4byte	.LASF7
+ 154 0068 04       		.uleb128 0x4
+ 155 0069 04       		.byte	0x4
+ 156 006a 05       		.byte	0x5
+ 157 006b 696E7400 		.ascii	"int\000"
+ 158 006f 02       		.uleb128 0x2
+ 159 0070 04       		.byte	0x4
+ 160 0071 07       		.byte	0x7
+ 161 0072 C7010000 		.4byte	.LASF8
+ 162 0076 03       		.uleb128 0x3
+ 163 0077 EE010000 		.4byte	.LASF10
+ 164 007b 03       		.byte	0x3
+ 165 007c 2C       		.byte	0x2c
+ 166 007d 41000000 		.4byte	0x41
+ 167 0081 05       		.uleb128 0x5
+ 168 0082 23020000 		.4byte	.LASF11
+ 169 0086 04       		.byte	0x4
+ 170 0087 E401     		.2byte	0x1e4
+ 171 0089 2C000000 		.4byte	0x2c
+ 172 008d 05       		.uleb128 0x5
+ 173 008e C0010000 		.4byte	.LASF12
+ 174 0092 04       		.byte	0x4
+ 175 0093 E501     		.2byte	0x1e5
+ 176 0095 3A000000 		.4byte	0x3a
+ 177 0099 02       		.uleb128 0x2
+ 178 009a 04       		.byte	0x4
+ 179 009b 04       		.byte	0x4
+ 180 009c A7000000 		.4byte	.LASF13
+ 181 00a0 02       		.uleb128 0x2
+ 182 00a1 08       		.byte	0x8
+ 183 00a2 04       		.byte	0x4
+ 184 00a3 B4010000 		.4byte	.LASF14
+ 185 00a7 02       		.uleb128 0x2
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 5
+
+
+ 186 00a8 01       		.byte	0x1
+ 187 00a9 08       		.byte	0x8
+ 188 00aa 14020000 		.4byte	.LASF15
+ 189 00ae 02       		.uleb128 0x2
+ 190 00af 08       		.byte	0x8
+ 191 00b0 04       		.byte	0x4
+ 192 00b1 43020000 		.4byte	.LASF16
+ 193 00b5 02       		.uleb128 0x2
+ 194 00b6 04       		.byte	0x4
+ 195 00b7 07       		.byte	0x7
+ 196 00b8 F6010000 		.4byte	.LASF17
+ 197 00bc 06       		.uleb128 0x6
+ 198 00bd BB010000 		.4byte	.LASF29
+ 199 00c1 01       		.byte	0x1
+ 200 00c2 10       		.byte	0x10
+ 201 00c3 68000000 		.4byte	0x68
+ 202 00c7 00000000 		.4byte	.LFB64
+ 203 00cb 40000000 		.4byte	.LFE64-.LFB64
+ 204 00cf 01       		.uleb128 0x1
+ 205 00d0 9C       		.byte	0x9c
+ 206 00d1 72010000 		.4byte	0x172
+ 207 00d5 07       		.uleb128 0x7
+ 208 00d6 12000000 		.4byte	.LBB2
+ 209 00da 2E000000 		.4byte	.LBE2-.LBB2
+ 210 00de 50010000 		.4byte	0x150
+ 211 00e2 08       		.uleb128 0x8
+ 212 00e3 A1000000 		.4byte	.LASF30
+ 213 00e7 01       		.byte	0x1
+ 214 00e8 22       		.byte	0x22
+ 215 00e9 81000000 		.4byte	0x81
+ 216 00ed 01       		.uleb128 0x1
+ 217 00ee 54       		.byte	0x54
+ 218 00ef 09       		.uleb128 0x9
+ 219 00f0 16000000 		.4byte	.LVL3
+ 220 00f4 83010000 		.4byte	0x183
+ 221 00f8 09       		.uleb128 0x9
+ 222 00f9 20000000 		.4byte	.LVL4
+ 223 00fd 8E010000 		.4byte	0x18e
+ 224 0101 0A       		.uleb128 0xa
+ 225 0102 28000000 		.4byte	.LVL6
+ 226 0106 99010000 		.4byte	0x199
+ 227 010a 14010000 		.4byte	0x114
+ 228 010e 0B       		.uleb128 0xb
+ 229 010f 01       		.uleb128 0x1
+ 230 0110 50       		.byte	0x50
+ 231 0111 01       		.uleb128 0x1
+ 232 0112 31       		.byte	0x31
+ 233 0113 00       		.byte	0
+ 234 0114 0A       		.uleb128 0xa
+ 235 0115 2E000000 		.4byte	.LVL7
+ 236 0119 A4010000 		.4byte	0x1a4
+ 237 011d 2B010000 		.4byte	0x12b
+ 238 0121 0B       		.uleb128 0xb
+ 239 0122 01       		.uleb128 0x1
+ 240 0123 50       		.byte	0x50
+ 241 0124 05       		.uleb128 0x5
+ 242 0125 03       		.byte	0x3
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 6
+
+
+ 243 0126 00000000 		.4byte	.LC0
+ 244 012a 00       		.byte	0
+ 245 012b 0A       		.uleb128 0xa
+ 246 012c 34000000 		.4byte	.LVL8
+ 247 0130 AF010000 		.4byte	0x1af
+ 248 0134 3F010000 		.4byte	0x13f
+ 249 0138 0B       		.uleb128 0xb
+ 250 0139 01       		.uleb128 0x1
+ 251 013a 50       		.byte	0x50
+ 252 013b 02       		.uleb128 0x2
+ 253 013c 74       		.byte	0x74
+ 254 013d 00       		.sleb128 0
+ 255 013e 00       		.byte	0
+ 256 013f 0C       		.uleb128 0xc
+ 257 0140 3A000000 		.4byte	.LVL9
+ 258 0144 BA010000 		.4byte	0x1ba
+ 259 0148 0B       		.uleb128 0xb
+ 260 0149 01       		.uleb128 0x1
+ 261 014a 50       		.byte	0x50
+ 262 014b 02       		.uleb128 0x2
+ 263 014c 08       		.byte	0x8
+ 264 014d 37       		.byte	0x37
+ 265 014e 00       		.byte	0
+ 266 014f 00       		.byte	0
+ 267 0150 09       		.uleb128 0x9
+ 268 0151 08000000 		.4byte	.LVL0
+ 269 0155 C5010000 		.4byte	0x1c5
+ 270 0159 09       		.uleb128 0x9
+ 271 015a 0C000000 		.4byte	.LVL1
+ 272 015e D0010000 		.4byte	0x1d0
+ 273 0162 0C       		.uleb128 0xc
+ 274 0163 12000000 		.4byte	.LVL2
+ 275 0167 99010000 		.4byte	0x199
+ 276 016b 0B       		.uleb128 0xb
+ 277 016c 01       		.uleb128 0x1
+ 278 016d 50       		.byte	0x50
+ 279 016e 01       		.uleb128 0x1
+ 280 016f 31       		.byte	0x31
+ 281 0170 00       		.byte	0
+ 282 0171 00       		.byte	0
+ 283 0172 0D       		.uleb128 0xd
+ 284 0173 99010000 		.4byte	.LASF31
+ 285 0177 08       		.byte	0x8
+ 286 0178 1207     		.2byte	0x712
+ 287 017a 7E010000 		.4byte	0x17e
+ 288 017e 0E       		.uleb128 0xe
+ 289 017f 76000000 		.4byte	0x76
+ 290 0183 0F       		.uleb128 0xf
+ 291 0184 85000000 		.4byte	.LASF18
+ 292 0188 85000000 		.4byte	.LASF18
+ 293 018c 05       		.byte	0x5
+ 294 018d 70       		.byte	0x70
+ 295 018e 0F       		.uleb128 0xf
+ 296 018f 5B020000 		.4byte	.LASF19
+ 297 0193 5B020000 		.4byte	.LASF19
+ 298 0197 05       		.byte	0x5
+ 299 0198 71       		.byte	0x71
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 7
+
+
+ 300 0199 0F       		.uleb128 0xf
+ 301 019a 00000000 		.4byte	.LASF20
+ 302 019e 00000000 		.4byte	.LASF20
+ 303 01a2 06       		.byte	0x6
+ 304 01a3 3A       		.byte	0x3a
+ 305 01a4 0F       		.uleb128 0xf
+ 306 01a5 C4000000 		.4byte	.LASF21
+ 307 01a9 C4000000 		.4byte	.LASF21
+ 308 01ad 06       		.byte	0x6
+ 309 01ae 3C       		.byte	0x3c
+ 310 01af 0F       		.uleb128 0xf
+ 311 01b0 D4010000 		.4byte	.LASF22
+ 312 01b4 D4010000 		.4byte	.LASF22
+ 313 01b8 06       		.byte	0x6
+ 314 01b9 61       		.byte	0x61
+ 315 01ba 0F       		.uleb128 0xf
+ 316 01bb 68020000 		.4byte	.LASF23
+ 317 01bf 68020000 		.4byte	.LASF23
+ 318 01c3 07       		.byte	0x7
+ 319 01c4 76       		.byte	0x76
+ 320 01c5 0F       		.uleb128 0xf
+ 321 01c6 8E010000 		.4byte	.LASF24
+ 322 01ca 8E010000 		.4byte	.LASF24
+ 323 01ce 05       		.byte	0x5
+ 324 01cf 54       		.byte	0x54
+ 325 01d0 0F       		.uleb128 0xf
+ 326 01d1 32020000 		.4byte	.LASF25
+ 327 01d5 32020000 		.4byte	.LASF25
+ 328 01d9 06       		.byte	0x6
+ 329 01da 38       		.byte	0x38
+ 330 01db 00       		.byte	0
+ 331              		.section	.debug_abbrev,"",%progbits
+ 332              	.Ldebug_abbrev0:
+ 333 0000 01       		.uleb128 0x1
+ 334 0001 11       		.uleb128 0x11
+ 335 0002 01       		.byte	0x1
+ 336 0003 25       		.uleb128 0x25
+ 337 0004 0E       		.uleb128 0xe
+ 338 0005 13       		.uleb128 0x13
+ 339 0006 0B       		.uleb128 0xb
+ 340 0007 03       		.uleb128 0x3
+ 341 0008 0E       		.uleb128 0xe
+ 342 0009 1B       		.uleb128 0x1b
+ 343 000a 0E       		.uleb128 0xe
+ 344 000b 55       		.uleb128 0x55
+ 345 000c 17       		.uleb128 0x17
+ 346 000d 11       		.uleb128 0x11
+ 347 000e 01       		.uleb128 0x1
+ 348 000f 10       		.uleb128 0x10
+ 349 0010 17       		.uleb128 0x17
+ 350 0011 00       		.byte	0
+ 351 0012 00       		.byte	0
+ 352 0013 02       		.uleb128 0x2
+ 353 0014 24       		.uleb128 0x24
+ 354 0015 00       		.byte	0
+ 355 0016 0B       		.uleb128 0xb
+ 356 0017 0B       		.uleb128 0xb
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 8
+
+
+ 357 0018 3E       		.uleb128 0x3e
+ 358 0019 0B       		.uleb128 0xb
+ 359 001a 03       		.uleb128 0x3
+ 360 001b 0E       		.uleb128 0xe
+ 361 001c 00       		.byte	0
+ 362 001d 00       		.byte	0
+ 363 001e 03       		.uleb128 0x3
+ 364 001f 16       		.uleb128 0x16
+ 365 0020 00       		.byte	0
+ 366 0021 03       		.uleb128 0x3
+ 367 0022 0E       		.uleb128 0xe
+ 368 0023 3A       		.uleb128 0x3a
+ 369 0024 0B       		.uleb128 0xb
+ 370 0025 3B       		.uleb128 0x3b
+ 371 0026 0B       		.uleb128 0xb
+ 372 0027 49       		.uleb128 0x49
+ 373 0028 13       		.uleb128 0x13
+ 374 0029 00       		.byte	0
+ 375 002a 00       		.byte	0
+ 376 002b 04       		.uleb128 0x4
+ 377 002c 24       		.uleb128 0x24
+ 378 002d 00       		.byte	0
+ 379 002e 0B       		.uleb128 0xb
+ 380 002f 0B       		.uleb128 0xb
+ 381 0030 3E       		.uleb128 0x3e
+ 382 0031 0B       		.uleb128 0xb
+ 383 0032 03       		.uleb128 0x3
+ 384 0033 08       		.uleb128 0x8
+ 385 0034 00       		.byte	0
+ 386 0035 00       		.byte	0
+ 387 0036 05       		.uleb128 0x5
+ 388 0037 16       		.uleb128 0x16
+ 389 0038 00       		.byte	0
+ 390 0039 03       		.uleb128 0x3
+ 391 003a 0E       		.uleb128 0xe
+ 392 003b 3A       		.uleb128 0x3a
+ 393 003c 0B       		.uleb128 0xb
+ 394 003d 3B       		.uleb128 0x3b
+ 395 003e 05       		.uleb128 0x5
+ 396 003f 49       		.uleb128 0x49
+ 397 0040 13       		.uleb128 0x13
+ 398 0041 00       		.byte	0
+ 399 0042 00       		.byte	0
+ 400 0043 06       		.uleb128 0x6
+ 401 0044 2E       		.uleb128 0x2e
+ 402 0045 01       		.byte	0x1
+ 403 0046 3F       		.uleb128 0x3f
+ 404 0047 19       		.uleb128 0x19
+ 405 0048 03       		.uleb128 0x3
+ 406 0049 0E       		.uleb128 0xe
+ 407 004a 3A       		.uleb128 0x3a
+ 408 004b 0B       		.uleb128 0xb
+ 409 004c 3B       		.uleb128 0x3b
+ 410 004d 0B       		.uleb128 0xb
+ 411 004e 27       		.uleb128 0x27
+ 412 004f 19       		.uleb128 0x19
+ 413 0050 49       		.uleb128 0x49
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 9
+
+
+ 414 0051 13       		.uleb128 0x13
+ 415 0052 8701     		.uleb128 0x87
+ 416 0054 19       		.uleb128 0x19
+ 417 0055 11       		.uleb128 0x11
+ 418 0056 01       		.uleb128 0x1
+ 419 0057 12       		.uleb128 0x12
+ 420 0058 06       		.uleb128 0x6
+ 421 0059 40       		.uleb128 0x40
+ 422 005a 18       		.uleb128 0x18
+ 423 005b 9742     		.uleb128 0x2117
+ 424 005d 19       		.uleb128 0x19
+ 425 005e 01       		.uleb128 0x1
+ 426 005f 13       		.uleb128 0x13
+ 427 0060 00       		.byte	0
+ 428 0061 00       		.byte	0
+ 429 0062 07       		.uleb128 0x7
+ 430 0063 0B       		.uleb128 0xb
+ 431 0064 01       		.byte	0x1
+ 432 0065 11       		.uleb128 0x11
+ 433 0066 01       		.uleb128 0x1
+ 434 0067 12       		.uleb128 0x12
+ 435 0068 06       		.uleb128 0x6
+ 436 0069 01       		.uleb128 0x1
+ 437 006a 13       		.uleb128 0x13
+ 438 006b 00       		.byte	0
+ 439 006c 00       		.byte	0
+ 440 006d 08       		.uleb128 0x8
+ 441 006e 34       		.uleb128 0x34
+ 442 006f 00       		.byte	0
+ 443 0070 03       		.uleb128 0x3
+ 444 0071 0E       		.uleb128 0xe
+ 445 0072 3A       		.uleb128 0x3a
+ 446 0073 0B       		.uleb128 0xb
+ 447 0074 3B       		.uleb128 0x3b
+ 448 0075 0B       		.uleb128 0xb
+ 449 0076 49       		.uleb128 0x49
+ 450 0077 13       		.uleb128 0x13
+ 451 0078 02       		.uleb128 0x2
+ 452 0079 18       		.uleb128 0x18
+ 453 007a 00       		.byte	0
+ 454 007b 00       		.byte	0
+ 455 007c 09       		.uleb128 0x9
+ 456 007d 898201   		.uleb128 0x4109
+ 457 0080 00       		.byte	0
+ 458 0081 11       		.uleb128 0x11
+ 459 0082 01       		.uleb128 0x1
+ 460 0083 31       		.uleb128 0x31
+ 461 0084 13       		.uleb128 0x13
+ 462 0085 00       		.byte	0
+ 463 0086 00       		.byte	0
+ 464 0087 0A       		.uleb128 0xa
+ 465 0088 898201   		.uleb128 0x4109
+ 466 008b 01       		.byte	0x1
+ 467 008c 11       		.uleb128 0x11
+ 468 008d 01       		.uleb128 0x1
+ 469 008e 31       		.uleb128 0x31
+ 470 008f 13       		.uleb128 0x13
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 10
+
+
+ 471 0090 01       		.uleb128 0x1
+ 472 0091 13       		.uleb128 0x13
+ 473 0092 00       		.byte	0
+ 474 0093 00       		.byte	0
+ 475 0094 0B       		.uleb128 0xb
+ 476 0095 8A8201   		.uleb128 0x410a
+ 477 0098 00       		.byte	0
+ 478 0099 02       		.uleb128 0x2
+ 479 009a 18       		.uleb128 0x18
+ 480 009b 9142     		.uleb128 0x2111
+ 481 009d 18       		.uleb128 0x18
+ 482 009e 00       		.byte	0
+ 483 009f 00       		.byte	0
+ 484 00a0 0C       		.uleb128 0xc
+ 485 00a1 898201   		.uleb128 0x4109
+ 486 00a4 01       		.byte	0x1
+ 487 00a5 11       		.uleb128 0x11
+ 488 00a6 01       		.uleb128 0x1
+ 489 00a7 31       		.uleb128 0x31
+ 490 00a8 13       		.uleb128 0x13
+ 491 00a9 00       		.byte	0
+ 492 00aa 00       		.byte	0
+ 493 00ab 0D       		.uleb128 0xd
+ 494 00ac 34       		.uleb128 0x34
+ 495 00ad 00       		.byte	0
+ 496 00ae 03       		.uleb128 0x3
+ 497 00af 0E       		.uleb128 0xe
+ 498 00b0 3A       		.uleb128 0x3a
+ 499 00b1 0B       		.uleb128 0xb
+ 500 00b2 3B       		.uleb128 0x3b
+ 501 00b3 05       		.uleb128 0x5
+ 502 00b4 49       		.uleb128 0x49
+ 503 00b5 13       		.uleb128 0x13
+ 504 00b6 3F       		.uleb128 0x3f
+ 505 00b7 19       		.uleb128 0x19
+ 506 00b8 3C       		.uleb128 0x3c
+ 507 00b9 19       		.uleb128 0x19
+ 508 00ba 00       		.byte	0
+ 509 00bb 00       		.byte	0
+ 510 00bc 0E       		.uleb128 0xe
+ 511 00bd 35       		.uleb128 0x35
+ 512 00be 00       		.byte	0
+ 513 00bf 49       		.uleb128 0x49
+ 514 00c0 13       		.uleb128 0x13
+ 515 00c1 00       		.byte	0
+ 516 00c2 00       		.byte	0
+ 517 00c3 0F       		.uleb128 0xf
+ 518 00c4 2E       		.uleb128 0x2e
+ 519 00c5 00       		.byte	0
+ 520 00c6 3F       		.uleb128 0x3f
+ 521 00c7 19       		.uleb128 0x19
+ 522 00c8 3C       		.uleb128 0x3c
+ 523 00c9 19       		.uleb128 0x19
+ 524 00ca 6E       		.uleb128 0x6e
+ 525 00cb 0E       		.uleb128 0xe
+ 526 00cc 03       		.uleb128 0x3
+ 527 00cd 0E       		.uleb128 0xe
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 11
+
+
+ 528 00ce 3A       		.uleb128 0x3a
+ 529 00cf 0B       		.uleb128 0xb
+ 530 00d0 3B       		.uleb128 0x3b
+ 531 00d1 0B       		.uleb128 0xb
+ 532 00d2 00       		.byte	0
+ 533 00d3 00       		.byte	0
+ 534 00d4 00       		.byte	0
+ 535              		.section	.debug_aranges,"",%progbits
+ 536 0000 1C000000 		.4byte	0x1c
+ 537 0004 0200     		.2byte	0x2
+ 538 0006 00000000 		.4byte	.Ldebug_info0
+ 539 000a 04       		.byte	0x4
+ 540 000b 00       		.byte	0
+ 541 000c 0000     		.2byte	0
+ 542 000e 0000     		.2byte	0
+ 543 0010 00000000 		.4byte	.LFB64
+ 544 0014 40000000 		.4byte	.LFE64-.LFB64
+ 545 0018 00000000 		.4byte	0
+ 546 001c 00000000 		.4byte	0
+ 547              		.section	.debug_ranges,"",%progbits
+ 548              	.Ldebug_ranges0:
+ 549 0000 00000000 		.4byte	.LFB64
+ 550 0004 40000000 		.4byte	.LFE64
+ 551 0008 00000000 		.4byte	0
+ 552 000c 00000000 		.4byte	0
+ 553              		.section	.debug_line,"",%progbits
+ 554              	.Ldebug_line0:
+ 555 0000 90010000 		.section	.debug_str,"MS",%progbits,1
+ 555      02007101 
+ 555      00000201 
+ 555      FB0E0D00 
+ 555      01010101 
+ 556              	.LASF20:
+ 557 0000 4C43445F 		.ascii	"LCD_Char_1_WriteControl\000"
+ 557      43686172 
+ 557      5F315F57 
+ 557      72697465 
+ 557      436F6E74 
+ 558              	.LASF28:
+ 559 0018 433A5C55 		.ascii	"C:\\Users\\Ahmad Negm\\Desktop\\6.115\\FP\\psoc_sec"
+ 559      73657273 
+ 559      5C41686D 
+ 559      6164204E 
+ 559      65676D5C 
+ 560 0045 6F6E645F 		.ascii	"ond_device_project final\\psoc_second_device_projec"
+ 560      64657669 
+ 560      63655F70 
+ 560      726F6A65 
+ 560      63742066 
+ 561 0077 74206669 		.ascii	"t final.cydsn\000"
+ 561      6E616C2E 
+ 561      63796473 
+ 561      6E00
+ 562              	.LASF18:
+ 563 0085 55415254 		.ascii	"UART_ReadRxStatus\000"
+ 563      5F526561 
+ 563      64527853 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 12
+
+
+ 563      74617475 
+ 563      7300
+ 564              	.LASF9:
+ 565 0097 5F5F696E 		.ascii	"__int32_t\000"
+ 565      7433325F 
+ 565      7400
+ 566              	.LASF30:
+ 567 00a1 73636F72 		.ascii	"score\000"
+ 567      6500
+ 568              	.LASF13:
+ 569 00a7 666C6F61 		.ascii	"float\000"
+ 569      7400
+ 570              	.LASF7:
+ 571 00ad 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 571      206C6F6E 
+ 571      6720756E 
+ 571      7369676E 
+ 571      65642069 
+ 572              	.LASF21:
+ 573 00c4 4C43445F 		.ascii	"LCD_Char_1_PrintString\000"
+ 573      43686172 
+ 573      5F315F50 
+ 573      72696E74 
+ 573      53747269 
+ 574              	.LASF26:
+ 575 00db 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 575      43313120 
+ 575      352E342E 
+ 575      31203230 
+ 575      31363036 
+ 576 010e 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 576      20726576 
+ 576      6973696F 
+ 576      6E203233 
+ 576      37373135 
+ 577 0141 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 577      66756E63 
+ 577      74696F6E 
+ 577      2D736563 
+ 577      74696F6E 
+ 578              	.LASF5:
+ 579 0169 6C6F6E67 		.ascii	"long unsigned int\000"
+ 579      20756E73 
+ 579      69676E65 
+ 579      6420696E 
+ 579      7400
+ 580              	.LASF3:
+ 581 017b 73686F72 		.ascii	"short unsigned int\000"
+ 581      7420756E 
+ 581      7369676E 
+ 581      65642069 
+ 581      6E7400
+ 582              	.LASF24:
+ 583 018e 55415254 		.ascii	"UART_Start\000"
+ 583      5F537461 
+ 583      727400
+ 584              	.LASF31:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 13
+
+
+ 585 0199 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 585      52784275 
+ 585      66666572 
+ 585      00
+ 586              	.LASF1:
+ 587 01a6 756E7369 		.ascii	"unsigned char\000"
+ 587      676E6564 
+ 587      20636861 
+ 587      7200
+ 588              	.LASF14:
+ 589 01b4 646F7562 		.ascii	"double\000"
+ 589      6C6500
+ 590              	.LASF29:
+ 591 01bb 6D61696E 		.ascii	"main\000"
+ 591      00
+ 592              	.LASF12:
+ 593 01c0 75696E74 		.ascii	"uint16\000"
+ 593      313600
+ 594              	.LASF8:
+ 595 01c7 756E7369 		.ascii	"unsigned int\000"
+ 595      676E6564 
+ 595      20696E74 
+ 595      00
+ 596              	.LASF22:
+ 597 01d4 4C43445F 		.ascii	"LCD_Char_1_PrintU32Number\000"
+ 597      43686172 
+ 597      5F315F50 
+ 597      72696E74 
+ 597      5533324E 
+ 598              	.LASF10:
+ 599 01ee 696E7433 		.ascii	"int32_t\000"
+ 599      325F7400 
+ 600              	.LASF17:
+ 601 01f6 73697A65 		.ascii	"sizetype\000"
+ 601      74797065 
+ 601      00
+ 602              	.LASF6:
+ 603 01ff 6C6F6E67 		.ascii	"long long int\000"
+ 603      206C6F6E 
+ 603      6720696E 
+ 603      7400
+ 604              	.LASF27:
+ 605 020d 6D61696E 		.ascii	"main.c\000"
+ 605      2E6300
+ 606              	.LASF15:
+ 607 0214 63686172 		.ascii	"char\000"
+ 607      00
+ 608              	.LASF2:
+ 609 0219 73686F72 		.ascii	"short int\000"
+ 609      7420696E 
+ 609      7400
+ 610              	.LASF11:
+ 611 0223 75696E74 		.ascii	"uint8\000"
+ 611      3800
+ 612              	.LASF4:
+ 613 0229 6C6F6E67 		.ascii	"long int\000"
+ 613      20696E74 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccRfTnkA.s 			page 14
+
+
+ 613      00
+ 614              	.LASF25:
+ 615 0232 4C43445F 		.ascii	"LCD_Char_1_Start\000"
+ 615      43686172 
+ 615      5F315F53 
+ 615      74617274 
+ 615      00
+ 616              	.LASF16:
+ 617 0243 6C6F6E67 		.ascii	"long double\000"
+ 617      20646F75 
+ 617      626C6500 
+ 618              	.LASF0:
+ 619 024f 7369676E 		.ascii	"signed char\000"
+ 619      65642063 
+ 619      68617200 
+ 620              	.LASF19:
+ 621 025b 55415254 		.ascii	"UART_GetChar\000"
+ 621      5F476574 
+ 621      43686172 
+ 621      00
+ 622              	.LASF23:
+ 623 0268 43794465 		.ascii	"CyDelay\000"
+ 623      6C617900 
+ 624              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,1886 @@
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"CapSense_Controller_SMS_Wrapper.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	SMS_LIB_noiseThreshold
+  20              		.data
+  21              		.align	2
+  22              		.type	SMS_LIB_noiseThreshold, %object
+  23              		.size	SMS_LIB_noiseThreshold, 4
+  24              	SMS_LIB_noiseThreshold:
+  25 0000 00000000 		.word	CapSense_Controller_noiseThreshold
+  26              		.global	SMS_LIB_hysteresis
+  27              		.align	2
+  28              		.type	SMS_LIB_hysteresis, %object
+  29              		.size	SMS_LIB_hysteresis, 4
+  30              	SMS_LIB_hysteresis:
+  31 0004 00000000 		.word	CapSense_Controller_hysteresis
+  32              		.global	SMS_LIB_widgetResolution
+  33              		.align	2
+  34              		.type	SMS_LIB_widgetResolution, %object
+  35              		.size	SMS_LIB_widgetResolution, 4
+  36              	SMS_LIB_widgetResolution:
+  37 0008 00000000 		.word	CapSense_Controller_widgetResolution
+  38              		.global	SMS_LIB_widgetNumber
+  39              		.align	2
+  40              		.type	SMS_LIB_widgetNumber, %object
+  41              		.size	SMS_LIB_widgetNumber, 4
+  42              	SMS_LIB_widgetNumber:
+  43 000c 00000000 		.word	CapSense_Controller_widgetNumber
+  44              		.global	SMS_LIB_numberOfSensors
+  45              		.align	2
+  46              		.type	SMS_LIB_numberOfSensors, %object
+  47              		.size	SMS_LIB_numberOfSensors, 4
+  48              	SMS_LIB_numberOfSensors:
+  49 0010 00000000 		.word	CapSense_Controller_numberOfSensors
+  50              		.global	SMS_LIB_rawDataIndex
+  51              		.align	2
+  52              		.type	SMS_LIB_rawDataIndex, %object
+  53              		.size	SMS_LIB_rawDataIndex, 4
+  54              	SMS_LIB_rawDataIndex:
+  55 0014 00000000 		.word	CapSense_Controller_rawDataIndex
+  56              		.global	SMS_LIB_fingerThreshold
+  57              		.align	2
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 2
+
+
+  58              		.type	SMS_LIB_fingerThreshold, %object
+  59              		.size	SMS_LIB_fingerThreshold, 4
+  60              	SMS_LIB_fingerThreshold:
+  61 0018 00000000 		.word	CapSense_Controller_fingerThreshold
+  62              		.global	SMS_LIB_idacSettings
+  63              		.align	2
+  64              		.type	SMS_LIB_idacSettings, %object
+  65              		.size	SMS_LIB_idacSettings, 4
+  66              	SMS_LIB_idacSettings:
+  67 001c 00000000 		.word	CapSense_Controller_idacSettings
+  68              		.global	SMS_LIB_prescaler
+  69              		.align	2
+  70              		.type	SMS_LIB_prescaler, %object
+  71              		.size	SMS_LIB_prescaler, 4
+  72              	SMS_LIB_prescaler:
+  73 0020 00000000 		.word	CapSense_Controller_analogSwitchDivider
+  74              		.global	SMS_LIB_SensorRaw
+  75              		.align	2
+  76              		.type	SMS_LIB_SensorRaw, %object
+  77              		.size	SMS_LIB_SensorRaw, 4
+  78              	SMS_LIB_SensorRaw:
+  79 0024 00000000 		.word	CapSense_Controller_sensorRaw
+  80              		.global	SMS_LIB_SensorBaseline
+  81              		.align	2
+  82              		.type	SMS_LIB_SensorBaseline, %object
+  83              		.size	SMS_LIB_SensorBaseline, 4
+  84              	SMS_LIB_SensorBaseline:
+  85 0028 00000000 		.word	CapSense_Controller_sensorBaseline
+  86              		.global	SMS_LIB_SensorSensitivity
+  87              		.section	.rodata
+  88              		.align	2
+  89              		.type	SMS_LIB_SensorSensitivity, %object
+  90              		.size	SMS_LIB_SensorSensitivity, 4
+  91              	SMS_LIB_SensorSensitivity:
+  92 0000 02       		.byte	2
+  93 0001 02       		.byte	2
+  94 0002 02       		.byte	2
+  95 0003 02       		.byte	2
+  96              		.global	SMS_LIB_PrescalerTbl
+  97              		.align	2
+  98              		.type	SMS_LIB_PrescalerTbl, %object
+  99              		.size	SMS_LIB_PrescalerTbl, 32
+ 100              	SMS_LIB_PrescalerTbl:
+ 101 0004 01       		.byte	1
+ 102 0005 01       		.byte	1
+ 103 0006 01       		.byte	1
+ 104 0007 01       		.byte	1
+ 105 0008 01       		.byte	1
+ 106 0009 01       		.byte	1
+ 107 000a 01       		.byte	1
+ 108 000b 01       		.byte	1
+ 109 000c 01       		.byte	1
+ 110 000d 01       		.byte	1
+ 111 000e 01       		.byte	1
+ 112 000f 01       		.byte	1
+ 113 0010 01       		.byte	1
+ 114 0011 01       		.byte	1
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 3
+
+
+ 115 0012 01       		.byte	1
+ 116 0013 01       		.byte	1
+ 117 0014 01       		.byte	1
+ 118 0015 02       		.byte	2
+ 119 0016 02       		.byte	2
+ 120 0017 02       		.byte	2
+ 121 0018 02       		.byte	2
+ 122 0019 02       		.byte	2
+ 123 001a 02       		.byte	2
+ 124 001b 02       		.byte	2
+ 125 001c 02       		.byte	2
+ 126 001d 02       		.byte	2
+ 127 001e 02       		.byte	2
+ 128 001f 02       		.byte	2
+ 129 0020 02       		.byte	2
+ 130 0021 02       		.byte	2
+ 131 0022 02       		.byte	2
+ 132 0023 02       		.byte	2
+ 133              		.comm	SMS_LIB_Table2,4,4
+ 134              		.comm	SMS_LIB_Table3,4,4
+ 135              		.comm	SMS_LIB_Table4,8,4
+ 136              		.comm	SMS_LIB_Table5,8,4
+ 137              		.comm	SMS_LIB_Table6,4,4
+ 138              		.comm	SMS_LIB_Table7,4,4
+ 139              		.comm	SMS_LIB_Table8,4,4
+ 140              		.comm	SMS_LIB_Table9,4,4
+ 141              		.global	SMS_LIB_Var1
+ 142              		.data
+ 143              		.type	SMS_LIB_Var1, %object
+ 144              		.size	SMS_LIB_Var1, 1
+ 145              	SMS_LIB_Var1:
+ 146 002c 01       		.byte	1
+ 147              		.global	SMS_LIB_Var2
+ 148 002d 00       		.align	1
+ 149              		.type	SMS_LIB_Var2, %object
+ 150              		.size	SMS_LIB_Var2, 2
+ 151              	SMS_LIB_Var2:
+ 152 002e 751F     		.short	8053
+ 153              		.global	SMS_LIB_TotalSnsCnt
+ 154              		.type	SMS_LIB_TotalSnsCnt, %object
+ 155              		.size	SMS_LIB_TotalSnsCnt, 1
+ 156              	SMS_LIB_TotalSnsCnt:
+ 157 0030 04       		.byte	4
+ 158              		.global	SMS_LIB_TotalScanSlCnt
+ 159              		.type	SMS_LIB_TotalScanSlCnt, %object
+ 160              		.size	SMS_LIB_TotalScanSlCnt, 1
+ 161              	SMS_LIB_TotalScanSlCnt:
+ 162 0031 04       		.byte	4
+ 163              		.global	SMS_LIB_EndOfWidgInd
+ 164              		.type	SMS_LIB_EndOfWidgInd, %object
+ 165              		.size	SMS_LIB_EndOfWidgInd, 1
+ 166              	SMS_LIB_EndOfWidgInd:
+ 167 0032 04       		.byte	4
+ 168              		.global	SMS_LIB_TotalSnsCnt_CH0
+ 169              		.bss
+ 170              		.type	SMS_LIB_TotalSnsCnt_CH0, %object
+ 171              		.size	SMS_LIB_TotalSnsCnt_CH0, 1
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 4
+
+
+ 172              	SMS_LIB_TotalSnsCnt_CH0:
+ 173 0000 00       		.space	1
+ 174              		.global	SMS_LIB_TotalSnsCnt_CH1
+ 175              		.type	SMS_LIB_TotalSnsCnt_CH1, %object
+ 176              		.size	SMS_LIB_TotalSnsCnt_CH1, 1
+ 177              	SMS_LIB_TotalSnsCnt_CH1:
+ 178 0001 00       		.space	1
+ 179              		.section	.text.SMS_LIB_ScanSensor,"ax",%progbits
+ 180              		.align	2
+ 181              		.global	SMS_LIB_ScanSensor
+ 182              		.thumb
+ 183              		.thumb_func
+ 184              		.type	SMS_LIB_ScanSensor, %function
+ 185              	SMS_LIB_ScanSensor:
+ 186              	.LFB0:
+ 187              		.file 1 "Generated_Source\\PSoC5\\CapSense_Controller_SMS_Wrapper.c"
+   1:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * File Name: CapSense_Controller_SMS_Wrapper.c
+   3:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Version 3.50
+   4:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+   5:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Description:
+   6:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  This file provides the source code of wrapper between CapSense CSD component 
+   7:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  and Auto Tuning library.
+   8:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+   9:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Note:
+  10:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+  11:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** ********************************************************************************
+  12:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+  13:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * You may use this file only in accordance with the license, terms, conditions,
+  14:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  15:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * the software package with which this file was provided.
+  16:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *******************************************************************************/
+  17:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  18:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** #include "CapSense_Controller.h"
+  19:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** #include "CapSense_Controller_CSHL.h"
+  20:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  21:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** #if (CapSense_Controller_TUNING_METHOD == CapSense_Controller_AUTO_TUNING)
+  22:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  23:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern uint8 CapSense_Controller_noiseThreshold[CapSense_Controller_WIDGET_CSHL_PARAMETERS_COUNT];
+  24:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern uint8 CapSense_Controller_hysteresis[CapSense_Controller_WIDGET_CSHL_PARAMETERS_COUNT];
+  25:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern uint8 CapSense_Controller_widgetResolution[CapSense_Controller_WIDGET_RESOLUTION_PARAMETERS_
+  26:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern const uint8 CYCODE CapSense_Controller_numberOfSensors[CapSense_Controller_SENSORS_TBL_SIZE]
+  27:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern const uint8 CYCODE CapSense_Controller_rawDataIndex[CapSense_Controller_SENSORS_TBL_SIZE];
+  28:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  29:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern uint8 CapSense_Controller_fingerThreshold[CapSense_Controller_WIDGET_CSHL_PARAMETERS_COUNT];
+  30:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern uint8 CapSense_Controller_idacSettings[CapSense_Controller_TOTAL_SENSOR_COUNT];
+  31:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern uint8 CapSense_Controller_analogSwitchDivider[CapSense_Controller_TOTAL_SCANSLOT_COUNT];
+  32:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  33:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern void SMS_LIB_V3_50_CalculateThresholds(uint8 SensorNumber);
+  34:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern void SMS_LIB_V3_50_AutoTune1Ch(void);
+  35:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** extern void SMS_LIB_V3_50_AutoTune2Ch(void);
+  36:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  37:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8  * SMS_LIB_noiseThreshold = CapSense_Controller_noiseThreshold;
+  38:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 * SMS_LIB_hysteresis = CapSense_Controller_hysteresis;
+  39:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  40:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 * SMS_LIB_widgetResolution = CapSense_Controller_widgetResolution;
+  41:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 5
+
+
+  42:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** const uint8 CYCODE * SMS_LIB_widgetNumber = CapSense_Controller_widgetNumber;
+  43:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** const uint8 CYCODE * SMS_LIB_numberOfSensors = CapSense_Controller_numberOfSensors;
+  44:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** const uint8 CYCODE * SMS_LIB_rawDataIndex = CapSense_Controller_rawDataIndex;
+  45:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  46:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 * SMS_LIB_fingerThreshold = CapSense_Controller_fingerThreshold;
+  47:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 * SMS_LIB_idacSettings = CapSense_Controller_idacSettings;
+  48:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 * SMS_LIB_prescaler = CapSense_Controller_analogSwitchDivider;
+  49:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  50:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint16 * SMS_LIB_SensorRaw = CapSense_Controller_sensorRaw;
+  51:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint16 * SMS_LIB_SensorBaseline = CapSense_Controller_sensorBaseline;
+  52:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  53:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** const uint8 CYCODE SMS_LIB_SensorSensitivity[] = {
+  54:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     2, 2, 2, 2, 
+  55:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** };
+  56:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  57:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  58:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** const uint8 CYCODE SMS_LIB_PrescalerTbl[] = {
+  59:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 2u, 2u, 2u, 2u, 2u, 2u, 2u,
+  60:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** };
+  61:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  62:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  63:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  64:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_Table2[CapSense_Controller_TOTAL_SENSOR_COUNT];
+  65:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_Table3[CapSense_Controller_TOTAL_SENSOR_COUNT];
+  66:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint16 SMS_LIB_Table4[CapSense_Controller_TOTAL_SENSOR_COUNT];
+  67:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint16 SMS_LIB_Table5[CapSense_Controller_TOTAL_SENSOR_COUNT];
+  68:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_Table6[CapSense_Controller_TOTAL_SENSOR_COUNT];
+  69:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_Table7[CapSense_Controller_TOTAL_SENSOR_COUNT];
+  70:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  71:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_Table8[CapSense_Controller_END_OF_WIDGETS_INDEX];
+  72:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_Table9[CapSense_Controller_END_OF_WIDGETS_INDEX];
+  73:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  74:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_Var1 = (1u);
+  75:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint16 SMS_LIB_Var2 = (8053u);
+  76:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  77:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_TotalSnsCnt = CapSense_Controller_TOTAL_SENSOR_COUNT;
+  78:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_TotalScanSlCnt = CapSense_Controller_TOTAL_SCANSLOT_COUNT;
+  79:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_EndOfWidgInd = CapSense_Controller_END_OF_WIDGETS_INDEX;
+  80:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  81:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** #if (CapSense_Controller_DESIGN_TYPE == CapSense_Controller_TWO_CHANNELS_DESIGN)
+  82:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     uint8 SMS_LIB_TotalSnsCnt_CH0 = CapSense_Controller_TOTAL_SENSOR_COUNT__CH0;
+  83:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     uint8 SMS_LIB_TotalSnsCnt_CH1 = CapSense_Controller_TOTAL_SENSOR_COUNT__CH1;
+  84:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** #else
+  85:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     uint8 SMS_LIB_TotalSnsCnt_CH0 = 0u;
+  86:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     uint8 SMS_LIB_TotalSnsCnt_CH1 = 0u;
+  87:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** #endif  /* (CapSense_Controller_DESIGN_TYPE == CapSense_Controller_TWO_CHANNELS_DESIGN) */
+  88:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+  89:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** /*******************************************************************************
+  90:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Function Name: SMS_LIB_ScanSensor
+  91:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** ********************************************************************************
+  92:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+  93:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Summary:
+  94:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  Wrapper to CapSense_Controller_ScanSensor function.
+  95:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+  96:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Parameters:
+  97:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  SensorNumber:  Sensor number.
+  98:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 6
+
+
+  99:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Return:
+ 100:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  None
+ 101:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 102:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Reentrant:
+ 103:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  No
+ 104:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 105:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *******************************************************************************/
+ 106:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** void SMS_LIB_ScanSensor(uint8 SensorNumber) 
+ 107:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** {
+ 188              		.loc 1 107 0
+ 189              		.cfi_startproc
+ 190              		@ args = 0, pretend = 0, frame = 8
+ 191              		@ frame_needed = 1, uses_anonymous_args = 0
+ 192 0000 80B5     		push	{r7, lr}
+ 193              		.cfi_def_cfa_offset 8
+ 194              		.cfi_offset 7, -8
+ 195              		.cfi_offset 14, -4
+ 196 0002 82B0     		sub	sp, sp, #8
+ 197              		.cfi_def_cfa_offset 16
+ 198 0004 00AF     		add	r7, sp, #0
+ 199              		.cfi_def_cfa_register 7
+ 200 0006 0346     		mov	r3, r0
+ 201 0008 FB71     		strb	r3, [r7, #7]
+ 108:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     CapSense_Controller_ScanSensor(SensorNumber);
+ 202              		.loc 1 108 0
+ 203 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 204 000c 1846     		mov	r0, r3
+ 205 000e FFF7FEFF 		bl	CapSense_Controller_ScanSensor
+ 109:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** }
+ 206              		.loc 1 109 0
+ 207 0012 00BF     		nop
+ 208 0014 0837     		adds	r7, r7, #8
+ 209              		.cfi_def_cfa_offset 8
+ 210 0016 BD46     		mov	sp, r7
+ 211              		.cfi_def_cfa_register 13
+ 212              		@ sp needed
+ 213 0018 80BD     		pop	{r7, pc}
+ 214              		.cfi_endproc
+ 215              	.LFE0:
+ 216              		.size	SMS_LIB_ScanSensor, .-SMS_LIB_ScanSensor
+ 217 001a 00BF     		.section	.text.SMS_LIB_IsBusy,"ax",%progbits
+ 218              		.align	2
+ 219              		.global	SMS_LIB_IsBusy
+ 220              		.thumb
+ 221              		.thumb_func
+ 222              		.type	SMS_LIB_IsBusy, %function
+ 223              	SMS_LIB_IsBusy:
+ 224              	.LFB1:
+ 110:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+ 111:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** /*******************************************************************************
+ 112:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Function Name: SMS_LIB_IsBusy
+ 113:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** ********************************************************************************
+ 114:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 115:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Summary:
+ 116:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  Wrapper to CapSense_Controller_IsBusy function.
+ 117:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  
+ 118:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Parameters:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 7
+
+
+ 119:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  None
+ 120:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 121:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Return:
+ 122:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  None
+ 123:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 124:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *******************************************************************************/
+ 125:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** uint8 SMS_LIB_IsBusy(void) 
+ 126:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** {
+ 225              		.loc 1 126 0
+ 226              		.cfi_startproc
+ 227              		@ args = 0, pretend = 0, frame = 0
+ 228              		@ frame_needed = 1, uses_anonymous_args = 0
+ 229 0000 80B5     		push	{r7, lr}
+ 230              		.cfi_def_cfa_offset 8
+ 231              		.cfi_offset 7, -8
+ 232              		.cfi_offset 14, -4
+ 233 0002 00AF     		add	r7, sp, #0
+ 234              		.cfi_def_cfa_register 7
+ 127:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     return CapSense_Controller_IsBusy();
+ 235              		.loc 1 127 0
+ 236 0004 FFF7FEFF 		bl	CapSense_Controller_IsBusy
+ 237 0008 0346     		mov	r3, r0
+ 128:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** }
+ 238              		.loc 1 128 0
+ 239 000a 1846     		mov	r0, r3
+ 240 000c 80BD     		pop	{r7, pc}
+ 241              		.cfi_endproc
+ 242              	.LFE1:
+ 243              		.size	SMS_LIB_IsBusy, .-SMS_LIB_IsBusy
+ 244 000e 00BF     		.section	.text.CapSense_Controller_CalculateThresholds,"ax",%progbits
+ 245              		.align	2
+ 246              		.global	CapSense_Controller_CalculateThresholds
+ 247              		.thumb
+ 248              		.thumb_func
+ 249              		.type	CapSense_Controller_CalculateThresholds, %function
+ 250              	CapSense_Controller_CalculateThresholds:
+ 251              	.LFB2:
+ 129:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+ 130:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+ 131:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** /*******************************************************************************
+ 132:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Function Name: CapSense_Controller_CalculateThresholds
+ 133:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** ********************************************************************************
+ 134:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 135:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Summary:
+ 136:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  Wrapper to SMS_LIB_CalculateThresholds function.
+ 137:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 138:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Parameters:
+ 139:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  SensorNumber:  Sensor number.
+ 140:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 141:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Return:
+ 142:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  None
+ 143:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 144:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Reentrant:
+ 145:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  No
+ 146:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 147:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *******************************************************************************/
+ 148:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** void CapSense_Controller_CalculateThresholds(uint8 SensorNumber) 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 8
+
+
+ 149:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** {
+ 252              		.loc 1 149 0
+ 253              		.cfi_startproc
+ 254              		@ args = 0, pretend = 0, frame = 8
+ 255              		@ frame_needed = 1, uses_anonymous_args = 0
+ 256 0000 80B5     		push	{r7, lr}
+ 257              		.cfi_def_cfa_offset 8
+ 258              		.cfi_offset 7, -8
+ 259              		.cfi_offset 14, -4
+ 260 0002 82B0     		sub	sp, sp, #8
+ 261              		.cfi_def_cfa_offset 16
+ 262 0004 00AF     		add	r7, sp, #0
+ 263              		.cfi_def_cfa_register 7
+ 264 0006 0346     		mov	r3, r0
+ 265 0008 FB71     		strb	r3, [r7, #7]
+ 150:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     SMS_LIB_V3_50_CalculateThresholds(SensorNumber);
+ 266              		.loc 1 150 0
+ 267 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 268 000c 1846     		mov	r0, r3
+ 269 000e FFF7FEFF 		bl	SMS_LIB_V3_50_CalculateThresholds
+ 151:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** }
+ 270              		.loc 1 151 0
+ 271 0012 00BF     		nop
+ 272 0014 0837     		adds	r7, r7, #8
+ 273              		.cfi_def_cfa_offset 8
+ 274 0016 BD46     		mov	sp, r7
+ 275              		.cfi_def_cfa_register 13
+ 276              		@ sp needed
+ 277 0018 80BD     		pop	{r7, pc}
+ 278              		.cfi_endproc
+ 279              	.LFE2:
+ 280              		.size	CapSense_Controller_CalculateThresholds, .-CapSense_Controller_CalculateThresholds
+ 281 001a 00BF     		.section	.text.CapSense_Controller_AutoTune,"ax",%progbits
+ 282              		.align	2
+ 283              		.global	CapSense_Controller_AutoTune
+ 284              		.thumb
+ 285              		.thumb_func
+ 286              		.type	CapSense_Controller_AutoTune, %function
+ 287              	CapSense_Controller_AutoTune:
+ 288              	.LFB3:
+ 152:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+ 153:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+ 154:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** /*******************************************************************************
+ 155:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Function Name: CapSense_Controller_AutoTune
+ 156:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** ********************************************************************************
+ 157:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 158:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Summary:
+ 159:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  Wrapper for SMS_LIB_AutoTune1Ch or SMS_LIB_AutoTune2Ch function.
+ 160:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 161:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Parameters:
+ 162:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  None
+ 163:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 164:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Return:
+ 165:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  None
+ 166:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 167:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Reentrant:
+ 168:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  No
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 9
+
+
+ 169:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 170:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *******************************************************************************/
+ 171:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** void CapSense_Controller_AutoTune(void) 
+ 172:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** {
+ 289              		.loc 1 172 0
+ 290              		.cfi_startproc
+ 291              		@ args = 0, pretend = 0, frame = 0
+ 292              		@ frame_needed = 1, uses_anonymous_args = 0
+ 293 0000 80B5     		push	{r7, lr}
+ 294              		.cfi_def_cfa_offset 8
+ 295              		.cfi_offset 7, -8
+ 296              		.cfi_offset 14, -4
+ 297 0002 00AF     		add	r7, sp, #0
+ 298              		.cfi_def_cfa_register 7
+ 173:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     #if (CapSense_Controller_DESIGN_TYPE == CapSense_Controller_ONE_CHANNEL_DESIGN)
+ 174:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****         SMS_LIB_V3_50_AutoTune1Ch();
+ 299              		.loc 1 174 0
+ 300 0004 FFF7FEFF 		bl	SMS_LIB_V3_50_AutoTune1Ch
+ 175:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     #elif (CapSense_Controller_DESIGN_TYPE == CapSense_Controller_TWO_CHANNELS_DESIGN)
+ 176:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****         SMS_LIB_V3_50_AutoTune2Ch();
+ 177:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     #endif /* (CapSense_Controller_DESIGN_TYPE == CapSense_Controller_ONE_CHANNEL_DESIGN) */
+ 178:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** }
+ 301              		.loc 1 178 0
+ 302 0008 00BF     		nop
+ 303 000a 80BD     		pop	{r7, pc}
+ 304              		.cfi_endproc
+ 305              	.LFE3:
+ 306              		.size	CapSense_Controller_AutoTune, .-CapSense_Controller_AutoTune
+ 307              		.section	.text.SMS_LIB_SetPrescaler,"ax",%progbits
+ 308              		.align	2
+ 309              		.global	SMS_LIB_SetPrescaler
+ 310              		.thumb
+ 311              		.thumb_func
+ 312              		.type	SMS_LIB_SetPrescaler, %function
+ 313              	SMS_LIB_SetPrescaler:
+ 314              	.LFB4:
+ 179:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+ 180:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** /*******************************************************************************
+ 181:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Function Name: SMS_LIB_SetPrescaler
+ 182:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** ********************************************************************************
+ 183:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 184:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Summary:
+ 185:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  Empty wrapper for version compliance.
+ 186:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 187:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Parameters:
+ 188:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  prescaler:  prascaler value.
+ 189:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 190:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** * Return:
+ 191:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *  None
+ 192:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *
+ 193:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** *******************************************************************************/
+ 194:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** void SMS_LIB_SetPrescaler(uint8 prescaler) 
+ 195:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** {
+ 315              		.loc 1 195 0
+ 316              		.cfi_startproc
+ 317              		@ args = 0, pretend = 0, frame = 8
+ 318              		@ frame_needed = 1, uses_anonymous_args = 0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 10
+
+
+ 319              		@ link register save eliminated.
+ 320 0000 80B4     		push	{r7}
+ 321              		.cfi_def_cfa_offset 4
+ 322              		.cfi_offset 7, -4
+ 323 0002 83B0     		sub	sp, sp, #12
+ 324              		.cfi_def_cfa_offset 16
+ 325 0004 00AF     		add	r7, sp, #0
+ 326              		.cfi_def_cfa_register 7
+ 327 0006 0346     		mov	r3, r0
+ 328 0008 FB71     		strb	r3, [r7, #7]
+ 196:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c ****     prescaler = prescaler;
+ 197:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** }
+ 329              		.loc 1 197 0
+ 330 000a 00BF     		nop
+ 331 000c 0C37     		adds	r7, r7, #12
+ 332              		.cfi_def_cfa_offset 4
+ 333 000e BD46     		mov	sp, r7
+ 334              		.cfi_def_cfa_register 13
+ 335              		@ sp needed
+ 336 0010 80BC     		pop	{r7}
+ 337              		.cfi_restore 7
+ 338              		.cfi_def_cfa_offset 0
+ 339 0012 7047     		bx	lr
+ 340              		.cfi_endproc
+ 341              	.LFE4:
+ 342              		.size	SMS_LIB_SetPrescaler, .-SMS_LIB_SetPrescaler
+ 343              		.section	.text.SMS_LIB_V3_50_SetAnalogSwitchesSrc_PRS,"ax",%progbits
+ 344              		.align	2
+ 345              		.global	SMS_LIB_V3_50_SetAnalogSwitchesSrc_PRS
+ 346              		.thumb
+ 347              		.thumb_func
+ 348              		.type	SMS_LIB_V3_50_SetAnalogSwitchesSrc_PRS, %function
+ 349              	SMS_LIB_V3_50_SetAnalogSwitchesSrc_PRS:
+ 350              	.LFB5:
+ 198:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+ 199:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** void SMS_LIB_V3_50_SetAnalogSwitchesSrc_PRS(void) 
+ 200:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** {
+ 351              		.loc 1 200 0
+ 352              		.cfi_startproc
+ 353              		@ args = 0, pretend = 0, frame = 0
+ 354              		@ frame_needed = 1, uses_anonymous_args = 0
+ 355 0000 80B5     		push	{r7, lr}
+ 356              		.cfi_def_cfa_offset 8
+ 357              		.cfi_offset 7, -8
+ 358              		.cfi_offset 14, -4
+ 359 0002 00AF     		add	r7, sp, #0
+ 360              		.cfi_def_cfa_register 7
+ 201:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 	CapSense_Controller_SetAnalogSwitchesSource(CapSense_Controller_ANALOG_SWITCHES_SRC_PRS);
+ 361              		.loc 1 201 0
+ 362 0004 0220     		movs	r0, #2
+ 363 0006 FFF7FEFF 		bl	CapSense_Controller_SetAnalogSwitchesSource
+ 202:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** }
+ 364              		.loc 1 202 0
+ 365 000a 00BF     		nop
+ 366 000c 80BD     		pop	{r7, pc}
+ 367              		.cfi_endproc
+ 368              	.LFE5:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 11
+
+
+ 369              		.size	SMS_LIB_V3_50_SetAnalogSwitchesSrc_PRS, .-SMS_LIB_V3_50_SetAnalogSwitchesSrc_PRS
+ 370 000e 00BF     		.section	.text.SMS_LIB_V3_50_SetAnalogSwitchesSrc_Prescaler,"ax",%progbits
+ 371              		.align	2
+ 372              		.global	SMS_LIB_V3_50_SetAnalogSwitchesSrc_Prescaler
+ 373              		.thumb
+ 374              		.thumb_func
+ 375              		.type	SMS_LIB_V3_50_SetAnalogSwitchesSrc_Prescaler, %function
+ 376              	SMS_LIB_V3_50_SetAnalogSwitchesSrc_Prescaler:
+ 377              	.LFB6:
+ 203:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 
+ 204:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** void SMS_LIB_V3_50_SetAnalogSwitchesSrc_Prescaler(void) 
+ 205:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** {
+ 378              		.loc 1 205 0
+ 379              		.cfi_startproc
+ 380              		@ args = 0, pretend = 0, frame = 0
+ 381              		@ frame_needed = 1, uses_anonymous_args = 0
+ 382 0000 80B5     		push	{r7, lr}
+ 383              		.cfi_def_cfa_offset 8
+ 384              		.cfi_offset 7, -8
+ 385              		.cfi_offset 14, -4
+ 386 0002 00AF     		add	r7, sp, #0
+ 387              		.cfi_def_cfa_register 7
+ 206:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** 	CapSense_Controller_SetAnalogSwitchesSource(CapSense_Controller_ANALOG_SWITCHES_SRC_PRESCALER);
+ 388              		.loc 1 206 0
+ 389 0004 0120     		movs	r0, #1
+ 390 0006 FFF7FEFF 		bl	CapSense_Controller_SetAnalogSwitchesSource
+ 207:Generated_Source\PSoC5/CapSense_Controller_SMS_Wrapper.c **** }
+ 391              		.loc 1 207 0
+ 392 000a 00BF     		nop
+ 393 000c 80BD     		pop	{r7, pc}
+ 394              		.cfi_endproc
+ 395              	.LFE6:
+ 396              		.size	SMS_LIB_V3_50_SetAnalogSwitchesSrc_Prescaler, .-SMS_LIB_V3_50_SetAnalogSwitchesSrc_Prescaler
+ 397 000e 00BF     		.text
+ 398              	.Letext0:
+ 399              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 400              		.file 3 "Generated_Source\\PSoC5\\CapSense_Controller.h"
+ 401              		.file 4 "Generated_Source\\PSoC5\\CapSense_Controller_CSHL.h"
+ 402              		.section	.debug_info,"",%progbits
+ 403              	.Ldebug_info0:
+ 404 0000 1F040000 		.4byte	0x41f
+ 405 0004 0400     		.2byte	0x4
+ 406 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 407 000a 04       		.byte	0x4
+ 408 000b 01       		.uleb128 0x1
+ 409 000c 97000000 		.4byte	.LASF63
+ 410 0010 0C       		.byte	0xc
+ 411 0011 D2010000 		.4byte	.LASF64
+ 412 0015 39020000 		.4byte	.LASF65
+ 413 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 414 001d 00000000 		.4byte	0
+ 415 0021 00000000 		.4byte	.Ldebug_line0
+ 416 0025 02       		.uleb128 0x2
+ 417 0026 01       		.byte	0x1
+ 418 0027 06       		.byte	0x6
+ 419 0028 B9010000 		.4byte	.LASF0
+ 420 002c 02       		.uleb128 0x2
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 12
+
+
+ 421 002d 01       		.byte	0x1
+ 422 002e 08       		.byte	0x8
+ 423 002f 29040000 		.4byte	.LASF1
+ 424 0033 02       		.uleb128 0x2
+ 425 0034 02       		.byte	0x2
+ 426 0035 05       		.byte	0x5
+ 427 0036 65040000 		.4byte	.LASF2
+ 428 003a 02       		.uleb128 0x2
+ 429 003b 02       		.byte	0x2
+ 430 003c 07       		.byte	0x7
+ 431 003d 3D030000 		.4byte	.LASF3
+ 432 0041 02       		.uleb128 0x2
+ 433 0042 04       		.byte	0x4
+ 434 0043 05       		.byte	0x5
+ 435 0044 3A010000 		.4byte	.LASF4
+ 436 0048 02       		.uleb128 0x2
+ 437 0049 04       		.byte	0x4
+ 438 004a 07       		.byte	0x7
+ 439 004b 2B030000 		.4byte	.LASF5
+ 440 004f 02       		.uleb128 0x2
+ 441 0050 08       		.byte	0x8
+ 442 0051 05       		.byte	0x5
+ 443 0052 AB010000 		.4byte	.LASF6
+ 444 0056 02       		.uleb128 0x2
+ 445 0057 08       		.byte	0x8
+ 446 0058 07       		.byte	0x7
+ 447 0059 81010000 		.4byte	.LASF7
+ 448 005d 03       		.uleb128 0x3
+ 449 005e 04       		.byte	0x4
+ 450 005f 05       		.byte	0x5
+ 451 0060 696E7400 		.ascii	"int\000"
+ 452 0064 02       		.uleb128 0x2
+ 453 0065 04       		.byte	0x4
+ 454 0066 07       		.byte	0x7
+ 455 0067 0C030000 		.4byte	.LASF8
+ 456 006b 04       		.uleb128 0x4
+ 457 006c 0B020000 		.4byte	.LASF9
+ 458 0070 02       		.byte	0x2
+ 459 0071 E401     		.2byte	0x1e4
+ 460 0073 2C000000 		.4byte	0x2c
+ 461 0077 04       		.uleb128 0x4
+ 462 0078 00000000 		.4byte	.LASF10
+ 463 007c 02       		.byte	0x2
+ 464 007d E501     		.2byte	0x1e5
+ 465 007f 3A000000 		.4byte	0x3a
+ 466 0083 02       		.uleb128 0x2
+ 467 0084 04       		.byte	0x4
+ 468 0085 04       		.byte	0x4
+ 469 0086 19040000 		.4byte	.LASF11
+ 470 008a 02       		.uleb128 0x2
+ 471 008b 08       		.byte	0x8
+ 472 008c 04       		.byte	0x4
+ 473 008d 11020000 		.4byte	.LASF12
+ 474 0091 02       		.uleb128 0x2
+ 475 0092 01       		.byte	0x1
+ 476 0093 08       		.byte	0x8
+ 477 0094 01050000 		.4byte	.LASF13
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 13
+
+
+ 478 0098 02       		.uleb128 0x2
+ 479 0099 08       		.byte	0x8
+ 480 009a 04       		.byte	0x4
+ 481 009b D5030000 		.4byte	.LASF14
+ 482 009f 02       		.uleb128 0x2
+ 483 00a0 04       		.byte	0x4
+ 484 00a1 07       		.byte	0x7
+ 485 00a2 CC030000 		.4byte	.LASF15
+ 486 00a6 05       		.uleb128 0x5
+ 487 00a7 A8040000 		.4byte	.LASF16
+ 488 00ab 01       		.byte	0x1
+ 489 00ac 6A       		.byte	0x6a
+ 490 00ad 00000000 		.4byte	.LFB0
+ 491 00b1 1A000000 		.4byte	.LFE0-.LFB0
+ 492 00b5 01       		.uleb128 0x1
+ 493 00b6 9C       		.byte	0x9c
+ 494 00b7 CA000000 		.4byte	0xca
+ 495 00bb 06       		.uleb128 0x6
+ 496 00bc C5010000 		.4byte	.LASF18
+ 497 00c0 01       		.byte	0x1
+ 498 00c1 6A       		.byte	0x6a
+ 499 00c2 6B000000 		.4byte	0x6b
+ 500 00c6 02       		.uleb128 0x2
+ 501 00c7 91       		.byte	0x91
+ 502 00c8 77       		.sleb128 -9
+ 503 00c9 00       		.byte	0
+ 504 00ca 07       		.uleb128 0x7
+ 505 00cb 37040000 		.4byte	.LASF66
+ 506 00cf 01       		.byte	0x1
+ 507 00d0 7D       		.byte	0x7d
+ 508 00d1 6B000000 		.4byte	0x6b
+ 509 00d5 00000000 		.4byte	.LFB1
+ 510 00d9 0E000000 		.4byte	.LFE1-.LFB1
+ 511 00dd 01       		.uleb128 0x1
+ 512 00de 9C       		.byte	0x9c
+ 513 00df 05       		.uleb128 0x5
+ 514 00e0 BC020000 		.4byte	.LASF17
+ 515 00e4 01       		.byte	0x1
+ 516 00e5 94       		.byte	0x94
+ 517 00e6 00000000 		.4byte	.LFB2
+ 518 00ea 1A000000 		.4byte	.LFE2-.LFB2
+ 519 00ee 01       		.uleb128 0x1
+ 520 00ef 9C       		.byte	0x9c
+ 521 00f0 03010000 		.4byte	0x103
+ 522 00f4 06       		.uleb128 0x6
+ 523 00f5 C5010000 		.4byte	.LASF18
+ 524 00f9 01       		.byte	0x1
+ 525 00fa 94       		.byte	0x94
+ 526 00fb 6B000000 		.4byte	0x6b
+ 527 00ff 02       		.uleb128 0x2
+ 528 0100 91       		.byte	0x91
+ 529 0101 77       		.sleb128 -9
+ 530 0102 00       		.byte	0
+ 531 0103 08       		.uleb128 0x8
+ 532 0104 4A050000 		.4byte	.LASF21
+ 533 0108 01       		.byte	0x1
+ 534 0109 AB       		.byte	0xab
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 14
+
+
+ 535 010a 00000000 		.4byte	.LFB3
+ 536 010e 0C000000 		.4byte	.LFE3-.LFB3
+ 537 0112 01       		.uleb128 0x1
+ 538 0113 9C       		.byte	0x9c
+ 539 0114 09       		.uleb128 0x9
+ 540 0115 DF050000 		.4byte	.LASF19
+ 541 0119 01       		.byte	0x1
+ 542 011a C2       		.byte	0xc2
+ 543 011b 00000000 		.4byte	.LFB4
+ 544 011f 14000000 		.4byte	.LFE4-.LFB4
+ 545 0123 01       		.uleb128 0x1
+ 546 0124 9C       		.byte	0x9c
+ 547 0125 38010000 		.4byte	0x138
+ 548 0129 06       		.uleb128 0x6
+ 549 012a 1F040000 		.4byte	.LASF20
+ 550 012e 01       		.byte	0x1
+ 551 012f C2       		.byte	0xc2
+ 552 0130 6B000000 		.4byte	0x6b
+ 553 0134 02       		.uleb128 0x2
+ 554 0135 91       		.byte	0x91
+ 555 0136 77       		.sleb128 -9
+ 556 0137 00       		.byte	0
+ 557 0138 08       		.uleb128 0x8
+ 558 0139 70000000 		.4byte	.LASF22
+ 559 013d 01       		.byte	0x1
+ 560 013e C7       		.byte	0xc7
+ 561 013f 00000000 		.4byte	.LFB5
+ 562 0143 0E000000 		.4byte	.LFE5-.LFB5
+ 563 0147 01       		.uleb128 0x1
+ 564 0148 9C       		.byte	0x9c
+ 565 0149 08       		.uleb128 0x8
+ 566 014a 1D050000 		.4byte	.LASF23
+ 567 014e 01       		.byte	0x1
+ 568 014f CC       		.byte	0xcc
+ 569 0150 00000000 		.4byte	.LFB6
+ 570 0154 0E000000 		.4byte	.LFE6-.LFB6
+ 571 0158 01       		.uleb128 0x1
+ 572 0159 9C       		.byte	0x9c
+ 573 015a 0A       		.uleb128 0xa
+ 574 015b 77000000 		.4byte	0x77
+ 575 015f 6A010000 		.4byte	0x16a
+ 576 0163 0B       		.uleb128 0xb
+ 577 0164 9F000000 		.4byte	0x9f
+ 578 0168 03       		.byte	0x3
+ 579 0169 00       		.byte	0
+ 580 016a 0C       		.uleb128 0xc
+ 581 016b 7D030000 		.4byte	.LASF24
+ 582 016f 03       		.byte	0x3
+ 583 0170 BC02     		.2byte	0x2bc
+ 584 0172 5A010000 		.4byte	0x15a
+ 585 0176 0A       		.uleb128 0xa
+ 586 0177 86010000 		.4byte	0x186
+ 587 017b 86010000 		.4byte	0x186
+ 588 017f 0B       		.uleb128 0xb
+ 589 0180 9F000000 		.4byte	0x9f
+ 590 0184 03       		.byte	0x3
+ 591 0185 00       		.byte	0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 15
+
+
+ 592 0186 0D       		.uleb128 0xd
+ 593 0187 6B000000 		.4byte	0x6b
+ 594 018b 0C       		.uleb128 0xc
+ 595 018c 18020000 		.4byte	.LASF25
+ 596 0190 04       		.byte	0x4
+ 597 0191 0701     		.2byte	0x107
+ 598 0193 97010000 		.4byte	0x197
+ 599 0197 0D       		.uleb128 0xd
+ 600 0198 76010000 		.4byte	0x176
+ 601 019c 0C       		.uleb128 0xc
+ 602 019d DE040000 		.4byte	.LASF26
+ 603 01a1 04       		.byte	0x4
+ 604 01a2 0901     		.2byte	0x109
+ 605 01a4 5A010000 		.4byte	0x15a
+ 606 01a8 0A       		.uleb128 0xa
+ 607 01a9 6B000000 		.4byte	0x6b
+ 608 01ad B8010000 		.4byte	0x1b8
+ 609 01b1 0B       		.uleb128 0xb
+ 610 01b2 9F000000 		.4byte	0x9f
+ 611 01b6 03       		.byte	0x3
+ 612 01b7 00       		.byte	0
+ 613 01b8 0E       		.uleb128 0xe
+ 614 01b9 F6030000 		.4byte	.LASF27
+ 615 01bd 01       		.byte	0x1
+ 616 01be 17       		.byte	0x17
+ 617 01bf A8010000 		.4byte	0x1a8
+ 618 01c3 0E       		.uleb128 0xe
+ 619 01c4 46040000 		.4byte	.LASF28
+ 620 01c8 01       		.byte	0x1
+ 621 01c9 18       		.byte	0x18
+ 622 01ca A8010000 		.4byte	0x1a8
+ 623 01ce 0E       		.uleb128 0xe
+ 624 01cf 5C010000 		.4byte	.LASF29
+ 625 01d3 01       		.byte	0x1
+ 626 01d4 19       		.byte	0x19
+ 627 01d5 A8010000 		.4byte	0x1a8
+ 628 01d9 0E       		.uleb128 0xe
+ 629 01da 6F040000 		.4byte	.LASF30
+ 630 01de 01       		.byte	0x1
+ 631 01df 1A       		.byte	0x1a
+ 632 01e0 E4010000 		.4byte	0x1e4
+ 633 01e4 0D       		.uleb128 0xd
+ 634 01e5 76010000 		.4byte	0x176
+ 635 01e9 0E       		.uleb128 0xe
+ 636 01ea 26060000 		.4byte	.LASF31
+ 637 01ee 01       		.byte	0x1
+ 638 01ef 1B       		.byte	0x1b
+ 639 01f0 F4010000 		.4byte	0x1f4
+ 640 01f4 0D       		.uleb128 0xd
+ 641 01f5 76010000 		.4byte	0x176
+ 642 01f9 0E       		.uleb128 0xe
+ 643 01fa 81020000 		.4byte	.LASF32
+ 644 01fe 01       		.byte	0x1
+ 645 01ff 1D       		.byte	0x1d
+ 646 0200 A8010000 		.4byte	0x1a8
+ 647 0204 0E       		.uleb128 0xe
+ 648 0205 79050000 		.4byte	.LASF33
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 16
+
+
+ 649 0209 01       		.byte	0x1
+ 650 020a 1E       		.byte	0x1e
+ 651 020b A8010000 		.4byte	0x1a8
+ 652 020f 0E       		.uleb128 0xe
+ 653 0210 E4020000 		.4byte	.LASF34
+ 654 0214 01       		.byte	0x1
+ 655 0215 1F       		.byte	0x1f
+ 656 0216 A8010000 		.4byte	0x1a8
+ 657 021a 0F       		.uleb128 0xf
+ 658 021b B5030000 		.4byte	.LASF35
+ 659 021f 01       		.byte	0x1
+ 660 0220 25       		.byte	0x25
+ 661 0221 2B020000 		.4byte	0x22b
+ 662 0225 05       		.uleb128 0x5
+ 663 0226 03       		.byte	0x3
+ 664 0227 00000000 		.4byte	SMS_LIB_noiseThreshold
+ 665 022b 10       		.uleb128 0x10
+ 666 022c 04       		.byte	0x4
+ 667 022d 6B000000 		.4byte	0x6b
+ 668 0231 0F       		.uleb128 0xf
+ 669 0232 98010000 		.4byte	.LASF36
+ 670 0236 01       		.byte	0x1
+ 671 0237 26       		.byte	0x26
+ 672 0238 2B020000 		.4byte	0x22b
+ 673 023c 05       		.uleb128 0x5
+ 674 023d 03       		.byte	0x3
+ 675 023e 00000000 		.4byte	SMS_LIB_hysteresis
+ 676 0242 0F       		.uleb128 0xf
+ 677 0243 43010000 		.4byte	.LASF37
+ 678 0247 01       		.byte	0x1
+ 679 0248 28       		.byte	0x28
+ 680 0249 2B020000 		.4byte	0x22b
+ 681 024d 05       		.uleb128 0x5
+ 682 024e 03       		.byte	0x3
+ 683 024f 00000000 		.4byte	SMS_LIB_widgetResolution
+ 684 0253 0F       		.uleb128 0xf
+ 685 0254 25010000 		.4byte	.LASF38
+ 686 0258 01       		.byte	0x1
+ 687 0259 2A       		.byte	0x2a
+ 688 025a 64020000 		.4byte	0x264
+ 689 025e 05       		.uleb128 0x5
+ 690 025f 03       		.byte	0x3
+ 691 0260 00000000 		.4byte	SMS_LIB_widgetNumber
+ 692 0264 10       		.uleb128 0x10
+ 693 0265 04       		.byte	0x4
+ 694 0266 86010000 		.4byte	0x186
+ 695 026a 0F       		.uleb128 0xf
+ 696 026b 65030000 		.4byte	.LASF39
+ 697 026f 01       		.byte	0x1
+ 698 0270 2B       		.byte	0x2b
+ 699 0271 64020000 		.4byte	0x264
+ 700 0275 05       		.uleb128 0x5
+ 701 0276 03       		.byte	0x3
+ 702 0277 00000000 		.4byte	SMS_LIB_numberOfSensors
+ 703 027b 0F       		.uleb128 0xf
+ 704 027c E1030000 		.4byte	.LASF40
+ 705 0280 01       		.byte	0x1
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 17
+
+
+ 706 0281 2C       		.byte	0x2c
+ 707 0282 64020000 		.4byte	0x264
+ 708 0286 05       		.uleb128 0x5
+ 709 0287 03       		.byte	0x3
+ 710 0288 00000000 		.4byte	SMS_LIB_rawDataIndex
+ 711 028c 0F       		.uleb128 0xf
+ 712 028d F4050000 		.4byte	.LASF41
+ 713 0291 01       		.byte	0x1
+ 714 0292 2E       		.byte	0x2e
+ 715 0293 2B020000 		.4byte	0x22b
+ 716 0297 05       		.uleb128 0x5
+ 717 0298 03       		.byte	0x3
+ 718 0299 00000000 		.4byte	SMS_LIB_fingerThreshold
+ 719 029d 0F       		.uleb128 0xf
+ 720 029e 93040000 		.4byte	.LASF42
+ 721 02a2 01       		.byte	0x1
+ 722 02a3 2F       		.byte	0x2f
+ 723 02a4 2B020000 		.4byte	0x22b
+ 724 02a8 05       		.uleb128 0x5
+ 725 02a9 03       		.byte	0x3
+ 726 02aa 00000000 		.4byte	SMS_LIB_idacSettings
+ 727 02ae 0F       		.uleb128 0xf
+ 728 02af 19030000 		.4byte	.LASF43
+ 729 02b3 01       		.byte	0x1
+ 730 02b4 30       		.byte	0x30
+ 731 02b5 2B020000 		.4byte	0x22b
+ 732 02b9 05       		.uleb128 0x5
+ 733 02ba 03       		.byte	0x3
+ 734 02bb 00000000 		.4byte	SMS_LIB_prescaler
+ 735 02bf 0F       		.uleb128 0xf
+ 736 02c0 67050000 		.4byte	.LASF44
+ 737 02c4 01       		.byte	0x1
+ 738 02c5 32       		.byte	0x32
+ 739 02c6 D0020000 		.4byte	0x2d0
+ 740 02ca 05       		.uleb128 0x5
+ 741 02cb 03       		.byte	0x3
+ 742 02cc 00000000 		.4byte	SMS_LIB_SensorRaw
+ 743 02d0 10       		.uleb128 0x10
+ 744 02d1 04       		.byte	0x4
+ 745 02d2 77000000 		.4byte	0x77
+ 746 02d6 0F       		.uleb128 0xf
+ 747 02d7 06050000 		.4byte	.LASF45
+ 748 02db 01       		.byte	0x1
+ 749 02dc 33       		.byte	0x33
+ 750 02dd D0020000 		.4byte	0x2d0
+ 751 02e1 05       		.uleb128 0x5
+ 752 02e2 03       		.byte	0x3
+ 753 02e3 00000000 		.4byte	SMS_LIB_SensorBaseline
+ 754 02e7 0F       		.uleb128 0xf
+ 755 02e8 9B030000 		.4byte	.LASF46
+ 756 02ec 01       		.byte	0x1
+ 757 02ed 35       		.byte	0x35
+ 758 02ee F8020000 		.4byte	0x2f8
+ 759 02f2 05       		.uleb128 0x5
+ 760 02f3 03       		.byte	0x3
+ 761 02f4 00000000 		.4byte	SMS_LIB_SensorSensitivity
+ 762 02f8 0D       		.uleb128 0xd
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 18
+
+
+ 763 02f9 76010000 		.4byte	0x176
+ 764 02fd 0A       		.uleb128 0xa
+ 765 02fe 86010000 		.4byte	0x186
+ 766 0302 0D030000 		.4byte	0x30d
+ 767 0306 0B       		.uleb128 0xb
+ 768 0307 9F000000 		.4byte	0x9f
+ 769 030b 1F       		.byte	0x1f
+ 770 030c 00       		.byte	0
+ 771 030d 0F       		.uleb128 0xf
+ 772 030e 50030000 		.4byte	.LASF47
+ 773 0312 01       		.byte	0x1
+ 774 0313 3A       		.byte	0x3a
+ 775 0314 1E030000 		.4byte	0x31e
+ 776 0318 05       		.uleb128 0x5
+ 777 0319 03       		.byte	0x3
+ 778 031a 00000000 		.4byte	SMS_LIB_PrescalerTbl
+ 779 031e 0D       		.uleb128 0xd
+ 780 031f FD020000 		.4byte	0x2fd
+ 781 0323 0F       		.uleb128 0xf
+ 782 0324 BB040000 		.4byte	.LASF48
+ 783 0328 01       		.byte	0x1
+ 784 0329 40       		.byte	0x40
+ 785 032a A8010000 		.4byte	0x1a8
+ 786 032e 05       		.uleb128 0x5
+ 787 032f 03       		.byte	0x3
+ 788 0330 00000000 		.4byte	SMS_LIB_Table2
+ 789 0334 0F       		.uleb128 0xf
+ 790 0335 07000000 		.4byte	.LASF49
+ 791 0339 01       		.byte	0x1
+ 792 033a 41       		.byte	0x41
+ 793 033b A8010000 		.4byte	0x1a8
+ 794 033f 05       		.uleb128 0x5
+ 795 0340 03       		.byte	0x3
+ 796 0341 00000000 		.4byte	SMS_LIB_Table3
+ 797 0345 0F       		.uleb128 0xf
+ 798 0346 16000000 		.4byte	.LASF50
+ 799 034a 01       		.byte	0x1
+ 800 034b 42       		.byte	0x42
+ 801 034c 5A010000 		.4byte	0x15a
+ 802 0350 05       		.uleb128 0x5
+ 803 0351 03       		.byte	0x3
+ 804 0352 00000000 		.4byte	SMS_LIB_Table4
+ 805 0356 0F       		.uleb128 0xf
+ 806 0357 25000000 		.4byte	.LASF51
+ 807 035b 01       		.byte	0x1
+ 808 035c 43       		.byte	0x43
+ 809 035d 5A010000 		.4byte	0x15a
+ 810 0361 05       		.uleb128 0x5
+ 811 0362 03       		.byte	0x3
+ 812 0363 00000000 		.4byte	SMS_LIB_Table5
+ 813 0367 0F       		.uleb128 0xf
+ 814 0368 34000000 		.4byte	.LASF52
+ 815 036c 01       		.byte	0x1
+ 816 036d 44       		.byte	0x44
+ 817 036e A8010000 		.4byte	0x1a8
+ 818 0372 05       		.uleb128 0x5
+ 819 0373 03       		.byte	0x3
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 19
+
+
+ 820 0374 00000000 		.4byte	SMS_LIB_Table6
+ 821 0378 0F       		.uleb128 0xf
+ 822 0379 43000000 		.4byte	.LASF53
+ 823 037d 01       		.byte	0x1
+ 824 037e 45       		.byte	0x45
+ 825 037f A8010000 		.4byte	0x1a8
+ 826 0383 05       		.uleb128 0x5
+ 827 0384 03       		.byte	0x3
+ 828 0385 00000000 		.4byte	SMS_LIB_Table7
+ 829 0389 0F       		.uleb128 0xf
+ 830 038a 52000000 		.4byte	.LASF54
+ 831 038e 01       		.byte	0x1
+ 832 038f 47       		.byte	0x47
+ 833 0390 A8010000 		.4byte	0x1a8
+ 834 0394 05       		.uleb128 0x5
+ 835 0395 03       		.byte	0x3
+ 836 0396 00000000 		.4byte	SMS_LIB_Table8
+ 837 039a 0F       		.uleb128 0xf
+ 838 039b 61000000 		.4byte	.LASF55
+ 839 039f 01       		.byte	0x1
+ 840 03a0 48       		.byte	0x48
+ 841 03a1 A8010000 		.4byte	0x1a8
+ 842 03a5 05       		.uleb128 0x5
+ 843 03a6 03       		.byte	0x3
+ 844 03a7 00000000 		.4byte	SMS_LIB_Table9
+ 845 03ab 0F       		.uleb128 0xf
+ 846 03ac 0C060000 		.4byte	.LASF56
+ 847 03b0 01       		.byte	0x1
+ 848 03b1 4A       		.byte	0x4a
+ 849 03b2 6B000000 		.4byte	0x6b
+ 850 03b6 05       		.uleb128 0x5
+ 851 03b7 03       		.byte	0x3
+ 852 03b8 00000000 		.4byte	SMS_LIB_Var1
+ 853 03bc 0F       		.uleb128 0xf
+ 854 03bd 19060000 		.4byte	.LASF57
+ 855 03c1 01       		.byte	0x1
+ 856 03c2 4B       		.byte	0x4b
+ 857 03c3 77000000 		.4byte	0x77
+ 858 03c7 05       		.uleb128 0x5
+ 859 03c8 03       		.byte	0x3
+ 860 03c9 00000000 		.4byte	SMS_LIB_Var2
+ 861 03cd 0F       		.uleb128 0xf
+ 862 03ce CA040000 		.4byte	.LASF58
+ 863 03d2 01       		.byte	0x1
+ 864 03d3 4D       		.byte	0x4d
+ 865 03d4 6B000000 		.4byte	0x6b
+ 866 03d8 05       		.uleb128 0x5
+ 867 03d9 03       		.byte	0x3
+ 868 03da 00000000 		.4byte	SMS_LIB_TotalSnsCnt
+ 869 03de 0F       		.uleb128 0xf
+ 870 03df A5020000 		.4byte	.LASF59
+ 871 03e3 01       		.byte	0x1
+ 872 03e4 4E       		.byte	0x4e
+ 873 03e5 6B000000 		.4byte	0x6b
+ 874 03e9 05       		.uleb128 0x5
+ 875 03ea 03       		.byte	0x3
+ 876 03eb 00000000 		.4byte	SMS_LIB_TotalScanSlCnt
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 20
+
+
+ 877 03ef 0F       		.uleb128 0xf
+ 878 03f0 CA050000 		.4byte	.LASF60
+ 879 03f4 01       		.byte	0x1
+ 880 03f5 4F       		.byte	0x4f
+ 881 03f6 6B000000 		.4byte	0x6b
+ 882 03fa 05       		.uleb128 0x5
+ 883 03fb 03       		.byte	0x3
+ 884 03fc 00000000 		.4byte	SMS_LIB_EndOfWidgInd
+ 885 0400 0F       		.uleb128 0xf
+ 886 0401 9A050000 		.4byte	.LASF61
+ 887 0405 01       		.byte	0x1
+ 888 0406 55       		.byte	0x55
+ 889 0407 6B000000 		.4byte	0x6b
+ 890 040b 05       		.uleb128 0x5
+ 891 040c 03       		.byte	0x3
+ 892 040d 00000000 		.4byte	SMS_LIB_TotalSnsCnt_CH0
+ 893 0411 0F       		.uleb128 0xf
+ 894 0412 B2050000 		.4byte	.LASF62
+ 895 0416 01       		.byte	0x1
+ 896 0417 56       		.byte	0x56
+ 897 0418 6B000000 		.4byte	0x6b
+ 898 041c 05       		.uleb128 0x5
+ 899 041d 03       		.byte	0x3
+ 900 041e 00000000 		.4byte	SMS_LIB_TotalSnsCnt_CH1
+ 901 0422 00       		.byte	0
+ 902              		.section	.debug_abbrev,"",%progbits
+ 903              	.Ldebug_abbrev0:
+ 904 0000 01       		.uleb128 0x1
+ 905 0001 11       		.uleb128 0x11
+ 906 0002 01       		.byte	0x1
+ 907 0003 25       		.uleb128 0x25
+ 908 0004 0E       		.uleb128 0xe
+ 909 0005 13       		.uleb128 0x13
+ 910 0006 0B       		.uleb128 0xb
+ 911 0007 03       		.uleb128 0x3
+ 912 0008 0E       		.uleb128 0xe
+ 913 0009 1B       		.uleb128 0x1b
+ 914 000a 0E       		.uleb128 0xe
+ 915 000b 55       		.uleb128 0x55
+ 916 000c 17       		.uleb128 0x17
+ 917 000d 11       		.uleb128 0x11
+ 918 000e 01       		.uleb128 0x1
+ 919 000f 10       		.uleb128 0x10
+ 920 0010 17       		.uleb128 0x17
+ 921 0011 00       		.byte	0
+ 922 0012 00       		.byte	0
+ 923 0013 02       		.uleb128 0x2
+ 924 0014 24       		.uleb128 0x24
+ 925 0015 00       		.byte	0
+ 926 0016 0B       		.uleb128 0xb
+ 927 0017 0B       		.uleb128 0xb
+ 928 0018 3E       		.uleb128 0x3e
+ 929 0019 0B       		.uleb128 0xb
+ 930 001a 03       		.uleb128 0x3
+ 931 001b 0E       		.uleb128 0xe
+ 932 001c 00       		.byte	0
+ 933 001d 00       		.byte	0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 21
+
+
+ 934 001e 03       		.uleb128 0x3
+ 935 001f 24       		.uleb128 0x24
+ 936 0020 00       		.byte	0
+ 937 0021 0B       		.uleb128 0xb
+ 938 0022 0B       		.uleb128 0xb
+ 939 0023 3E       		.uleb128 0x3e
+ 940 0024 0B       		.uleb128 0xb
+ 941 0025 03       		.uleb128 0x3
+ 942 0026 08       		.uleb128 0x8
+ 943 0027 00       		.byte	0
+ 944 0028 00       		.byte	0
+ 945 0029 04       		.uleb128 0x4
+ 946 002a 16       		.uleb128 0x16
+ 947 002b 00       		.byte	0
+ 948 002c 03       		.uleb128 0x3
+ 949 002d 0E       		.uleb128 0xe
+ 950 002e 3A       		.uleb128 0x3a
+ 951 002f 0B       		.uleb128 0xb
+ 952 0030 3B       		.uleb128 0x3b
+ 953 0031 05       		.uleb128 0x5
+ 954 0032 49       		.uleb128 0x49
+ 955 0033 13       		.uleb128 0x13
+ 956 0034 00       		.byte	0
+ 957 0035 00       		.byte	0
+ 958 0036 05       		.uleb128 0x5
+ 959 0037 2E       		.uleb128 0x2e
+ 960 0038 01       		.byte	0x1
+ 961 0039 3F       		.uleb128 0x3f
+ 962 003a 19       		.uleb128 0x19
+ 963 003b 03       		.uleb128 0x3
+ 964 003c 0E       		.uleb128 0xe
+ 965 003d 3A       		.uleb128 0x3a
+ 966 003e 0B       		.uleb128 0xb
+ 967 003f 3B       		.uleb128 0x3b
+ 968 0040 0B       		.uleb128 0xb
+ 969 0041 27       		.uleb128 0x27
+ 970 0042 19       		.uleb128 0x19
+ 971 0043 11       		.uleb128 0x11
+ 972 0044 01       		.uleb128 0x1
+ 973 0045 12       		.uleb128 0x12
+ 974 0046 06       		.uleb128 0x6
+ 975 0047 40       		.uleb128 0x40
+ 976 0048 18       		.uleb128 0x18
+ 977 0049 9642     		.uleb128 0x2116
+ 978 004b 19       		.uleb128 0x19
+ 979 004c 01       		.uleb128 0x1
+ 980 004d 13       		.uleb128 0x13
+ 981 004e 00       		.byte	0
+ 982 004f 00       		.byte	0
+ 983 0050 06       		.uleb128 0x6
+ 984 0051 05       		.uleb128 0x5
+ 985 0052 00       		.byte	0
+ 986 0053 03       		.uleb128 0x3
+ 987 0054 0E       		.uleb128 0xe
+ 988 0055 3A       		.uleb128 0x3a
+ 989 0056 0B       		.uleb128 0xb
+ 990 0057 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 22
+
+
+ 991 0058 0B       		.uleb128 0xb
+ 992 0059 49       		.uleb128 0x49
+ 993 005a 13       		.uleb128 0x13
+ 994 005b 02       		.uleb128 0x2
+ 995 005c 18       		.uleb128 0x18
+ 996 005d 00       		.byte	0
+ 997 005e 00       		.byte	0
+ 998 005f 07       		.uleb128 0x7
+ 999 0060 2E       		.uleb128 0x2e
+ 1000 0061 00       		.byte	0
+ 1001 0062 3F       		.uleb128 0x3f
+ 1002 0063 19       		.uleb128 0x19
+ 1003 0064 03       		.uleb128 0x3
+ 1004 0065 0E       		.uleb128 0xe
+ 1005 0066 3A       		.uleb128 0x3a
+ 1006 0067 0B       		.uleb128 0xb
+ 1007 0068 3B       		.uleb128 0x3b
+ 1008 0069 0B       		.uleb128 0xb
+ 1009 006a 27       		.uleb128 0x27
+ 1010 006b 19       		.uleb128 0x19
+ 1011 006c 49       		.uleb128 0x49
+ 1012 006d 13       		.uleb128 0x13
+ 1013 006e 11       		.uleb128 0x11
+ 1014 006f 01       		.uleb128 0x1
+ 1015 0070 12       		.uleb128 0x12
+ 1016 0071 06       		.uleb128 0x6
+ 1017 0072 40       		.uleb128 0x40
+ 1018 0073 18       		.uleb128 0x18
+ 1019 0074 9642     		.uleb128 0x2116
+ 1020 0076 19       		.uleb128 0x19
+ 1021 0077 00       		.byte	0
+ 1022 0078 00       		.byte	0
+ 1023 0079 08       		.uleb128 0x8
+ 1024 007a 2E       		.uleb128 0x2e
+ 1025 007b 00       		.byte	0
+ 1026 007c 3F       		.uleb128 0x3f
+ 1027 007d 19       		.uleb128 0x19
+ 1028 007e 03       		.uleb128 0x3
+ 1029 007f 0E       		.uleb128 0xe
+ 1030 0080 3A       		.uleb128 0x3a
+ 1031 0081 0B       		.uleb128 0xb
+ 1032 0082 3B       		.uleb128 0x3b
+ 1033 0083 0B       		.uleb128 0xb
+ 1034 0084 27       		.uleb128 0x27
+ 1035 0085 19       		.uleb128 0x19
+ 1036 0086 11       		.uleb128 0x11
+ 1037 0087 01       		.uleb128 0x1
+ 1038 0088 12       		.uleb128 0x12
+ 1039 0089 06       		.uleb128 0x6
+ 1040 008a 40       		.uleb128 0x40
+ 1041 008b 18       		.uleb128 0x18
+ 1042 008c 9642     		.uleb128 0x2116
+ 1043 008e 19       		.uleb128 0x19
+ 1044 008f 00       		.byte	0
+ 1045 0090 00       		.byte	0
+ 1046 0091 09       		.uleb128 0x9
+ 1047 0092 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 23
+
+
+ 1048 0093 01       		.byte	0x1
+ 1049 0094 3F       		.uleb128 0x3f
+ 1050 0095 19       		.uleb128 0x19
+ 1051 0096 03       		.uleb128 0x3
+ 1052 0097 0E       		.uleb128 0xe
+ 1053 0098 3A       		.uleb128 0x3a
+ 1054 0099 0B       		.uleb128 0xb
+ 1055 009a 3B       		.uleb128 0x3b
+ 1056 009b 0B       		.uleb128 0xb
+ 1057 009c 27       		.uleb128 0x27
+ 1058 009d 19       		.uleb128 0x19
+ 1059 009e 11       		.uleb128 0x11
+ 1060 009f 01       		.uleb128 0x1
+ 1061 00a0 12       		.uleb128 0x12
+ 1062 00a1 06       		.uleb128 0x6
+ 1063 00a2 40       		.uleb128 0x40
+ 1064 00a3 18       		.uleb128 0x18
+ 1065 00a4 9742     		.uleb128 0x2117
+ 1066 00a6 19       		.uleb128 0x19
+ 1067 00a7 01       		.uleb128 0x1
+ 1068 00a8 13       		.uleb128 0x13
+ 1069 00a9 00       		.byte	0
+ 1070 00aa 00       		.byte	0
+ 1071 00ab 0A       		.uleb128 0xa
+ 1072 00ac 01       		.uleb128 0x1
+ 1073 00ad 01       		.byte	0x1
+ 1074 00ae 49       		.uleb128 0x49
+ 1075 00af 13       		.uleb128 0x13
+ 1076 00b0 01       		.uleb128 0x1
+ 1077 00b1 13       		.uleb128 0x13
+ 1078 00b2 00       		.byte	0
+ 1079 00b3 00       		.byte	0
+ 1080 00b4 0B       		.uleb128 0xb
+ 1081 00b5 21       		.uleb128 0x21
+ 1082 00b6 00       		.byte	0
+ 1083 00b7 49       		.uleb128 0x49
+ 1084 00b8 13       		.uleb128 0x13
+ 1085 00b9 2F       		.uleb128 0x2f
+ 1086 00ba 0B       		.uleb128 0xb
+ 1087 00bb 00       		.byte	0
+ 1088 00bc 00       		.byte	0
+ 1089 00bd 0C       		.uleb128 0xc
+ 1090 00be 34       		.uleb128 0x34
+ 1091 00bf 00       		.byte	0
+ 1092 00c0 03       		.uleb128 0x3
+ 1093 00c1 0E       		.uleb128 0xe
+ 1094 00c2 3A       		.uleb128 0x3a
+ 1095 00c3 0B       		.uleb128 0xb
+ 1096 00c4 3B       		.uleb128 0x3b
+ 1097 00c5 05       		.uleb128 0x5
+ 1098 00c6 49       		.uleb128 0x49
+ 1099 00c7 13       		.uleb128 0x13
+ 1100 00c8 3F       		.uleb128 0x3f
+ 1101 00c9 19       		.uleb128 0x19
+ 1102 00ca 3C       		.uleb128 0x3c
+ 1103 00cb 19       		.uleb128 0x19
+ 1104 00cc 00       		.byte	0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 24
+
+
+ 1105 00cd 00       		.byte	0
+ 1106 00ce 0D       		.uleb128 0xd
+ 1107 00cf 26       		.uleb128 0x26
+ 1108 00d0 00       		.byte	0
+ 1109 00d1 49       		.uleb128 0x49
+ 1110 00d2 13       		.uleb128 0x13
+ 1111 00d3 00       		.byte	0
+ 1112 00d4 00       		.byte	0
+ 1113 00d5 0E       		.uleb128 0xe
+ 1114 00d6 34       		.uleb128 0x34
+ 1115 00d7 00       		.byte	0
+ 1116 00d8 03       		.uleb128 0x3
+ 1117 00d9 0E       		.uleb128 0xe
+ 1118 00da 3A       		.uleb128 0x3a
+ 1119 00db 0B       		.uleb128 0xb
+ 1120 00dc 3B       		.uleb128 0x3b
+ 1121 00dd 0B       		.uleb128 0xb
+ 1122 00de 49       		.uleb128 0x49
+ 1123 00df 13       		.uleb128 0x13
+ 1124 00e0 3F       		.uleb128 0x3f
+ 1125 00e1 19       		.uleb128 0x19
+ 1126 00e2 3C       		.uleb128 0x3c
+ 1127 00e3 19       		.uleb128 0x19
+ 1128 00e4 00       		.byte	0
+ 1129 00e5 00       		.byte	0
+ 1130 00e6 0F       		.uleb128 0xf
+ 1131 00e7 34       		.uleb128 0x34
+ 1132 00e8 00       		.byte	0
+ 1133 00e9 03       		.uleb128 0x3
+ 1134 00ea 0E       		.uleb128 0xe
+ 1135 00eb 3A       		.uleb128 0x3a
+ 1136 00ec 0B       		.uleb128 0xb
+ 1137 00ed 3B       		.uleb128 0x3b
+ 1138 00ee 0B       		.uleb128 0xb
+ 1139 00ef 49       		.uleb128 0x49
+ 1140 00f0 13       		.uleb128 0x13
+ 1141 00f1 3F       		.uleb128 0x3f
+ 1142 00f2 19       		.uleb128 0x19
+ 1143 00f3 02       		.uleb128 0x2
+ 1144 00f4 18       		.uleb128 0x18
+ 1145 00f5 00       		.byte	0
+ 1146 00f6 00       		.byte	0
+ 1147 00f7 10       		.uleb128 0x10
+ 1148 00f8 0F       		.uleb128 0xf
+ 1149 00f9 00       		.byte	0
+ 1150 00fa 0B       		.uleb128 0xb
+ 1151 00fb 0B       		.uleb128 0xb
+ 1152 00fc 49       		.uleb128 0x49
+ 1153 00fd 13       		.uleb128 0x13
+ 1154 00fe 00       		.byte	0
+ 1155 00ff 00       		.byte	0
+ 1156 0100 00       		.byte	0
+ 1157              		.section	.debug_aranges,"",%progbits
+ 1158 0000 4C000000 		.4byte	0x4c
+ 1159 0004 0200     		.2byte	0x2
+ 1160 0006 00000000 		.4byte	.Ldebug_info0
+ 1161 000a 04       		.byte	0x4
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 25
+
+
+ 1162 000b 00       		.byte	0
+ 1163 000c 0000     		.2byte	0
+ 1164 000e 0000     		.2byte	0
+ 1165 0010 00000000 		.4byte	.LFB0
+ 1166 0014 1A000000 		.4byte	.LFE0-.LFB0
+ 1167 0018 00000000 		.4byte	.LFB1
+ 1168 001c 0E000000 		.4byte	.LFE1-.LFB1
+ 1169 0020 00000000 		.4byte	.LFB2
+ 1170 0024 1A000000 		.4byte	.LFE2-.LFB2
+ 1171 0028 00000000 		.4byte	.LFB3
+ 1172 002c 0C000000 		.4byte	.LFE3-.LFB3
+ 1173 0030 00000000 		.4byte	.LFB4
+ 1174 0034 14000000 		.4byte	.LFE4-.LFB4
+ 1175 0038 00000000 		.4byte	.LFB5
+ 1176 003c 0E000000 		.4byte	.LFE5-.LFB5
+ 1177 0040 00000000 		.4byte	.LFB6
+ 1178 0044 0E000000 		.4byte	.LFE6-.LFB6
+ 1179 0048 00000000 		.4byte	0
+ 1180 004c 00000000 		.4byte	0
+ 1181              		.section	.debug_ranges,"",%progbits
+ 1182              	.Ldebug_ranges0:
+ 1183 0000 00000000 		.4byte	.LFB0
+ 1184 0004 1A000000 		.4byte	.LFE0
+ 1185 0008 00000000 		.4byte	.LFB1
+ 1186 000c 0E000000 		.4byte	.LFE1
+ 1187 0010 00000000 		.4byte	.LFB2
+ 1188 0014 1A000000 		.4byte	.LFE2
+ 1189 0018 00000000 		.4byte	.LFB3
+ 1190 001c 0C000000 		.4byte	.LFE3
+ 1191 0020 00000000 		.4byte	.LFB4
+ 1192 0024 14000000 		.4byte	.LFE4
+ 1193 0028 00000000 		.4byte	.LFB5
+ 1194 002c 0E000000 		.4byte	.LFE5
+ 1195 0030 00000000 		.4byte	.LFB6
+ 1196 0034 0E000000 		.4byte	.LFE6
+ 1197 0038 00000000 		.4byte	0
+ 1198 003c 00000000 		.4byte	0
+ 1199              		.section	.debug_line,"",%progbits
+ 1200              	.Ldebug_line0:
+ 1201 0000 16010000 		.section	.debug_str,"MS",%progbits,1
+ 1201      02009300 
+ 1201      00000201 
+ 1201      FB0E0D00 
+ 1201      01010101 
+ 1202              	.LASF10:
+ 1203 0000 75696E74 		.ascii	"uint16\000"
+ 1203      313600
+ 1204              	.LASF49:
+ 1205 0007 534D535F 		.ascii	"SMS_LIB_Table3\000"
+ 1205      4C49425F 
+ 1205      5461626C 
+ 1205      653300
+ 1206              	.LASF50:
+ 1207 0016 534D535F 		.ascii	"SMS_LIB_Table4\000"
+ 1207      4C49425F 
+ 1207      5461626C 
+ 1207      653400
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 26
+
+
+ 1208              	.LASF51:
+ 1209 0025 534D535F 		.ascii	"SMS_LIB_Table5\000"
+ 1209      4C49425F 
+ 1209      5461626C 
+ 1209      653500
+ 1210              	.LASF52:
+ 1211 0034 534D535F 		.ascii	"SMS_LIB_Table6\000"
+ 1211      4C49425F 
+ 1211      5461626C 
+ 1211      653600
+ 1212              	.LASF53:
+ 1213 0043 534D535F 		.ascii	"SMS_LIB_Table7\000"
+ 1213      4C49425F 
+ 1213      5461626C 
+ 1213      653700
+ 1214              	.LASF54:
+ 1215 0052 534D535F 		.ascii	"SMS_LIB_Table8\000"
+ 1215      4C49425F 
+ 1215      5461626C 
+ 1215      653800
+ 1216              	.LASF55:
+ 1217 0061 534D535F 		.ascii	"SMS_LIB_Table9\000"
+ 1217      4C49425F 
+ 1217      5461626C 
+ 1217      653900
+ 1218              	.LASF22:
+ 1219 0070 534D535F 		.ascii	"SMS_LIB_V3_50_SetAnalogSwitchesSrc_PRS\000"
+ 1219      4C49425F 
+ 1219      56335F35 
+ 1219      305F5365 
+ 1219      74416E61 
+ 1220              	.LASF63:
+ 1221 0097 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1221      43313120 
+ 1221      352E342E 
+ 1221      31203230 
+ 1221      31363036 
+ 1222 00ca 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1222      20726576 
+ 1222      6973696F 
+ 1222      6E203233 
+ 1222      37373135 
+ 1223 00fd 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1223      66756E63 
+ 1223      74696F6E 
+ 1223      2D736563 
+ 1223      74696F6E 
+ 1224              	.LASF38:
+ 1225 0125 534D535F 		.ascii	"SMS_LIB_widgetNumber\000"
+ 1225      4C49425F 
+ 1225      77696467 
+ 1225      65744E75 
+ 1225      6D626572 
+ 1226              	.LASF4:
+ 1227 013a 6C6F6E67 		.ascii	"long int\000"
+ 1227      20696E74 
+ 1227      00
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 27
+
+
+ 1228              	.LASF37:
+ 1229 0143 534D535F 		.ascii	"SMS_LIB_widgetResolution\000"
+ 1229      4C49425F 
+ 1229      77696467 
+ 1229      65745265 
+ 1229      736F6C75 
+ 1230              	.LASF29:
+ 1231 015c 43617053 		.ascii	"CapSense_Controller_widgetResolution\000"
+ 1231      656E7365 
+ 1231      5F436F6E 
+ 1231      74726F6C 
+ 1231      6C65725F 
+ 1232              	.LASF7:
+ 1233 0181 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1233      206C6F6E 
+ 1233      6720756E 
+ 1233      7369676E 
+ 1233      65642069 
+ 1234              	.LASF36:
+ 1235 0198 534D535F 		.ascii	"SMS_LIB_hysteresis\000"
+ 1235      4C49425F 
+ 1235      68797374 
+ 1235      65726573 
+ 1235      697300
+ 1236              	.LASF6:
+ 1237 01ab 6C6F6E67 		.ascii	"long long int\000"
+ 1237      206C6F6E 
+ 1237      6720696E 
+ 1237      7400
+ 1238              	.LASF0:
+ 1239 01b9 7369676E 		.ascii	"signed char\000"
+ 1239      65642063 
+ 1239      68617200 
+ 1240              	.LASF18:
+ 1241 01c5 53656E73 		.ascii	"SensorNumber\000"
+ 1241      6F724E75 
+ 1241      6D626572 
+ 1241      00
+ 1242              	.LASF64:
+ 1243 01d2 47656E65 		.ascii	"Generated_Source\\PSoC5\\CapSense_Controller_SMS_Wr"
+ 1243      72617465 
+ 1243      645F536F 
+ 1243      75726365 
+ 1243      5C50536F 
+ 1244 0203 61707065 		.ascii	"apper.c\000"
+ 1244      722E6300 
+ 1245              	.LASF9:
+ 1246 020b 75696E74 		.ascii	"uint8\000"
+ 1246      3800
+ 1247              	.LASF12:
+ 1248 0211 646F7562 		.ascii	"double\000"
+ 1248      6C6500
+ 1249              	.LASF25:
+ 1250 0218 43617053 		.ascii	"CapSense_Controller_widgetNumber\000"
+ 1250      656E7365 
+ 1250      5F436F6E 
+ 1250      74726F6C 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 28
+
+
+ 1250      6C65725F 
+ 1251              	.LASF65:
+ 1252 0239 433A5C55 		.ascii	"C:\\Users\\Ahmad Negm\\Desktop\\6.115\\FP\\psoc_vga"
+ 1252      73657273 
+ 1252      5C41686D 
+ 1252      6164204E 
+ 1252      65676D5C 
+ 1253 0266 5F70726F 		.ascii	"_project Dev Kit\\vga.cydsn\000"
+ 1253      6A656374 
+ 1253      20446576 
+ 1253      204B6974 
+ 1253      5C766761 
+ 1254              	.LASF32:
+ 1255 0281 43617053 		.ascii	"CapSense_Controller_fingerThreshold\000"
+ 1255      656E7365 
+ 1255      5F436F6E 
+ 1255      74726F6C 
+ 1255      6C65725F 
+ 1256              	.LASF59:
+ 1257 02a5 534D535F 		.ascii	"SMS_LIB_TotalScanSlCnt\000"
+ 1257      4C49425F 
+ 1257      546F7461 
+ 1257      6C536361 
+ 1257      6E536C43 
+ 1258              	.LASF17:
+ 1259 02bc 43617053 		.ascii	"CapSense_Controller_CalculateThresholds\000"
+ 1259      656E7365 
+ 1259      5F436F6E 
+ 1259      74726F6C 
+ 1259      6C65725F 
+ 1260              	.LASF34:
+ 1261 02e4 43617053 		.ascii	"CapSense_Controller_analogSwitchDivider\000"
+ 1261      656E7365 
+ 1261      5F436F6E 
+ 1261      74726F6C 
+ 1261      6C65725F 
+ 1262              	.LASF8:
+ 1263 030c 756E7369 		.ascii	"unsigned int\000"
+ 1263      676E6564 
+ 1263      20696E74 
+ 1263      00
+ 1264              	.LASF43:
+ 1265 0319 534D535F 		.ascii	"SMS_LIB_prescaler\000"
+ 1265      4C49425F 
+ 1265      70726573 
+ 1265      63616C65 
+ 1265      7200
+ 1266              	.LASF5:
+ 1267 032b 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1267      20756E73 
+ 1267      69676E65 
+ 1267      6420696E 
+ 1267      7400
+ 1268              	.LASF3:
+ 1269 033d 73686F72 		.ascii	"short unsigned int\000"
+ 1269      7420756E 
+ 1269      7369676E 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 29
+
+
+ 1269      65642069 
+ 1269      6E7400
+ 1270              	.LASF47:
+ 1271 0350 534D535F 		.ascii	"SMS_LIB_PrescalerTbl\000"
+ 1271      4C49425F 
+ 1271      50726573 
+ 1271      63616C65 
+ 1271      7254626C 
+ 1272              	.LASF39:
+ 1273 0365 534D535F 		.ascii	"SMS_LIB_numberOfSensors\000"
+ 1273      4C49425F 
+ 1273      6E756D62 
+ 1273      65724F66 
+ 1273      53656E73 
+ 1274              	.LASF24:
+ 1275 037d 43617053 		.ascii	"CapSense_Controller_sensorRaw\000"
+ 1275      656E7365 
+ 1275      5F436F6E 
+ 1275      74726F6C 
+ 1275      6C65725F 
+ 1276              	.LASF46:
+ 1277 039b 534D535F 		.ascii	"SMS_LIB_SensorSensitivity\000"
+ 1277      4C49425F 
+ 1277      53656E73 
+ 1277      6F725365 
+ 1277      6E736974 
+ 1278              	.LASF35:
+ 1279 03b5 534D535F 		.ascii	"SMS_LIB_noiseThreshold\000"
+ 1279      4C49425F 
+ 1279      6E6F6973 
+ 1279      65546872 
+ 1279      6573686F 
+ 1280              	.LASF15:
+ 1281 03cc 73697A65 		.ascii	"sizetype\000"
+ 1281      74797065 
+ 1281      00
+ 1282              	.LASF14:
+ 1283 03d5 6C6F6E67 		.ascii	"long double\000"
+ 1283      20646F75 
+ 1283      626C6500 
+ 1284              	.LASF40:
+ 1285 03e1 534D535F 		.ascii	"SMS_LIB_rawDataIndex\000"
+ 1285      4C49425F 
+ 1285      72617744 
+ 1285      61746149 
+ 1285      6E646578 
+ 1286              	.LASF27:
+ 1287 03f6 43617053 		.ascii	"CapSense_Controller_noiseThreshold\000"
+ 1287      656E7365 
+ 1287      5F436F6E 
+ 1287      74726F6C 
+ 1287      6C65725F 
+ 1288              	.LASF11:
+ 1289 0419 666C6F61 		.ascii	"float\000"
+ 1289      7400
+ 1290              	.LASF20:
+ 1291 041f 70726573 		.ascii	"prescaler\000"
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 30
+
+
+ 1291      63616C65 
+ 1291      7200
+ 1292              	.LASF1:
+ 1293 0429 756E7369 		.ascii	"unsigned char\000"
+ 1293      676E6564 
+ 1293      20636861 
+ 1293      7200
+ 1294              	.LASF66:
+ 1295 0437 534D535F 		.ascii	"SMS_LIB_IsBusy\000"
+ 1295      4C49425F 
+ 1295      49734275 
+ 1295      737900
+ 1296              	.LASF28:
+ 1297 0446 43617053 		.ascii	"CapSense_Controller_hysteresis\000"
+ 1297      656E7365 
+ 1297      5F436F6E 
+ 1297      74726F6C 
+ 1297      6C65725F 
+ 1298              	.LASF2:
+ 1299 0465 73686F72 		.ascii	"short int\000"
+ 1299      7420696E 
+ 1299      7400
+ 1300              	.LASF30:
+ 1301 046f 43617053 		.ascii	"CapSense_Controller_numberOfSensors\000"
+ 1301      656E7365 
+ 1301      5F436F6E 
+ 1301      74726F6C 
+ 1301      6C65725F 
+ 1302              	.LASF42:
+ 1303 0493 534D535F 		.ascii	"SMS_LIB_idacSettings\000"
+ 1303      4C49425F 
+ 1303      69646163 
+ 1303      53657474 
+ 1303      696E6773 
+ 1304              	.LASF16:
+ 1305 04a8 534D535F 		.ascii	"SMS_LIB_ScanSensor\000"
+ 1305      4C49425F 
+ 1305      5363616E 
+ 1305      53656E73 
+ 1305      6F7200
+ 1306              	.LASF48:
+ 1307 04bb 534D535F 		.ascii	"SMS_LIB_Table2\000"
+ 1307      4C49425F 
+ 1307      5461626C 
+ 1307      653200
+ 1308              	.LASF58:
+ 1309 04ca 534D535F 		.ascii	"SMS_LIB_TotalSnsCnt\000"
+ 1309      4C49425F 
+ 1309      546F7461 
+ 1309      6C536E73 
+ 1309      436E7400 
+ 1310              	.LASF26:
+ 1311 04de 43617053 		.ascii	"CapSense_Controller_sensorBaseline\000"
+ 1311      656E7365 
+ 1311      5F436F6E 
+ 1311      74726F6C 
+ 1311      6C65725F 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 31
+
+
+ 1312              	.LASF13:
+ 1313 0501 63686172 		.ascii	"char\000"
+ 1313      00
+ 1314              	.LASF45:
+ 1315 0506 534D535F 		.ascii	"SMS_LIB_SensorBaseline\000"
+ 1315      4C49425F 
+ 1315      53656E73 
+ 1315      6F724261 
+ 1315      73656C69 
+ 1316              	.LASF23:
+ 1317 051d 534D535F 		.ascii	"SMS_LIB_V3_50_SetAnalogSwitchesSrc_Prescaler\000"
+ 1317      4C49425F 
+ 1317      56335F35 
+ 1317      305F5365 
+ 1317      74416E61 
+ 1318              	.LASF21:
+ 1319 054a 43617053 		.ascii	"CapSense_Controller_AutoTune\000"
+ 1319      656E7365 
+ 1319      5F436F6E 
+ 1319      74726F6C 
+ 1319      6C65725F 
+ 1320              	.LASF44:
+ 1321 0567 534D535F 		.ascii	"SMS_LIB_SensorRaw\000"
+ 1321      4C49425F 
+ 1321      53656E73 
+ 1321      6F725261 
+ 1321      7700
+ 1322              	.LASF33:
+ 1323 0579 43617053 		.ascii	"CapSense_Controller_idacSettings\000"
+ 1323      656E7365 
+ 1323      5F436F6E 
+ 1323      74726F6C 
+ 1323      6C65725F 
+ 1324              	.LASF61:
+ 1325 059a 534D535F 		.ascii	"SMS_LIB_TotalSnsCnt_CH0\000"
+ 1325      4C49425F 
+ 1325      546F7461 
+ 1325      6C536E73 
+ 1325      436E745F 
+ 1326              	.LASF62:
+ 1327 05b2 534D535F 		.ascii	"SMS_LIB_TotalSnsCnt_CH1\000"
+ 1327      4C49425F 
+ 1327      546F7461 
+ 1327      6C536E73 
+ 1327      436E745F 
+ 1328              	.LASF60:
+ 1329 05ca 534D535F 		.ascii	"SMS_LIB_EndOfWidgInd\000"
+ 1329      4C49425F 
+ 1329      456E644F 
+ 1329      66576964 
+ 1329      67496E64 
+ 1330              	.LASF19:
+ 1331 05df 534D535F 		.ascii	"SMS_LIB_SetPrescaler\000"
+ 1331      4C49425F 
+ 1331      53657450 
+ 1331      72657363 
+ 1331      616C6572 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccda6NAt.s 			page 32
+
+
+ 1332              	.LASF41:
+ 1333 05f4 534D535F 		.ascii	"SMS_LIB_fingerThreshold\000"
+ 1333      4C49425F 
+ 1333      66696E67 
+ 1333      65725468 
+ 1333      72657368 
+ 1334              	.LASF56:
+ 1335 060c 534D535F 		.ascii	"SMS_LIB_Var1\000"
+ 1335      4C49425F 
+ 1335      56617231 
+ 1335      00
+ 1336              	.LASF57:
+ 1337 0619 534D535F 		.ascii	"SMS_LIB_Var2\000"
+ 1337      4C49425F 
+ 1337      56617232 
+ 1337      00
+ 1338              	.LASF31:
+ 1339 0626 43617053 		.ascii	"CapSense_Controller_rawDataIndex\000"
+ 1339      656E7365 
+ 1339      5F436F6E 
+ 1339      74726F6C 
+ 1339      6C65725F 
+ 1340              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,7 @@
+C:\Users\Ahmad Negm\Desktop\6.115\FP\psoc_vga_project final\vga.cydsn\vga.cyprj|3a5b9527-7957-4caf-b727-2387d75b42e5
+C:\Program Files (x86)\Cypress\PSoC Creator\4.3\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|17a521bd-1be4-4208-b215-64a504760bd8
+C:\Users\Ahmad Negm\Documents\PSoC Creator\4.3\Downloads ( 4.3).cylib\Downloads ( 4.3).cyprj|c97799ed-9ed2-4c46-9a8b-4c4e2b099f18
+C:\Program Files (x86)\Cypress\PSoC Creator\4.3\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|a1ab24f5-e640-40b6-81d3-241116567680
+C:\Program Files (x86)\Cypress\PSoC Creator\4.3\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|f631565c-2f47-4a60-bfe5-11a76c8d46ea
+C:\Program Files (x86)\Cypress\PSoC Creator\4.3\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|5a798569-97f1-4e49-9f00-161178ac8bf0
+C:\Program Files (x86)\Cypress\PSoC Creator\4.3\PSoC Creator\psoc\content\default\CyReferenceLibrary\CyReferenceLibrary.cylib\CyReferenceLibrary.cyprj|c127c67d-7934-44a7-bef3-6ad220225896

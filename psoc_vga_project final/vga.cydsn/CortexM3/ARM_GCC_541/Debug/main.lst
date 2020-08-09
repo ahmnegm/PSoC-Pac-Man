@@ -1,0 +1,5023 @@
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	Colors_BLACK
+  20              		.section	.rodata
+  21              		.type	Colors_BLACK, %object
+  22              		.size	Colors_BLACK, 1
+  23              	Colors_BLACK:
+  24 0000 00       		.space	1
+  25              		.global	Colors_RED
+  26              		.type	Colors_RED, %object
+  27              		.size	Colors_RED, 1
+  28              	Colors_RED:
+  29 0001 03       		.byte	3
+  30              		.global	Colors_GREEN
+  31              		.type	Colors_GREEN, %object
+  32              		.size	Colors_GREEN, 1
+  33              	Colors_GREEN:
+  34 0002 0C       		.byte	12
+  35              		.global	Colors_BLUE
+  36              		.type	Colors_BLUE, %object
+  37              		.size	Colors_BLUE, 1
+  38              	Colors_BLUE:
+  39 0003 30       		.byte	48
+  40              		.global	Colors_WHITE
+  41              		.type	Colors_WHITE, %object
+  42              		.size	Colors_WHITE, 1
+  43              	Colors_WHITE:
+  44 0004 3F       		.byte	63
+  45              		.global	Colors_YELLOW
+  46              		.type	Colors_YELLOW, %object
+  47              		.size	Colors_YELLOW, 1
+  48              	Colors_YELLOW:
+  49 0005 2F       		.byte	47
+  50              		.global	pacman_center_x
+  51              		.data
+  52              		.align	2
+  53              		.type	pacman_center_x, %object
+  54              		.size	pacman_center_x, 4
+  55              	pacman_center_x:
+  56 0000 3F000000 		.word	63
+  57              		.global	pacman_center_y
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 2
+
+
+  58              		.align	2
+  59              		.type	pacman_center_y, %object
+  60              		.size	pacman_center_y, 4
+  61              	pacman_center_y:
+  62 0004 40000000 		.word	64
+  63              		.comm	dotsCoords,1952,4
+  64              		.comm	isEaten,244,4
+  65              		.global	score
+  66              		.bss
+  67              		.type	score, %object
+  68              		.size	score, 1
+  69              	score:
+  70 0000 00       		.space	1
+  71              		.comm	buf,12288,4
+  72              		.global	vbuf
+  73              		.section	.vram,"aw",%progbits
+  74              		.align	2
+  75              		.type	vbuf, %object
+  76              		.size	vbuf, 12288
+  77              	vbuf:
+  78 0000 00000000 		.space	12288
+  78      00000000 
+  78      00000000 
+  78      00000000 
+  78      00000000 
+  79              		.comm	dma_chan,1,1
+  80              		.comm	dma_td,1,1
+  81              		.global	flag
+  82              		.data
+  83              		.align	2
+  84              		.type	flag, %object
+  85              		.size	flag, 4
+  86              	flag:
+  87 0008 01000000 		.word	1
+  88              		.section	.text.newline,"ax",%progbits
+  89              		.align	2
+  90              		.global	newline
+  91              		.thumb
+  92              		.thumb_func
+  93              		.type	newline, %function
+  94              	newline:
+  95              	.LFB64:
+  96              		.file 1 "main.c"
+   1:main.c        **** #include <device.h>
+   2:main.c        **** #include <project.h>
+   3:main.c        **** #include <stdio.h>
+   4:main.c        **** #include <stdlib.h>
+   5:main.c        **** #include <stdbool.h>
+   6:main.c        **** 
+   7:main.c        **** ////////////////////////////////////////////////////////
+   8:main.c        **** ///// enums                                        /////
+   9:main.c        **** ////////////////////////////////////////////////////////
+  10:main.c        **** enum controller_dir {up, down, left, right, center};
+  11:main.c        **** 
+  12:main.c        **** ////////////////////////////////////////////////////////
+  13:main.c        **** ///// type defs                                    /////
+  14:main.c        **** ////////////////////////////////////////////////////////
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 3
+
+
+  15:main.c        **** typedef struct coordTuples {
+  16:main.c        ****     int row;
+  17:main.c        ****     int col;
+  18:main.c        **** } coordTuple;
+  19:main.c        **** 
+  20:main.c        **** ////////////////////////////////////////////////////////
+  21:main.c        **** ///// function declarations                        /////
+  22:main.c        **** ////////////////////////////////////////////////////////
+  23:main.c        **** void update();
+  24:main.c        **** void rect(int x_1, int y_1, int x_2, int y_2, uint color);
+  25:main.c        **** void generateWalls();
+  26:main.c        **** void generateDots();
+  27:main.c        **** void generatePacman(int center_row, int center_col, enum controller_dir dir);
+  28:main.c        **** void removePacman(int center_row, int center_col);
+  29:main.c        **** bool isValidCoord(int center_row, int center_col);
+  30:main.c        **** enum controller_dir getControllerDir();
+  31:main.c        **** void movePacman(int center_row, int center_col, enum controller_dir dir);
+  32:main.c        **** bool uneatenDot(int row, int col);
+  33:main.c        **** 
+  34:main.c        **** ////////////////////////////////////////////////////////
+  35:main.c        **** ///// constants                                    /////
+  36:main.c        **** ////////////////////////////////////////////////////////
+  37:main.c        **** const uint8 Colors_BLACK = 0; // 00 00 00b
+  38:main.c        **** const uint8 Colors_RED = 3; // 00 00 11b
+  39:main.c        **** const uint8 Colors_GREEN = 12; // 00 11 00b
+  40:main.c        **** const uint8 Colors_BLUE = 48; // 11 00 00b
+  41:main.c        **** const uint8 Colors_WHITE = 63; // 11 11 11b
+  42:main.c        **** const uint8 Colors_YELLOW = 47; // from testing
+  43:main.c        **** 
+  44:main.c        **** ////////////////////////////////////////////////////////
+  45:main.c        **** ///// defines                                      /////
+  46:main.c        **** ////////////////////////////////////////////////////////
+  47:main.c        **** #define numDots 244
+  48:main.c        **** 
+  49:main.c        **** ////////////////////////////////////////////////////////
+  50:main.c        **** ///// global vars                                  /////
+  51:main.c        **** ////////////////////////////////////////////////////////
+  52:main.c        **** int pacman_center_x = 63;
+  53:main.c        **** int pacman_center_y = 64;
+  54:main.c        **** coordTuple dotsCoords[numDots]; //keeps track of coords of all dots
+  55:main.c        **** bool isEaten[numDots]; //keeps track whether they are eaten (T) or not (F)
+  56:main.c        **** uint8 score = 0;
+  57:main.c        **** 
+  58:main.c        **** // Video buffer gets its own SRAM to prevent bus contention.
+  59:main.c        **** // The user-facing buffer is in regular system RAM.
+  60:main.c        **** // This is set in the custom linker script (custom.ld).
+  61:main.c        **** uint8 buf[96][128], vbuf[96][128] __attribute__ ((section(".vram")));
+  62:main.c        **** 
+  63:main.c        **** // Now we set up the DMA to copy pixels from vbuf to the screen.
+  64:main.c        **** // For timing, we rely on the fact that it takes the DMA exactly
+  65:main.c        **** // 8 clocks to move each byte. After each line the DMA is updated
+  66:main.c        **** // to point to the next line in vbuf.
+  67:main.c        **** uint8 dma_chan, dma_td;
+  68:main.c        **** volatile int flag = 1;
+  69:main.c        **** CY_ISR(newline) {
+  97              		.loc 1 69 0
+  98              		.cfi_startproc
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 4
+
+
+  99              		@ args = 0, pretend = 0, frame = 8
+ 100              		@ frame_needed = 1, uses_anonymous_args = 0
+ 101 0000 80B5     		push	{r7, lr}
+ 102              		.cfi_def_cfa_offset 8
+ 103              		.cfi_offset 7, -8
+ 104              		.cfi_offset 14, -4
+ 105 0002 82B0     		sub	sp, sp, #8
+ 106              		.cfi_def_cfa_offset 16
+ 107 0004 00AF     		add	r7, sp, #0
+ 108              		.cfi_def_cfa_register 7
+  70:main.c        ****     uint16 line = 805 - VERT_ReadCounter();
+ 109              		.loc 1 70 0
+ 110 0006 FFF7FEFF 		bl	VERT_ReadCounter
+ 111 000a 0346     		mov	r3, r0
+ 112 000c C3F54973 		rsb	r3, r3, #804
+ 113 0010 0133     		adds	r3, r3, #1
+ 114 0012 FB80     		strh	r3, [r7, #6]	@ movhi
+  71:main.c        ****     if (line % 8 == 0) {
+ 115              		.loc 1 71 0
+ 116 0014 FB88     		ldrh	r3, [r7, #6]	@ movhi
+ 117 0016 03F00703 		and	r3, r3, #7
+ 118 001a 9BB2     		uxth	r3, r3
+ 119 001c 002B     		cmp	r3, #0
+ 120 001e 37D1     		bne	.L5
+  72:main.c        ****         if (line < 768) {
+ 121              		.loc 1 72 0
+ 122 0020 FB88     		ldrh	r3, [r7, #6]
+ 123 0022 B3F5407F 		cmp	r3, #768
+ 124 0026 10D2     		bcs	.L3
+  73:main.c        ****             CY_SET_REG16(CY_DMA_TDMEM_STRUCT_PTR[dma_td].TD1,
+ 125              		.loc 1 73 0
+ 126 0028 1B4B     		ldr	r3, .L6
+ 127 002a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 128 002c DB00     		lsls	r3, r3, #3
+ 129 002e 03F18043 		add	r3, r3, #1073741824
+ 130 0032 03F5F043 		add	r3, r3, #30720
+ 131 0036 0433     		adds	r3, r3, #4
+ 132 0038 FA88     		ldrh	r2, [r7, #6]
+ 133 003a D208     		lsrs	r2, r2, #3
+ 134 003c 92B2     		uxth	r2, r2
+ 135 003e D201     		lsls	r2, r2, #7
+ 136 0040 1649     		ldr	r1, .L6+4
+ 137 0042 0A44     		add	r2, r2, r1
+ 138 0044 92B2     		uxth	r2, r2
+ 139 0046 1A80     		strh	r2, [r3]	@ movhi
+  74:main.c        ****                          LO16((uint32) vbuf[line / 8]));
+  75:main.c        ****         } else if (line == 768 && flag) {  // refresh the buffer during vsync
+  76:main.c        ****             CyDmaChDisable(dma_chan);
+  77:main.c        ****             if (flag) {
+  78:main.c        ****                 memcpy(*vbuf, *buf, 96 * 128);
+  79:main.c        ****                 flag = 0;
+  80:main.c        ****             }
+  81:main.c        ****             CyDmaChEnable(dma_chan, 1);
+  82:main.c        ****         }
+  83:main.c        ****     }
+  84:main.c        **** }
+ 140              		.loc 1 84 0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 5
+
+
+ 141 0048 22E0     		b	.L5
+ 142              	.L3:
+  75:main.c        ****             CyDmaChDisable(dma_chan);
+ 143              		.loc 1 75 0
+ 144 004a FB88     		ldrh	r3, [r7, #6]
+ 145 004c B3F5407F 		cmp	r3, #768
+ 146 0050 1ED1     		bne	.L5
+  75:main.c        ****             CyDmaChDisable(dma_chan);
+ 147              		.loc 1 75 0 is_stmt 0 discriminator 1
+ 148 0052 134B     		ldr	r3, .L6+8
+ 149 0054 1B68     		ldr	r3, [r3]
+ 150 0056 002B     		cmp	r3, #0
+ 151 0058 1AD0     		beq	.L5
+  76:main.c        ****             if (flag) {
+ 152              		.loc 1 76 0 is_stmt 1
+ 153 005a 124B     		ldr	r3, .L6+12
+ 154 005c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 155 005e 1846     		mov	r0, r3
+ 156 0060 FFF7FEFF 		bl	CyDmaChDisable
+  77:main.c        ****                 memcpy(*vbuf, *buf, 96 * 128);
+ 157              		.loc 1 77 0
+ 158 0064 0E4B     		ldr	r3, .L6+8
+ 159 0066 1B68     		ldr	r3, [r3]
+ 160 0068 002B     		cmp	r3, #0
+ 161 006a 0BD0     		beq	.L4
+  78:main.c        ****                 flag = 0;
+ 162              		.loc 1 78 0
+ 163 006c 0B4A     		ldr	r2, .L6+4
+ 164 006e 0E4B     		ldr	r3, .L6+16
+ 165 0070 1046     		mov	r0, r2
+ 166 0072 1946     		mov	r1, r3
+ 167 0074 4FF44053 		mov	r3, #12288
+ 168 0078 1A46     		mov	r2, r3
+ 169 007a FFF7FEFF 		bl	memcpy
+  79:main.c        ****             }
+ 170              		.loc 1 79 0
+ 171 007e 084B     		ldr	r3, .L6+8
+ 172 0080 0022     		movs	r2, #0
+ 173 0082 1A60     		str	r2, [r3]
+ 174              	.L4:
+  81:main.c        ****         }
+ 175              		.loc 1 81 0
+ 176 0084 074B     		ldr	r3, .L6+12
+ 177 0086 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 178 0088 0121     		movs	r1, #1
+ 179 008a 1846     		mov	r0, r3
+ 180 008c FFF7FEFF 		bl	CyDmaChEnable
+ 181              	.L5:
+ 182              		.loc 1 84 0
+ 183 0090 00BF     		nop
+ 184 0092 0837     		adds	r7, r7, #8
+ 185              		.cfi_def_cfa_offset 8
+ 186 0094 BD46     		mov	sp, r7
+ 187              		.cfi_def_cfa_register 13
+ 188              		@ sp needed
+ 189 0096 80BD     		pop	{r7, pc}
+ 190              	.L7:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 6
+
+
+ 191              		.align	2
+ 192              	.L6:
+ 193 0098 00000000 		.word	dma_td
+ 194 009c 00000000 		.word	vbuf
+ 195 00a0 00000000 		.word	flag
+ 196 00a4 00000000 		.word	dma_chan
+ 197 00a8 00000000 		.word	buf
+ 198              		.cfi_endproc
+ 199              	.LFE64:
+ 200              		.size	newline, .-newline
+ 201              		.section	.text.update,"ax",%progbits
+ 202              		.align	2
+ 203              		.global	update
+ 204              		.thumb
+ 205              		.thumb_func
+ 206              		.type	update, %function
+ 207              	update:
+ 208              	.LFB65:
+  85:main.c        **** 
+  86:main.c        **** 
+  87:main.c        **** ////////////////////////////////////////////////////////
+  88:main.c        **** ///// functios                                     /////
+  89:main.c        **** ////////////////////////////////////////////////////////
+  90:main.c        **** inline void update() {
+ 209              		.loc 1 90 0
+ 210              		.cfi_startproc
+ 211              		@ args = 0, pretend = 0, frame = 0
+ 212              		@ frame_needed = 1, uses_anonymous_args = 0
+ 213              		@ link register save eliminated.
+ 214 0000 80B4     		push	{r7}
+ 215              		.cfi_def_cfa_offset 4
+ 216              		.cfi_offset 7, -4
+ 217 0002 00AF     		add	r7, sp, #0
+ 218              		.cfi_def_cfa_register 7
+  91:main.c        ****     flag = 1;
+ 219              		.loc 1 91 0
+ 220 0004 054B     		ldr	r3, .L10
+ 221 0006 0122     		movs	r2, #1
+ 222 0008 1A60     		str	r2, [r3]
+  92:main.c        ****     while (flag);
+ 223              		.loc 1 92 0
+ 224 000a 00BF     		nop
+ 225              	.L9:
+ 226              		.loc 1 92 0 is_stmt 0 discriminator 1
+ 227 000c 034B     		ldr	r3, .L10
+ 228 000e 1B68     		ldr	r3, [r3]
+ 229 0010 002B     		cmp	r3, #0
+ 230 0012 FBD1     		bne	.L9
+  93:main.c        **** }
+ 231              		.loc 1 93 0 is_stmt 1
+ 232 0014 00BF     		nop
+ 233 0016 BD46     		mov	sp, r7
+ 234              		.cfi_def_cfa_register 13
+ 235              		@ sp needed
+ 236 0018 80BC     		pop	{r7}
+ 237              		.cfi_restore 7
+ 238              		.cfi_def_cfa_offset 0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 7
+
+
+ 239 001a 7047     		bx	lr
+ 240              	.L11:
+ 241              		.align	2
+ 242              	.L10:
+ 243 001c 00000000 		.word	flag
+ 244              		.cfi_endproc
+ 245              	.LFE65:
+ 246              		.size	update, .-update
+ 247              		.section	.text.rect,"ax",%progbits
+ 248              		.align	2
+ 249              		.global	rect
+ 250              		.thumb
+ 251              		.thumb_func
+ 252              		.type	rect, %function
+ 253              	rect:
+ 254              	.LFB66:
+  94:main.c        **** 
+  95:main.c        **** void rect(int x1, int y1, int x2, int y2, uint color) {
+ 255              		.loc 1 95 0
+ 256              		.cfi_startproc
+ 257              		@ args = 4, pretend = 0, frame = 24
+ 258              		@ frame_needed = 1, uses_anonymous_args = 0
+ 259              		@ link register save eliminated.
+ 260 0000 80B4     		push	{r7}
+ 261              		.cfi_def_cfa_offset 4
+ 262              		.cfi_offset 7, -4
+ 263 0002 87B0     		sub	sp, sp, #28
+ 264              		.cfi_def_cfa_offset 32
+ 265 0004 00AF     		add	r7, sp, #0
+ 266              		.cfi_def_cfa_register 7
+ 267 0006 F860     		str	r0, [r7, #12]
+ 268 0008 B960     		str	r1, [r7, #8]
+ 269 000a 7A60     		str	r2, [r7, #4]
+ 270 000c 3B60     		str	r3, [r7]
+  96:main.c        ****     //Given two diagonal coords of a rectangle (s.t. coord (x1,y1) is
+  97:main.c        ****     //more upper left than (x2,y2)), makes a rectangle that has color.
+  98:main.c        ****     //Coords are inclusive.
+  99:main.c        ****     int i = 0;
+ 271              		.loc 1 99 0
+ 272 000e 0023     		movs	r3, #0
+ 273 0010 7B61     		str	r3, [r7, #20]
+ 100:main.c        ****     int j = 0;
+ 274              		.loc 1 100 0
+ 275 0012 0023     		movs	r3, #0
+ 276 0014 3B61     		str	r3, [r7, #16]
+ 101:main.c        ****     for (i = x1; i <= x2; ++i) {
+ 277              		.loc 1 101 0
+ 278 0016 FB68     		ldr	r3, [r7, #12]
+ 279 0018 7B61     		str	r3, [r7, #20]
+ 280 001a 16E0     		b	.L13
+ 281              	.L16:
+ 102:main.c        ****         for (j = y1; j <= y2; ++j) {
+ 282              		.loc 1 102 0
+ 283 001c BB68     		ldr	r3, [r7, #8]
+ 284 001e 3B61     		str	r3, [r7, #16]
+ 285 0020 0CE0     		b	.L14
+ 286              	.L15:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 8
+
+
+ 103:main.c        ****             buf[i][j] = color;
+ 287              		.loc 1 103 0 discriminator 3
+ 288 0022 3B6A     		ldr	r3, [r7, #32]
+ 289 0024 D9B2     		uxtb	r1, r3
+ 290 0026 0D4A     		ldr	r2, .L17
+ 291 0028 7B69     		ldr	r3, [r7, #20]
+ 292 002a DB01     		lsls	r3, r3, #7
+ 293 002c 1A44     		add	r2, r2, r3
+ 294 002e 3B69     		ldr	r3, [r7, #16]
+ 295 0030 1344     		add	r3, r3, r2
+ 296 0032 0A46     		mov	r2, r1
+ 297 0034 1A70     		strb	r2, [r3]
+ 102:main.c        ****         for (j = y1; j <= y2; ++j) {
+ 298              		.loc 1 102 0 discriminator 3
+ 299 0036 3B69     		ldr	r3, [r7, #16]
+ 300 0038 0133     		adds	r3, r3, #1
+ 301 003a 3B61     		str	r3, [r7, #16]
+ 302              	.L14:
+ 102:main.c        ****         for (j = y1; j <= y2; ++j) {
+ 303              		.loc 1 102 0 is_stmt 0 discriminator 1
+ 304 003c 3A69     		ldr	r2, [r7, #16]
+ 305 003e 3B68     		ldr	r3, [r7]
+ 306 0040 9A42     		cmp	r2, r3
+ 307 0042 EEDD     		ble	.L15
+ 101:main.c        ****     for (i = x1; i <= x2; ++i) {
+ 308              		.loc 1 101 0 is_stmt 1 discriminator 2
+ 309 0044 7B69     		ldr	r3, [r7, #20]
+ 310 0046 0133     		adds	r3, r3, #1
+ 311 0048 7B61     		str	r3, [r7, #20]
+ 312              	.L13:
+ 101:main.c        ****     for (i = x1; i <= x2; ++i) {
+ 313              		.loc 1 101 0 is_stmt 0 discriminator 1
+ 314 004a 7A69     		ldr	r2, [r7, #20]
+ 315 004c 7B68     		ldr	r3, [r7, #4]
+ 316 004e 9A42     		cmp	r2, r3
+ 317 0050 E4DD     		ble	.L16
+ 104:main.c        ****         }
+ 105:main.c        ****     }
+ 106:main.c        **** }
+ 318              		.loc 1 106 0 is_stmt 1
+ 319 0052 00BF     		nop
+ 320 0054 1C37     		adds	r7, r7, #28
+ 321              		.cfi_def_cfa_offset 4
+ 322 0056 BD46     		mov	sp, r7
+ 323              		.cfi_def_cfa_register 13
+ 324              		@ sp needed
+ 325 0058 80BC     		pop	{r7}
+ 326              		.cfi_restore 7
+ 327              		.cfi_def_cfa_offset 0
+ 328 005a 7047     		bx	lr
+ 329              	.L18:
+ 330              		.align	2
+ 331              	.L17:
+ 332 005c 00000000 		.word	buf
+ 333              		.cfi_endproc
+ 334              	.LFE66:
+ 335              		.size	rect, .-rect
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 9
+
+
+ 336              		.section	.text.generateWalls,"ax",%progbits
+ 337              		.align	2
+ 338              		.global	generateWalls
+ 339              		.thumb
+ 340              		.thumb_func
+ 341              		.type	generateWalls, %function
+ 342              	generateWalls:
+ 343              	.LFB67:
+ 107:main.c        **** 
+ 108:main.c        **** void generateWalls() {
+ 344              		.loc 1 108 0
+ 345              		.cfi_startproc
+ 346              		@ args = 0, pretend = 0, frame = 0
+ 347              		@ frame_needed = 1, uses_anonymous_args = 0
+ 348 0000 80B5     		push	{r7, lr}
+ 349              		.cfi_def_cfa_offset 8
+ 350              		.cfi_offset 7, -8
+ 351              		.cfi_offset 14, -4
+ 352 0002 82B0     		sub	sp, sp, #8
+ 353              		.cfi_def_cfa_offset 16
+ 354 0004 02AF     		add	r7, sp, #8
+ 355              		.cfi_def_cfa 7, 8
+ 109:main.c        ****     //Generates the static walls of level 1 of Pac-Man
+ 110:main.c        ****     //OUTER WALLS
+ 111:main.c        ****     //top wall
+ 112:main.c        ****     rect(15, 35, 17, 93, Colors_BLUE);
+ 356              		.loc 1 112 0
+ 357 0006 3023     		movs	r3, #48
+ 358 0008 0093     		str	r3, [sp]
+ 359 000a 5D23     		movs	r3, #93
+ 360 000c 1122     		movs	r2, #17
+ 361 000e 2321     		movs	r1, #35
+ 362 0010 0F20     		movs	r0, #15
+ 363 0012 FFF7FEFF 		bl	rect
+ 113:main.c        ****     rect(18, 63, 25, 65, Colors_BLUE);
+ 364              		.loc 1 113 0
+ 365 0016 3023     		movs	r3, #48
+ 366 0018 0093     		str	r3, [sp]
+ 367 001a 4123     		movs	r3, #65
+ 368 001c 1922     		movs	r2, #25
+ 369 001e 3F21     		movs	r1, #63
+ 370 0020 1220     		movs	r0, #18
+ 371 0022 FFF7FEFF 		bl	rect
+ 114:main.c        ****     //left wall
+ 115:main.c        ****     rect(18, 35, 34, 37, Colors_BLUE);
+ 372              		.loc 1 115 0
+ 373 0026 3023     		movs	r3, #48
+ 374 0028 0093     		str	r3, [sp]
+ 375 002a 2523     		movs	r3, #37
+ 376 002c 2222     		movs	r2, #34
+ 377 002e 2321     		movs	r1, #35
+ 378 0030 1220     		movs	r0, #18
+ 379 0032 FFF7FEFF 		bl	rect
+ 116:main.c        ****     rect(35, 35, 37, 47, Colors_BLUE);
+ 380              		.loc 1 116 0
+ 381 0036 3023     		movs	r3, #48
+ 382 0038 0093     		str	r3, [sp]
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 10
+
+
+ 383 003a 2F23     		movs	r3, #47
+ 384 003c 2522     		movs	r2, #37
+ 385 003e 2321     		movs	r1, #35
+ 386 0040 2320     		movs	r0, #35
+ 387 0042 FFF7FEFF 		bl	rect
+ 117:main.c        ****     rect(38, 45, 40, 47, Colors_BLUE);
+ 388              		.loc 1 117 0
+ 389 0046 3023     		movs	r3, #48
+ 390 0048 0093     		str	r3, [sp]
+ 391 004a 2F23     		movs	r3, #47
+ 392 004c 2822     		movs	r2, #40
+ 393 004e 2D21     		movs	r1, #45
+ 394 0050 2620     		movs	r0, #38
+ 395 0052 FFF7FEFF 		bl	rect
+ 118:main.c        ****     rect(41, 38, 43, 47, Colors_BLUE);
+ 396              		.loc 1 118 0
+ 397 0056 3023     		movs	r3, #48
+ 398 0058 0093     		str	r3, [sp]
+ 399 005a 2F23     		movs	r3, #47
+ 400 005c 2B22     		movs	r2, #43
+ 401 005e 2621     		movs	r1, #38
+ 402 0060 2920     		movs	r0, #41
+ 403 0062 FFF7FEFF 		bl	rect
+ 119:main.c        ****     rect(47, 38, 49, 47, Colors_BLUE);
+ 404              		.loc 1 119 0
+ 405 0066 3023     		movs	r3, #48
+ 406 0068 0093     		str	r3, [sp]
+ 407 006a 2F23     		movs	r3, #47
+ 408 006c 3122     		movs	r2, #49
+ 409 006e 2621     		movs	r1, #38
+ 410 0070 2F20     		movs	r0, #47
+ 411 0072 FFF7FEFF 		bl	rect
+ 120:main.c        ****     rect(50, 45, 52, 47, Colors_BLUE);
+ 412              		.loc 1 120 0
+ 413 0076 3023     		movs	r3, #48
+ 414 0078 0093     		str	r3, [sp]
+ 415 007a 2F23     		movs	r3, #47
+ 416 007c 3422     		movs	r2, #52
+ 417 007e 2D21     		movs	r1, #45
+ 418 0080 3220     		movs	r0, #50
+ 419 0082 FFF7FEFF 		bl	rect
+ 121:main.c        ****     rect(53, 35, 55, 47, Colors_BLUE);
+ 420              		.loc 1 121 0
+ 421 0086 3023     		movs	r3, #48
+ 422 0088 0093     		str	r3, [sp]
+ 423 008a 2F23     		movs	r3, #47
+ 424 008c 3722     		movs	r2, #55
+ 425 008e 2321     		movs	r1, #35
+ 426 0090 3520     		movs	r0, #53
+ 427 0092 FFF7FEFF 		bl	rect
+ 122:main.c        ****     rect(56, 35, 76, 37, Colors_BLUE);
+ 428              		.loc 1 122 0
+ 429 0096 3023     		movs	r3, #48
+ 430 0098 0093     		str	r3, [sp]
+ 431 009a 2523     		movs	r3, #37
+ 432 009c 4C22     		movs	r2, #76
+ 433 009e 2321     		movs	r1, #35
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 11
+
+
+ 434 00a0 3820     		movs	r0, #56
+ 435 00a2 FFF7FEFF 		bl	rect
+ 123:main.c        ****     rect(65, 38, 67, 41, Colors_BLUE);
+ 436              		.loc 1 123 0
+ 437 00a6 3023     		movs	r3, #48
+ 438 00a8 0093     		str	r3, [sp]
+ 439 00aa 2923     		movs	r3, #41
+ 440 00ac 4322     		movs	r2, #67
+ 441 00ae 2621     		movs	r1, #38
+ 442 00b0 4120     		movs	r0, #65
+ 443 00b2 FFF7FEFF 		bl	rect
+ 124:main.c        ****     //right wall
+ 125:main.c        ****     rect(18, 91, 34, 93, Colors_BLUE);
+ 444              		.loc 1 125 0
+ 445 00b6 3023     		movs	r3, #48
+ 446 00b8 0093     		str	r3, [sp]
+ 447 00ba 5D23     		movs	r3, #93
+ 448 00bc 2222     		movs	r2, #34
+ 449 00be 5B21     		movs	r1, #91
+ 450 00c0 1220     		movs	r0, #18
+ 451 00c2 FFF7FEFF 		bl	rect
+ 126:main.c        ****     rect(35, 81, 37, 93, Colors_BLUE);
+ 452              		.loc 1 126 0
+ 453 00c6 3023     		movs	r3, #48
+ 454 00c8 0093     		str	r3, [sp]
+ 455 00ca 5D23     		movs	r3, #93
+ 456 00cc 2522     		movs	r2, #37
+ 457 00ce 5121     		movs	r1, #81
+ 458 00d0 2320     		movs	r0, #35
+ 459 00d2 FFF7FEFF 		bl	rect
+ 127:main.c        ****     rect(38, 81, 40, 83, Colors_BLUE);
+ 460              		.loc 1 127 0
+ 461 00d6 3023     		movs	r3, #48
+ 462 00d8 0093     		str	r3, [sp]
+ 463 00da 5323     		movs	r3, #83
+ 464 00dc 2822     		movs	r2, #40
+ 465 00de 5121     		movs	r1, #81
+ 466 00e0 2620     		movs	r0, #38
+ 467 00e2 FFF7FEFF 		bl	rect
+ 128:main.c        ****     rect(41, 81, 43, 90, Colors_BLUE);
+ 468              		.loc 1 128 0
+ 469 00e6 3023     		movs	r3, #48
+ 470 00e8 0093     		str	r3, [sp]
+ 471 00ea 5A23     		movs	r3, #90
+ 472 00ec 2B22     		movs	r2, #43
+ 473 00ee 5121     		movs	r1, #81
+ 474 00f0 2920     		movs	r0, #41
+ 475 00f2 FFF7FEFF 		bl	rect
+ 129:main.c        ****     rect(47, 81, 49, 90, Colors_BLUE);
+ 476              		.loc 1 129 0
+ 477 00f6 3023     		movs	r3, #48
+ 478 00f8 0093     		str	r3, [sp]
+ 479 00fa 5A23     		movs	r3, #90
+ 480 00fc 3122     		movs	r2, #49
+ 481 00fe 5121     		movs	r1, #81
+ 482 0100 2F20     		movs	r0, #47
+ 483 0102 FFF7FEFF 		bl	rect
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 12
+
+
+ 130:main.c        ****     rect(50, 81, 52, 83, Colors_BLUE);
+ 484              		.loc 1 130 0
+ 485 0106 3023     		movs	r3, #48
+ 486 0108 0093     		str	r3, [sp]
+ 487 010a 5323     		movs	r3, #83
+ 488 010c 3422     		movs	r2, #52
+ 489 010e 5121     		movs	r1, #81
+ 490 0110 3220     		movs	r0, #50
+ 491 0112 FFF7FEFF 		bl	rect
+ 131:main.c        ****     rect(53, 81, 55, 93, Colors_BLUE);
+ 492              		.loc 1 131 0
+ 493 0116 3023     		movs	r3, #48
+ 494 0118 0093     		str	r3, [sp]
+ 495 011a 5D23     		movs	r3, #93
+ 496 011c 3722     		movs	r2, #55
+ 497 011e 5121     		movs	r1, #81
+ 498 0120 3520     		movs	r0, #53
+ 499 0122 FFF7FEFF 		bl	rect
+ 132:main.c        ****     rect(56, 91, 76, 93, Colors_BLUE);
+ 500              		.loc 1 132 0
+ 501 0126 3023     		movs	r3, #48
+ 502 0128 0093     		str	r3, [sp]
+ 503 012a 5D23     		movs	r3, #93
+ 504 012c 4C22     		movs	r2, #76
+ 505 012e 5B21     		movs	r1, #91
+ 506 0130 3820     		movs	r0, #56
+ 507 0132 FFF7FEFF 		bl	rect
+ 133:main.c        ****     rect(65, 87, 67, 90, Colors_BLUE);
+ 508              		.loc 1 133 0
+ 509 0136 3023     		movs	r3, #48
+ 510 0138 0093     		str	r3, [sp]
+ 511 013a 5A23     		movs	r3, #90
+ 512 013c 4322     		movs	r2, #67
+ 513 013e 5721     		movs	r1, #87
+ 514 0140 4120     		movs	r0, #65
+ 515 0142 FFF7FEFF 		bl	rect
+ 134:main.c        ****     //bottom wall
+ 135:main.c        ****     rect(77, 35, 79, 93, Colors_BLUE);
+ 516              		.loc 1 135 0
+ 517 0146 3023     		movs	r3, #48
+ 518 0148 0093     		str	r3, [sp]
+ 519 014a 5D23     		movs	r3, #93
+ 520 014c 4F22     		movs	r2, #79
+ 521 014e 2321     		movs	r1, #35
+ 522 0150 4D20     		movs	r0, #77
+ 523 0152 FFF7FEFF 		bl	rect
+ 136:main.c        ****     //INNER OBSTACLES
+ 137:main.c        ****     rect(21, 41, 25, 47, Colors_BLUE);
+ 524              		.loc 1 137 0
+ 525 0156 3023     		movs	r3, #48
+ 526 0158 0093     		str	r3, [sp]
+ 527 015a 2F23     		movs	r3, #47
+ 528 015c 1922     		movs	r2, #25
+ 529 015e 2921     		movs	r1, #41
+ 530 0160 1520     		movs	r0, #21
+ 531 0162 FFF7FEFF 		bl	rect
+ 138:main.c        ****     rect(21, 51, 25, 59, Colors_BLUE);
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 13
+
+
+ 532              		.loc 1 138 0
+ 533 0166 3023     		movs	r3, #48
+ 534 0168 0093     		str	r3, [sp]
+ 535 016a 3B23     		movs	r3, #59
+ 536 016c 1922     		movs	r2, #25
+ 537 016e 3321     		movs	r1, #51
+ 538 0170 1520     		movs	r0, #21
+ 539 0172 FFF7FEFF 		bl	rect
+ 139:main.c        ****     rect(21, 69, 25, 77, Colors_BLUE);
+ 540              		.loc 1 139 0
+ 541 0176 3023     		movs	r3, #48
+ 542 0178 0093     		str	r3, [sp]
+ 543 017a 4D23     		movs	r3, #77
+ 544 017c 1922     		movs	r2, #25
+ 545 017e 4521     		movs	r1, #69
+ 546 0180 1520     		movs	r0, #21
+ 547 0182 FFF7FEFF 		bl	rect
+ 140:main.c        ****     rect(21, 81, 25, 87, Colors_BLUE);
+ 548              		.loc 1 140 0
+ 549 0186 3023     		movs	r3, #48
+ 550 0188 0093     		str	r3, [sp]
+ 551 018a 5723     		movs	r3, #87
+ 552 018c 1922     		movs	r2, #25
+ 553 018e 5121     		movs	r1, #81
+ 554 0190 1520     		movs	r0, #21
+ 555 0192 FFF7FEFF 		bl	rect
+ 141:main.c        ****     rect(29, 57, 31, 71, Colors_BLUE);
+ 556              		.loc 1 141 0
+ 557 0196 3023     		movs	r3, #48
+ 558 0198 0093     		str	r3, [sp]
+ 559 019a 4723     		movs	r3, #71
+ 560 019c 1F22     		movs	r2, #31
+ 561 019e 3921     		movs	r1, #57
+ 562 01a0 1D20     		movs	r0, #29
+ 563 01a2 FFF7FEFF 		bl	rect
+ 142:main.c        ****     rect(32, 63, 37, 65, Colors_BLUE);
+ 564              		.loc 1 142 0
+ 565 01a6 3023     		movs	r3, #48
+ 566 01a8 0093     		str	r3, [sp]
+ 567 01aa 4123     		movs	r3, #65
+ 568 01ac 2522     		movs	r2, #37
+ 569 01ae 3F21     		movs	r1, #63
+ 570 01b0 2020     		movs	r0, #32
+ 571 01b2 FFF7FEFF 		bl	rect
+ 143:main.c        ****     rect(29, 41, 31, 47, Colors_BLUE);
+ 572              		.loc 1 143 0
+ 573 01b6 3023     		movs	r3, #48
+ 574 01b8 0093     		str	r3, [sp]
+ 575 01ba 2F23     		movs	r3, #47
+ 576 01bc 1F22     		movs	r2, #31
+ 577 01be 2921     		movs	r1, #41
+ 578 01c0 1D20     		movs	r0, #29
+ 579 01c2 FFF7FEFF 		bl	rect
+ 144:main.c        ****     rect(29, 81, 31, 87, Colors_BLUE);
+ 580              		.loc 1 144 0
+ 581 01c6 3023     		movs	r3, #48
+ 582 01c8 0093     		str	r3, [sp]
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 14
+
+
+ 583 01ca 5723     		movs	r3, #87
+ 584 01cc 1F22     		movs	r2, #31
+ 585 01ce 5121     		movs	r1, #81
+ 586 01d0 1D20     		movs	r0, #29
+ 587 01d2 FFF7FEFF 		bl	rect
+ 145:main.c        ****     rect(29, 51, 43, 53, Colors_BLUE);
+ 588              		.loc 1 145 0
+ 589 01d6 3023     		movs	r3, #48
+ 590 01d8 0093     		str	r3, [sp]
+ 591 01da 3523     		movs	r3, #53
+ 592 01dc 2B22     		movs	r2, #43
+ 593 01de 3321     		movs	r1, #51
+ 594 01e0 1D20     		movs	r0, #29
+ 595 01e2 FFF7FEFF 		bl	rect
+ 146:main.c        ****     rect(35, 54, 37, 59, Colors_BLUE);
+ 596              		.loc 1 146 0
+ 597 01e6 3023     		movs	r3, #48
+ 598 01e8 0093     		str	r3, [sp]
+ 599 01ea 3B23     		movs	r3, #59
+ 600 01ec 2522     		movs	r2, #37
+ 601 01ee 3621     		movs	r1, #54
+ 602 01f0 2320     		movs	r0, #35
+ 603 01f2 FFF7FEFF 		bl	rect
+ 147:main.c        ****     rect(29, 75, 43, 77, Colors_BLUE);
+ 604              		.loc 1 147 0
+ 605 01f6 3023     		movs	r3, #48
+ 606 01f8 0093     		str	r3, [sp]
+ 607 01fa 4D23     		movs	r3, #77
+ 608 01fc 2B22     		movs	r2, #43
+ 609 01fe 4B21     		movs	r1, #75
+ 610 0200 1D20     		movs	r0, #29
+ 611 0202 FFF7FEFF 		bl	rect
+ 148:main.c        ****     rect(35, 69, 37, 74, Colors_BLUE);
+ 612              		.loc 1 148 0
+ 613 0206 3023     		movs	r3, #48
+ 614 0208 0093     		str	r3, [sp]
+ 615 020a 4A23     		movs	r3, #74
+ 616 020c 2522     		movs	r2, #37
+ 617 020e 4521     		movs	r1, #69
+ 618 0210 2320     		movs	r0, #35
+ 619 0212 FFF7FEFF 		bl	rect
+ 149:main.c        ****     rect(47, 51, 55, 53, Colors_BLUE);
+ 620              		.loc 1 149 0
+ 621 0216 3023     		movs	r3, #48
+ 622 0218 0093     		str	r3, [sp]
+ 623 021a 3523     		movs	r3, #53
+ 624 021c 3722     		movs	r2, #55
+ 625 021e 3321     		movs	r1, #51
+ 626 0220 2F20     		movs	r0, #47
+ 627 0222 FFF7FEFF 		bl	rect
+ 150:main.c        ****     rect(47, 75, 55, 77, Colors_BLUE);
+ 628              		.loc 1 150 0
+ 629 0226 3023     		movs	r3, #48
+ 630 0228 0093     		str	r3, [sp]
+ 631 022a 4D23     		movs	r3, #77
+ 632 022c 3722     		movs	r2, #55
+ 633 022e 4B21     		movs	r1, #75
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 15
+
+
+ 634 0230 2F20     		movs	r0, #47
+ 635 0232 FFF7FEFF 		bl	rect
+ 151:main.c        ****     rect(53, 57, 55, 71, Colors_BLUE);
+ 636              		.loc 1 151 0
+ 637 0236 3023     		movs	r3, #48
+ 638 0238 0093     		str	r3, [sp]
+ 639 023a 4723     		movs	r3, #71
+ 640 023c 3722     		movs	r2, #55
+ 641 023e 3921     		movs	r1, #57
+ 642 0240 3520     		movs	r0, #53
+ 643 0242 FFF7FEFF 		bl	rect
+ 152:main.c        ****     rect(56, 63, 61, 65, Colors_BLUE);
+ 644              		.loc 1 152 0
+ 645 0246 3023     		movs	r3, #48
+ 646 0248 0093     		str	r3, [sp]
+ 647 024a 4123     		movs	r3, #65
+ 648 024c 3D22     		movs	r2, #61
+ 649 024e 3F21     		movs	r1, #63
+ 650 0250 3820     		movs	r0, #56
+ 651 0252 FFF7FEFF 		bl	rect
+ 153:main.c        ****     rect(59, 51, 61, 59, Colors_BLUE);
+ 652              		.loc 1 153 0
+ 653 0256 3023     		movs	r3, #48
+ 654 0258 0093     		str	r3, [sp]
+ 655 025a 3B23     		movs	r3, #59
+ 656 025c 3D22     		movs	r2, #61
+ 657 025e 3321     		movs	r1, #51
+ 658 0260 3B20     		movs	r0, #59
+ 659 0262 FFF7FEFF 		bl	rect
+ 154:main.c        ****     rect(59, 69, 61, 77, Colors_BLUE);
+ 660              		.loc 1 154 0
+ 661 0266 3023     		movs	r3, #48
+ 662 0268 0093     		str	r3, [sp]
+ 663 026a 4D23     		movs	r3, #77
+ 664 026c 3D22     		movs	r2, #61
+ 665 026e 4521     		movs	r1, #69
+ 666 0270 3B20     		movs	r0, #59
+ 667 0272 FFF7FEFF 		bl	rect
+ 155:main.c        ****     rect(59, 41, 61, 47, Colors_BLUE);
+ 668              		.loc 1 155 0
+ 669 0276 3023     		movs	r3, #48
+ 670 0278 0093     		str	r3, [sp]
+ 671 027a 2F23     		movs	r3, #47
+ 672 027c 3D22     		movs	r2, #61
+ 673 027e 2921     		movs	r1, #41
+ 674 0280 3B20     		movs	r0, #59
+ 675 0282 FFF7FEFF 		bl	rect
+ 156:main.c        ****     rect(59, 81, 61, 87, Colors_BLUE);
+ 676              		.loc 1 156 0
+ 677 0286 3023     		movs	r3, #48
+ 678 0288 0093     		str	r3, [sp]
+ 679 028a 5723     		movs	r3, #87
+ 680 028c 3D22     		movs	r2, #61
+ 681 028e 5121     		movs	r1, #81
+ 682 0290 3B20     		movs	r0, #59
+ 683 0292 FFF7FEFF 		bl	rect
+ 157:main.c        ****     rect(62, 45, 67, 47, Colors_BLUE);
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 16
+
+
+ 684              		.loc 1 157 0
+ 685 0296 3023     		movs	r3, #48
+ 686 0298 0093     		str	r3, [sp]
+ 687 029a 2F23     		movs	r3, #47
+ 688 029c 4322     		movs	r2, #67
+ 689 029e 2D21     		movs	r1, #45
+ 690 02a0 3E20     		movs	r0, #62
+ 691 02a2 FFF7FEFF 		bl	rect
+ 158:main.c        ****     rect(62, 81, 67, 83, Colors_BLUE);
+ 692              		.loc 1 158 0
+ 693 02a6 3023     		movs	r3, #48
+ 694 02a8 0093     		str	r3, [sp]
+ 695 02aa 5323     		movs	r3, #83
+ 696 02ac 4322     		movs	r2, #67
+ 697 02ae 5121     		movs	r1, #81
+ 698 02b0 3E20     		movs	r0, #62
+ 699 02b2 FFF7FEFF 		bl	rect
+ 159:main.c        ****     rect(65, 57, 67, 71, Colors_BLUE);
+ 700              		.loc 1 159 0
+ 701 02b6 3023     		movs	r3, #48
+ 702 02b8 0093     		str	r3, [sp]
+ 703 02ba 4723     		movs	r3, #71
+ 704 02bc 4322     		movs	r2, #67
+ 705 02be 3921     		movs	r1, #57
+ 706 02c0 4120     		movs	r0, #65
+ 707 02c2 FFF7FEFF 		bl	rect
+ 160:main.c        ****     rect(68, 63, 73, 65, Colors_BLUE);
+ 708              		.loc 1 160 0
+ 709 02c6 3023     		movs	r3, #48
+ 710 02c8 0093     		str	r3, [sp]
+ 711 02ca 4123     		movs	r3, #65
+ 712 02cc 4922     		movs	r2, #73
+ 713 02ce 3F21     		movs	r1, #63
+ 714 02d0 4420     		movs	r0, #68
+ 715 02d2 FFF7FEFF 		bl	rect
+ 161:main.c        ****     rect(65, 51, 70, 53, Colors_BLUE);
+ 716              		.loc 1 161 0
+ 717 02d6 3023     		movs	r3, #48
+ 718 02d8 0093     		str	r3, [sp]
+ 719 02da 3523     		movs	r3, #53
+ 720 02dc 4622     		movs	r2, #70
+ 721 02de 3321     		movs	r1, #51
+ 722 02e0 4120     		movs	r0, #65
+ 723 02e2 FFF7FEFF 		bl	rect
+ 162:main.c        ****     rect(71, 41, 73, 59, Colors_BLUE);
+ 724              		.loc 1 162 0
+ 725 02e6 3023     		movs	r3, #48
+ 726 02e8 0093     		str	r3, [sp]
+ 727 02ea 3B23     		movs	r3, #59
+ 728 02ec 4922     		movs	r2, #73
+ 729 02ee 2921     		movs	r1, #41
+ 730 02f0 4720     		movs	r0, #71
+ 731 02f2 FFF7FEFF 		bl	rect
+ 163:main.c        ****     rect(65, 75, 70, 77, Colors_BLUE);
+ 732              		.loc 1 163 0
+ 733 02f6 3023     		movs	r3, #48
+ 734 02f8 0093     		str	r3, [sp]
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 17
+
+
+ 735 02fa 4D23     		movs	r3, #77
+ 736 02fc 4622     		movs	r2, #70
+ 737 02fe 4B21     		movs	r1, #75
+ 738 0300 4120     		movs	r0, #65
+ 739 0302 FFF7FEFF 		bl	rect
+ 164:main.c        ****     rect(71, 69, 73, 87, Colors_BLUE);
+ 740              		.loc 1 164 0
+ 741 0306 3023     		movs	r3, #48
+ 742 0308 0093     		str	r3, [sp]
+ 743 030a 5723     		movs	r3, #87
+ 744 030c 4922     		movs	r2, #73
+ 745 030e 4521     		movs	r1, #69
+ 746 0310 4720     		movs	r0, #71
+ 747 0312 FFF7FEFF 		bl	rect
+ 165:main.c        ****     //GHOST PEN
+ 166:main.c        ****     rect(41, 57, 42, 61, Colors_BLUE);
+ 748              		.loc 1 166 0
+ 749 0316 3023     		movs	r3, #48
+ 750 0318 0093     		str	r3, [sp]
+ 751 031a 3D23     		movs	r3, #61
+ 752 031c 2A22     		movs	r2, #42
+ 753 031e 3921     		movs	r1, #57
+ 754 0320 2920     		movs	r0, #41
+ 755 0322 FFF7FEFF 		bl	rect
+ 167:main.c        ****     rect(43, 57, 47, 58, Colors_BLUE);
+ 756              		.loc 1 167 0
+ 757 0326 3023     		movs	r3, #48
+ 758 0328 0093     		str	r3, [sp]
+ 759 032a 3A23     		movs	r3, #58
+ 760 032c 2F22     		movs	r2, #47
+ 761 032e 3921     		movs	r1, #57
+ 762 0330 2B20     		movs	r0, #43
+ 763 0332 FFF7FEFF 		bl	rect
+ 168:main.c        ****     rect(48, 57, 49, 71, Colors_BLUE);
+ 764              		.loc 1 168 0
+ 765 0336 3023     		movs	r3, #48
+ 766 0338 0093     		str	r3, [sp]
+ 767 033a 4723     		movs	r3, #71
+ 768 033c 3122     		movs	r2, #49
+ 769 033e 3921     		movs	r1, #57
+ 770 0340 3020     		movs	r0, #48
+ 771 0342 FFF7FEFF 		bl	rect
+ 169:main.c        ****     rect(41, 67, 42, 71, Colors_BLUE);
+ 772              		.loc 1 169 0
+ 773 0346 3023     		movs	r3, #48
+ 774 0348 0093     		str	r3, [sp]
+ 775 034a 4723     		movs	r3, #71
+ 776 034c 2A22     		movs	r2, #42
+ 777 034e 4321     		movs	r1, #67
+ 778 0350 2920     		movs	r0, #41
+ 779 0352 FFF7FEFF 		bl	rect
+ 170:main.c        ****     rect(43, 70, 47, 71, Colors_BLUE);
+ 780              		.loc 1 170 0
+ 781 0356 3023     		movs	r3, #48
+ 782 0358 0093     		str	r3, [sp]
+ 783 035a 4723     		movs	r3, #71
+ 784 035c 2F22     		movs	r2, #47
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 18
+
+
+ 785 035e 4621     		movs	r1, #70
+ 786 0360 2B20     		movs	r0, #43
+ 787 0362 FFF7FEFF 		bl	rect
+ 171:main.c        ****     rect(41, 62, 42, 66, Colors_WHITE);
+ 788              		.loc 1 171 0
+ 789 0366 3F23     		movs	r3, #63
+ 790 0368 0093     		str	r3, [sp]
+ 791 036a 4223     		movs	r3, #66
+ 792 036c 2A22     		movs	r2, #42
+ 793 036e 3E21     		movs	r1, #62
+ 794 0370 2920     		movs	r0, #41
+ 795 0372 FFF7FEFF 		bl	rect
+ 172:main.c        **** }
+ 796              		.loc 1 172 0
+ 797 0376 00BF     		nop
+ 798 0378 BD46     		mov	sp, r7
+ 799              		.cfi_def_cfa_register 13
+ 800              		@ sp needed
+ 801 037a 80BD     		pop	{r7, pc}
+ 802              		.cfi_endproc
+ 803              	.LFE67:
+ 804              		.size	generateWalls, .-generateWalls
+ 805              		.section	.text.generatePacman,"ax",%progbits
+ 806              		.align	2
+ 807              		.global	generatePacman
+ 808              		.thumb
+ 809              		.thumb_func
+ 810              		.type	generatePacman, %function
+ 811              	generatePacman:
+ 812              	.LFB68:
+ 173:main.c        **** 
+ 174:main.c        **** void generatePacman(int center_row, int center_col, enum controller_dir dir) {
+ 813              		.loc 1 174 0
+ 814              		.cfi_startproc
+ 815              		@ args = 0, pretend = 0, frame = 16
+ 816              		@ frame_needed = 1, uses_anonymous_args = 0
+ 817              		@ link register save eliminated.
+ 818 0000 80B4     		push	{r7}
+ 819              		.cfi_def_cfa_offset 4
+ 820              		.cfi_offset 7, -4
+ 821 0002 85B0     		sub	sp, sp, #20
+ 822              		.cfi_def_cfa_offset 24
+ 823 0004 00AF     		add	r7, sp, #0
+ 824              		.cfi_def_cfa_register 7
+ 825 0006 F860     		str	r0, [r7, #12]
+ 826 0008 B960     		str	r1, [r7, #8]
+ 827 000a 1346     		mov	r3, r2
+ 828 000c FB71     		strb	r3, [r7, #7]
+ 175:main.c        ****     //Generates a pacman given the center x and y
+ 176:main.c        ****     //coords.
+ 177:main.c        ****     //make pacman cross
+ 178:main.c        ****     buf[center_row][center_col] = Colors_YELLOW;
+ 829              		.loc 1 178 0
+ 830 000e 2F21     		movs	r1, #47
+ 831 0010 784A     		ldr	r2, .L27
+ 832 0012 FB68     		ldr	r3, [r7, #12]
+ 833 0014 DB01     		lsls	r3, r3, #7
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 19
+
+
+ 834 0016 1A44     		add	r2, r2, r3
+ 835 0018 BB68     		ldr	r3, [r7, #8]
+ 836 001a 1344     		add	r3, r3, r2
+ 837 001c 0A46     		mov	r2, r1
+ 838 001e 1A70     		strb	r2, [r3]
+ 179:main.c        ****     buf[center_row-1][center_col-1] = Colors_YELLOW;
+ 839              		.loc 1 179 0
+ 840 0020 FB68     		ldr	r3, [r7, #12]
+ 841 0022 5A1E     		subs	r2, r3, #1
+ 842 0024 BB68     		ldr	r3, [r7, #8]
+ 843 0026 013B     		subs	r3, r3, #1
+ 844 0028 2F20     		movs	r0, #47
+ 845 002a 7249     		ldr	r1, .L27
+ 846 002c D201     		lsls	r2, r2, #7
+ 847 002e 0A44     		add	r2, r2, r1
+ 848 0030 1344     		add	r3, r3, r2
+ 849 0032 0246     		mov	r2, r0
+ 850 0034 1A70     		strb	r2, [r3]
+ 180:main.c        ****     buf[center_row-1][center_col+1] = Colors_YELLOW;
+ 851              		.loc 1 180 0
+ 852 0036 FB68     		ldr	r3, [r7, #12]
+ 853 0038 5A1E     		subs	r2, r3, #1
+ 854 003a BB68     		ldr	r3, [r7, #8]
+ 855 003c 0133     		adds	r3, r3, #1
+ 856 003e 2F20     		movs	r0, #47
+ 857 0040 6C49     		ldr	r1, .L27
+ 858 0042 D201     		lsls	r2, r2, #7
+ 859 0044 0A44     		add	r2, r2, r1
+ 860 0046 1344     		add	r3, r3, r2
+ 861 0048 0246     		mov	r2, r0
+ 862 004a 1A70     		strb	r2, [r3]
+ 181:main.c        ****     buf[center_row+1][center_col-1] = Colors_YELLOW;
+ 863              		.loc 1 181 0
+ 864 004c FB68     		ldr	r3, [r7, #12]
+ 865 004e 5A1C     		adds	r2, r3, #1
+ 866 0050 BB68     		ldr	r3, [r7, #8]
+ 867 0052 013B     		subs	r3, r3, #1
+ 868 0054 2F20     		movs	r0, #47
+ 869 0056 6749     		ldr	r1, .L27
+ 870 0058 D201     		lsls	r2, r2, #7
+ 871 005a 0A44     		add	r2, r2, r1
+ 872 005c 1344     		add	r3, r3, r2
+ 873 005e 0246     		mov	r2, r0
+ 874 0060 1A70     		strb	r2, [r3]
+ 182:main.c        ****     buf[center_row+1][center_col+1] = Colors_YELLOW;
+ 875              		.loc 1 182 0
+ 876 0062 FB68     		ldr	r3, [r7, #12]
+ 877 0064 5A1C     		adds	r2, r3, #1
+ 878 0066 BB68     		ldr	r3, [r7, #8]
+ 879 0068 0133     		adds	r3, r3, #1
+ 880 006a 2F20     		movs	r0, #47
+ 881 006c 6149     		ldr	r1, .L27
+ 882 006e D201     		lsls	r2, r2, #7
+ 883 0070 0A44     		add	r2, r2, r1
+ 884 0072 1344     		add	r3, r3, r2
+ 885 0074 0246     		mov	r2, r0
+ 886 0076 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 20
+
+
+ 183:main.c        ****     if (dir == left) {
+ 887              		.loc 1 183 0
+ 888 0078 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 889 007a 022B     		cmp	r3, #2
+ 890 007c 1ED1     		bne	.L21
+ 184:main.c        ****         buf[center_row][center_col+1] = Colors_YELLOW;
+ 891              		.loc 1 184 0
+ 892 007e BB68     		ldr	r3, [r7, #8]
+ 893 0080 0133     		adds	r3, r3, #1
+ 894 0082 2F20     		movs	r0, #47
+ 895 0084 5B49     		ldr	r1, .L27
+ 896 0086 FA68     		ldr	r2, [r7, #12]
+ 897 0088 D201     		lsls	r2, r2, #7
+ 898 008a 0A44     		add	r2, r2, r1
+ 899 008c 1344     		add	r3, r3, r2
+ 900 008e 0246     		mov	r2, r0
+ 901 0090 1A70     		strb	r2, [r3]
+ 185:main.c        ****         buf[center_row-1][center_col] = Colors_YELLOW;
+ 902              		.loc 1 185 0
+ 903 0092 FB68     		ldr	r3, [r7, #12]
+ 904 0094 013B     		subs	r3, r3, #1
+ 905 0096 2F21     		movs	r1, #47
+ 906 0098 564A     		ldr	r2, .L27
+ 907 009a DB01     		lsls	r3, r3, #7
+ 908 009c 1A44     		add	r2, r2, r3
+ 909 009e BB68     		ldr	r3, [r7, #8]
+ 910 00a0 1344     		add	r3, r3, r2
+ 911 00a2 0A46     		mov	r2, r1
+ 912 00a4 1A70     		strb	r2, [r3]
+ 186:main.c        ****         buf[center_row+1][center_col] = Colors_YELLOW;
+ 913              		.loc 1 186 0
+ 914 00a6 FB68     		ldr	r3, [r7, #12]
+ 915 00a8 0133     		adds	r3, r3, #1
+ 916 00aa 2F21     		movs	r1, #47
+ 917 00ac 514A     		ldr	r2, .L27
+ 918 00ae DB01     		lsls	r3, r3, #7
+ 919 00b0 1A44     		add	r2, r2, r3
+ 920 00b2 BB68     		ldr	r3, [r7, #8]
+ 921 00b4 1344     		add	r3, r3, r2
+ 922 00b6 0A46     		mov	r2, r1
+ 923 00b8 1A70     		strb	r2, [r3]
+ 187:main.c        ****     }
+ 188:main.c        ****     else if (dir == right) {
+ 189:main.c        ****         buf[center_row][center_col-1] = Colors_YELLOW;
+ 190:main.c        ****         buf[center_row-1][center_col] = Colors_YELLOW;
+ 191:main.c        ****         buf[center_row+1][center_col] = Colors_YELLOW;
+ 192:main.c        ****     }
+ 193:main.c        ****     else if (dir == up) {
+ 194:main.c        ****         buf[center_row][center_col-1] = Colors_YELLOW;
+ 195:main.c        ****         buf[center_row][center_col+1] = Colors_YELLOW;
+ 196:main.c        ****         buf[center_row-1][center_col] = Colors_YELLOW;
+ 197:main.c        ****     }
+ 198:main.c        ****     else if (dir == down) {
+ 199:main.c        ****         buf[center_row][center_col-1] = Colors_YELLOW;
+ 200:main.c        ****         buf[center_row][center_col+1] = Colors_YELLOW;
+ 201:main.c        ****         buf[center_row+1][center_col] = Colors_YELLOW;
+ 202:main.c        ****     }
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 21
+
+
+ 203:main.c        ****     else {
+ 204:main.c        ****         buf[center_row][center_col] = Colors_YELLOW;
+ 205:main.c        ****         buf[center_row][center_col-1] = Colors_YELLOW;
+ 206:main.c        ****         buf[center_row][center_col+1] = Colors_YELLOW;
+ 207:main.c        ****         buf[center_row-1][center_col] = Colors_YELLOW;
+ 208:main.c        ****         buf[center_row+1][center_col] = Colors_YELLOW;
+ 209:main.c        ****     }
+ 210:main.c        **** }
+ 924              		.loc 1 210 0
+ 925 00ba 96E0     		b	.L26
+ 926              	.L21:
+ 188:main.c        ****         buf[center_row][center_col-1] = Colors_YELLOW;
+ 927              		.loc 1 188 0
+ 928 00bc FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 929 00be 032B     		cmp	r3, #3
+ 930 00c0 1ED1     		bne	.L23
+ 189:main.c        ****         buf[center_row-1][center_col] = Colors_YELLOW;
+ 931              		.loc 1 189 0
+ 932 00c2 BB68     		ldr	r3, [r7, #8]
+ 933 00c4 013B     		subs	r3, r3, #1
+ 934 00c6 2F20     		movs	r0, #47
+ 935 00c8 4A49     		ldr	r1, .L27
+ 936 00ca FA68     		ldr	r2, [r7, #12]
+ 937 00cc D201     		lsls	r2, r2, #7
+ 938 00ce 0A44     		add	r2, r2, r1
+ 939 00d0 1344     		add	r3, r3, r2
+ 940 00d2 0246     		mov	r2, r0
+ 941 00d4 1A70     		strb	r2, [r3]
+ 190:main.c        ****         buf[center_row+1][center_col] = Colors_YELLOW;
+ 942              		.loc 1 190 0
+ 943 00d6 FB68     		ldr	r3, [r7, #12]
+ 944 00d8 013B     		subs	r3, r3, #1
+ 945 00da 2F21     		movs	r1, #47
+ 946 00dc 454A     		ldr	r2, .L27
+ 947 00de DB01     		lsls	r3, r3, #7
+ 948 00e0 1A44     		add	r2, r2, r3
+ 949 00e2 BB68     		ldr	r3, [r7, #8]
+ 950 00e4 1344     		add	r3, r3, r2
+ 951 00e6 0A46     		mov	r2, r1
+ 952 00e8 1A70     		strb	r2, [r3]
+ 191:main.c        ****     }
+ 953              		.loc 1 191 0
+ 954 00ea FB68     		ldr	r3, [r7, #12]
+ 955 00ec 0133     		adds	r3, r3, #1
+ 956 00ee 2F21     		movs	r1, #47
+ 957 00f0 404A     		ldr	r2, .L27
+ 958 00f2 DB01     		lsls	r3, r3, #7
+ 959 00f4 1A44     		add	r2, r2, r3
+ 960 00f6 BB68     		ldr	r3, [r7, #8]
+ 961 00f8 1344     		add	r3, r3, r2
+ 962 00fa 0A46     		mov	r2, r1
+ 963 00fc 1A70     		strb	r2, [r3]
+ 964              		.loc 1 210 0
+ 965 00fe 74E0     		b	.L26
+ 966              	.L23:
+ 193:main.c        ****         buf[center_row][center_col-1] = Colors_YELLOW;
+ 967              		.loc 1 193 0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 22
+
+
+ 968 0100 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 969 0102 002B     		cmp	r3, #0
+ 970 0104 1ED1     		bne	.L24
+ 194:main.c        ****         buf[center_row][center_col+1] = Colors_YELLOW;
+ 971              		.loc 1 194 0
+ 972 0106 BB68     		ldr	r3, [r7, #8]
+ 973 0108 013B     		subs	r3, r3, #1
+ 974 010a 2F20     		movs	r0, #47
+ 975 010c 3949     		ldr	r1, .L27
+ 976 010e FA68     		ldr	r2, [r7, #12]
+ 977 0110 D201     		lsls	r2, r2, #7
+ 978 0112 0A44     		add	r2, r2, r1
+ 979 0114 1344     		add	r3, r3, r2
+ 980 0116 0246     		mov	r2, r0
+ 981 0118 1A70     		strb	r2, [r3]
+ 195:main.c        ****         buf[center_row-1][center_col] = Colors_YELLOW;
+ 982              		.loc 1 195 0
+ 983 011a BB68     		ldr	r3, [r7, #8]
+ 984 011c 0133     		adds	r3, r3, #1
+ 985 011e 2F20     		movs	r0, #47
+ 986 0120 3449     		ldr	r1, .L27
+ 987 0122 FA68     		ldr	r2, [r7, #12]
+ 988 0124 D201     		lsls	r2, r2, #7
+ 989 0126 0A44     		add	r2, r2, r1
+ 990 0128 1344     		add	r3, r3, r2
+ 991 012a 0246     		mov	r2, r0
+ 992 012c 1A70     		strb	r2, [r3]
+ 196:main.c        ****     }
+ 993              		.loc 1 196 0
+ 994 012e FB68     		ldr	r3, [r7, #12]
+ 995 0130 013B     		subs	r3, r3, #1
+ 996 0132 2F21     		movs	r1, #47
+ 997 0134 2F4A     		ldr	r2, .L27
+ 998 0136 DB01     		lsls	r3, r3, #7
+ 999 0138 1A44     		add	r2, r2, r3
+ 1000 013a BB68     		ldr	r3, [r7, #8]
+ 1001 013c 1344     		add	r3, r3, r2
+ 1002 013e 0A46     		mov	r2, r1
+ 1003 0140 1A70     		strb	r2, [r3]
+ 1004              		.loc 1 210 0
+ 1005 0142 52E0     		b	.L26
+ 1006              	.L24:
+ 198:main.c        ****         buf[center_row][center_col-1] = Colors_YELLOW;
+ 1007              		.loc 1 198 0
+ 1008 0144 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1009 0146 012B     		cmp	r3, #1
+ 1010 0148 1ED1     		bne	.L25
+ 199:main.c        ****         buf[center_row][center_col+1] = Colors_YELLOW;
+ 1011              		.loc 1 199 0
+ 1012 014a BB68     		ldr	r3, [r7, #8]
+ 1013 014c 013B     		subs	r3, r3, #1
+ 1014 014e 2F20     		movs	r0, #47
+ 1015 0150 2849     		ldr	r1, .L27
+ 1016 0152 FA68     		ldr	r2, [r7, #12]
+ 1017 0154 D201     		lsls	r2, r2, #7
+ 1018 0156 0A44     		add	r2, r2, r1
+ 1019 0158 1344     		add	r3, r3, r2
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 23
+
+
+ 1020 015a 0246     		mov	r2, r0
+ 1021 015c 1A70     		strb	r2, [r3]
+ 200:main.c        ****         buf[center_row+1][center_col] = Colors_YELLOW;
+ 1022              		.loc 1 200 0
+ 1023 015e BB68     		ldr	r3, [r7, #8]
+ 1024 0160 0133     		adds	r3, r3, #1
+ 1025 0162 2F20     		movs	r0, #47
+ 1026 0164 2349     		ldr	r1, .L27
+ 1027 0166 FA68     		ldr	r2, [r7, #12]
+ 1028 0168 D201     		lsls	r2, r2, #7
+ 1029 016a 0A44     		add	r2, r2, r1
+ 1030 016c 1344     		add	r3, r3, r2
+ 1031 016e 0246     		mov	r2, r0
+ 1032 0170 1A70     		strb	r2, [r3]
+ 201:main.c        ****     }
+ 1033              		.loc 1 201 0
+ 1034 0172 FB68     		ldr	r3, [r7, #12]
+ 1035 0174 0133     		adds	r3, r3, #1
+ 1036 0176 2F21     		movs	r1, #47
+ 1037 0178 1E4A     		ldr	r2, .L27
+ 1038 017a DB01     		lsls	r3, r3, #7
+ 1039 017c 1A44     		add	r2, r2, r3
+ 1040 017e BB68     		ldr	r3, [r7, #8]
+ 1041 0180 1344     		add	r3, r3, r2
+ 1042 0182 0A46     		mov	r2, r1
+ 1043 0184 1A70     		strb	r2, [r3]
+ 1044              		.loc 1 210 0
+ 1045 0186 30E0     		b	.L26
+ 1046              	.L25:
+ 204:main.c        ****         buf[center_row][center_col-1] = Colors_YELLOW;
+ 1047              		.loc 1 204 0
+ 1048 0188 2F21     		movs	r1, #47
+ 1049 018a 1A4A     		ldr	r2, .L27
+ 1050 018c FB68     		ldr	r3, [r7, #12]
+ 1051 018e DB01     		lsls	r3, r3, #7
+ 1052 0190 1A44     		add	r2, r2, r3
+ 1053 0192 BB68     		ldr	r3, [r7, #8]
+ 1054 0194 1344     		add	r3, r3, r2
+ 1055 0196 0A46     		mov	r2, r1
+ 1056 0198 1A70     		strb	r2, [r3]
+ 205:main.c        ****         buf[center_row][center_col+1] = Colors_YELLOW;
+ 1057              		.loc 1 205 0
+ 1058 019a BB68     		ldr	r3, [r7, #8]
+ 1059 019c 013B     		subs	r3, r3, #1
+ 1060 019e 2F20     		movs	r0, #47
+ 1061 01a0 1449     		ldr	r1, .L27
+ 1062 01a2 FA68     		ldr	r2, [r7, #12]
+ 1063 01a4 D201     		lsls	r2, r2, #7
+ 1064 01a6 0A44     		add	r2, r2, r1
+ 1065 01a8 1344     		add	r3, r3, r2
+ 1066 01aa 0246     		mov	r2, r0
+ 1067 01ac 1A70     		strb	r2, [r3]
+ 206:main.c        ****         buf[center_row-1][center_col] = Colors_YELLOW;
+ 1068              		.loc 1 206 0
+ 1069 01ae BB68     		ldr	r3, [r7, #8]
+ 1070 01b0 0133     		adds	r3, r3, #1
+ 1071 01b2 2F20     		movs	r0, #47
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 24
+
+
+ 1072 01b4 0F49     		ldr	r1, .L27
+ 1073 01b6 FA68     		ldr	r2, [r7, #12]
+ 1074 01b8 D201     		lsls	r2, r2, #7
+ 1075 01ba 0A44     		add	r2, r2, r1
+ 1076 01bc 1344     		add	r3, r3, r2
+ 1077 01be 0246     		mov	r2, r0
+ 1078 01c0 1A70     		strb	r2, [r3]
+ 207:main.c        ****         buf[center_row+1][center_col] = Colors_YELLOW;
+ 1079              		.loc 1 207 0
+ 1080 01c2 FB68     		ldr	r3, [r7, #12]
+ 1081 01c4 013B     		subs	r3, r3, #1
+ 1082 01c6 2F21     		movs	r1, #47
+ 1083 01c8 0A4A     		ldr	r2, .L27
+ 1084 01ca DB01     		lsls	r3, r3, #7
+ 1085 01cc 1A44     		add	r2, r2, r3
+ 1086 01ce BB68     		ldr	r3, [r7, #8]
+ 1087 01d0 1344     		add	r3, r3, r2
+ 1088 01d2 0A46     		mov	r2, r1
+ 1089 01d4 1A70     		strb	r2, [r3]
+ 208:main.c        ****     }
+ 1090              		.loc 1 208 0
+ 1091 01d6 FB68     		ldr	r3, [r7, #12]
+ 1092 01d8 0133     		adds	r3, r3, #1
+ 1093 01da 2F21     		movs	r1, #47
+ 1094 01dc 054A     		ldr	r2, .L27
+ 1095 01de DB01     		lsls	r3, r3, #7
+ 1096 01e0 1A44     		add	r2, r2, r3
+ 1097 01e2 BB68     		ldr	r3, [r7, #8]
+ 1098 01e4 1344     		add	r3, r3, r2
+ 1099 01e6 0A46     		mov	r2, r1
+ 1100 01e8 1A70     		strb	r2, [r3]
+ 1101              	.L26:
+ 1102              		.loc 1 210 0
+ 1103 01ea 00BF     		nop
+ 1104 01ec 1437     		adds	r7, r7, #20
+ 1105              		.cfi_def_cfa_offset 4
+ 1106 01ee BD46     		mov	sp, r7
+ 1107              		.cfi_def_cfa_register 13
+ 1108              		@ sp needed
+ 1109 01f0 80BC     		pop	{r7}
+ 1110              		.cfi_restore 7
+ 1111              		.cfi_def_cfa_offset 0
+ 1112 01f2 7047     		bx	lr
+ 1113              	.L28:
+ 1114              		.align	2
+ 1115              	.L27:
+ 1116 01f4 00000000 		.word	buf
+ 1117              		.cfi_endproc
+ 1118              	.LFE68:
+ 1119              		.size	generatePacman, .-generatePacman
+ 1120              		.section	.text.removePacman,"ax",%progbits
+ 1121              		.align	2
+ 1122              		.global	removePacman
+ 1123              		.thumb
+ 1124              		.thumb_func
+ 1125              		.type	removePacman, %function
+ 1126              	removePacman:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 25
+
+
+ 1127              	.LFB69:
+ 211:main.c        **** 
+ 212:main.c        **** void removePacman(int center_row, int center_col) {
+ 1128              		.loc 1 212 0
+ 1129              		.cfi_startproc
+ 1130              		@ args = 0, pretend = 0, frame = 8
+ 1131              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1132 0000 90B5     		push	{r4, r7, lr}
+ 1133              		.cfi_def_cfa_offset 12
+ 1134              		.cfi_offset 4, -12
+ 1135              		.cfi_offset 7, -8
+ 1136              		.cfi_offset 14, -4
+ 1137 0002 85B0     		sub	sp, sp, #20
+ 1138              		.cfi_def_cfa_offset 32
+ 1139 0004 02AF     		add	r7, sp, #8
+ 1140              		.cfi_def_cfa 7, 24
+ 1141 0006 7860     		str	r0, [r7, #4]
+ 1142 0008 3960     		str	r1, [r7]
+ 213:main.c        ****     //Removes a pacman given the center x and y
+ 214:main.c        ****     //coords.
+ 215:main.c        ****     rect(center_row-1, center_col-1, center_row+1, center_col+1, Colors_BLACK);
+ 1143              		.loc 1 215 0
+ 1144 000a 7B68     		ldr	r3, [r7, #4]
+ 1145 000c 581E     		subs	r0, r3, #1
+ 1146 000e 3B68     		ldr	r3, [r7]
+ 1147 0010 591E     		subs	r1, r3, #1
+ 1148 0012 7B68     		ldr	r3, [r7, #4]
+ 1149 0014 5A1C     		adds	r2, r3, #1
+ 1150 0016 3B68     		ldr	r3, [r7]
+ 1151 0018 0133     		adds	r3, r3, #1
+ 1152 001a 0024     		movs	r4, #0
+ 1153 001c 0094     		str	r4, [sp]
+ 1154 001e FFF7FEFF 		bl	rect
+ 216:main.c        **** }
+ 1155              		.loc 1 216 0
+ 1156 0022 00BF     		nop
+ 1157 0024 0C37     		adds	r7, r7, #12
+ 1158              		.cfi_def_cfa_offset 12
+ 1159 0026 BD46     		mov	sp, r7
+ 1160              		.cfi_def_cfa_register 13
+ 1161              		@ sp needed
+ 1162 0028 90BD     		pop	{r4, r7, pc}
+ 1163              		.cfi_endproc
+ 1164              	.LFE69:
+ 1165              		.size	removePacman, .-removePacman
+ 1166 002a 00BF     		.section	.text.isValidCoord,"ax",%progbits
+ 1167              		.align	2
+ 1168              		.global	isValidCoord
+ 1169              		.thumb
+ 1170              		.thumb_func
+ 1171              		.type	isValidCoord, %function
+ 1172              	isValidCoord:
+ 1173              	.LFB70:
+ 217:main.c        **** 
+ 218:main.c        **** bool isValidCoord(int center_row, int center_col) {
+ 1174              		.loc 1 218 0
+ 1175              		.cfi_startproc
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 26
+
+
+ 1176              		@ args = 0, pretend = 0, frame = 8
+ 1177              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1178              		@ link register save eliminated.
+ 1179 0000 80B4     		push	{r7}
+ 1180              		.cfi_def_cfa_offset 4
+ 1181              		.cfi_offset 7, -4
+ 1182 0002 83B0     		sub	sp, sp, #12
+ 1183              		.cfi_def_cfa_offset 16
+ 1184 0004 00AF     		add	r7, sp, #0
+ 1185              		.cfi_def_cfa_register 7
+ 1186 0006 7860     		str	r0, [r7, #4]
+ 1187 0008 3960     		str	r1, [r7]
+ 219:main.c        ****     //Given center_x and center_y coords,
+ 220:main.c        ****     //determines if they are valid
+ 221:main.c        ****     //trivial cases (outside of top, bot, left, right walls)
+ 222:main.c        ****     if (center_row < 19) //top
+ 1188              		.loc 1 222 0
+ 1189 000a 7B68     		ldr	r3, [r7, #4]
+ 1190 000c 122B     		cmp	r3, #18
+ 1191 000e 01DC     		bgt	.L31
+ 223:main.c        ****         return false;
+ 1192              		.loc 1 223 0
+ 1193 0010 0023     		movs	r3, #0
+ 1194 0012 2EE1     		b	.L32
+ 1195              	.L31:
+ 224:main.c        ****     if (center_row > 75) //bot
+ 1196              		.loc 1 224 0
+ 1197 0014 7B68     		ldr	r3, [r7, #4]
+ 1198 0016 4B2B     		cmp	r3, #75
+ 1199 0018 01DD     		ble	.L33
+ 225:main.c        ****         return false;
+ 1200              		.loc 1 225 0
+ 1201 001a 0023     		movs	r3, #0
+ 1202 001c 29E1     		b	.L32
+ 1203              	.L33:
+ 226:main.c        ****     if (center_col < 39) //left
+ 1204              		.loc 1 226 0
+ 1205 001e 3B68     		ldr	r3, [r7]
+ 1206 0020 262B     		cmp	r3, #38
+ 1207 0022 01DC     		bgt	.L34
+ 227:main.c        ****         return false;
+ 1208              		.loc 1 227 0
+ 1209 0024 0023     		movs	r3, #0
+ 1210 0026 24E1     		b	.L32
+ 1211              	.L34:
+ 228:main.c        ****     if (center_col > 89) //right
+ 1212              		.loc 1 228 0
+ 1213 0028 3B68     		ldr	r3, [r7]
+ 1214 002a 592B     		cmp	r3, #89
+ 1215 002c 01DD     		ble	.L35
+ 229:main.c        ****         return false;
+ 1216              		.loc 1 229 0
+ 1217 002e 0023     		movs	r3, #0
+ 1218 0030 1FE1     		b	.L32
+ 1219              	.L35:
+ 230:main.c        ****     //horizontal bars
+ 231:main.c        ****     if (center_row == 19) {
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 27
+
+
+ 1220              		.loc 1 231 0
+ 1221 0032 7B68     		ldr	r3, [r7, #4]
+ 1222 0034 132B     		cmp	r3, #19
+ 1223 0036 09D1     		bne	.L36
+ 232:main.c        ****         if (center_col < 62 || center_col > 66)
+ 1224              		.loc 1 232 0
+ 1225 0038 3B68     		ldr	r3, [r7]
+ 1226 003a 3D2B     		cmp	r3, #61
+ 1227 003c 02DD     		ble	.L37
+ 1228              		.loc 1 232 0 is_stmt 0 discriminator 1
+ 1229 003e 3B68     		ldr	r3, [r7]
+ 1230 0040 422B     		cmp	r3, #66
+ 1231 0042 01DD     		ble	.L38
+ 1232              	.L37:
+ 233:main.c        ****             return true;
+ 1233              		.loc 1 233 0 is_stmt 1
+ 1234 0044 0123     		movs	r3, #1
+ 1235 0046 14E1     		b	.L32
+ 1236              	.L38:
+ 234:main.c        ****         return false;
+ 1237              		.loc 1 234 0
+ 1238 0048 0023     		movs	r3, #0
+ 1239 004a 12E1     		b	.L32
+ 1240              	.L36:
+ 235:main.c        ****     }
+ 236:main.c        ****     else if (center_row == 27) {
+ 1241              		.loc 1 236 0
+ 1242 004c 7B68     		ldr	r3, [r7, #4]
+ 1243 004e 1B2B     		cmp	r3, #27
+ 1244 0050 01D1     		bne	.L39
+ 237:main.c        ****         return true;
+ 1245              		.loc 1 237 0
+ 1246 0052 0123     		movs	r3, #1
+ 1247 0054 0DE1     		b	.L32
+ 1248              	.L39:
+ 238:main.c        ****     }
+ 239:main.c        ****     else if (center_row == 33) {
+ 1249              		.loc 1 239 0
+ 1250 0056 7B68     		ldr	r3, [r7, #4]
+ 1251 0058 212B     		cmp	r3, #33
+ 1252 005a 19D1     		bne	.L40
+ 240:main.c        ****         if (center_col < 50 || center_col > 78)
+ 1253              		.loc 1 240 0
+ 1254 005c 3B68     		ldr	r3, [r7]
+ 1255 005e 312B     		cmp	r3, #49
+ 1256 0060 02DD     		ble	.L41
+ 1257              		.loc 1 240 0 is_stmt 0 discriminator 1
+ 1258 0062 3B68     		ldr	r3, [r7]
+ 1259 0064 4E2B     		cmp	r3, #78
+ 1260 0066 01DD     		ble	.L42
+ 1261              	.L41:
+ 241:main.c        ****             return true;
+ 1262              		.loc 1 241 0 is_stmt 1
+ 1263 0068 0123     		movs	r3, #1
+ 1264 006a 02E1     		b	.L32
+ 1265              	.L42:
+ 242:main.c        ****         else if (center_col > 54 && center_col < 62)
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 28
+
+
+ 1266              		.loc 1 242 0
+ 1267 006c 3B68     		ldr	r3, [r7]
+ 1268 006e 362B     		cmp	r3, #54
+ 1269 0070 04DD     		ble	.L43
+ 1270              		.loc 1 242 0 is_stmt 0 discriminator 1
+ 1271 0072 3B68     		ldr	r3, [r7]
+ 1272 0074 3D2B     		cmp	r3, #61
+ 1273 0076 01DC     		bgt	.L43
+ 243:main.c        ****             return true;
+ 1274              		.loc 1 243 0 is_stmt 1
+ 1275 0078 0123     		movs	r3, #1
+ 1276 007a FAE0     		b	.L32
+ 1277              	.L43:
+ 244:main.c        ****         else if (center_col > 66 && center_col < 74)
+ 1278              		.loc 1 244 0
+ 1279 007c 3B68     		ldr	r3, [r7]
+ 1280 007e 422B     		cmp	r3, #66
+ 1281 0080 04DD     		ble	.L44
+ 1282              		.loc 1 244 0 is_stmt 0 discriminator 1
+ 1283 0082 3B68     		ldr	r3, [r7]
+ 1284 0084 492B     		cmp	r3, #73
+ 1285 0086 01DC     		bgt	.L44
+ 245:main.c        ****             return true;
+ 1286              		.loc 1 245 0 is_stmt 1
+ 1287 0088 0123     		movs	r3, #1
+ 1288 008a F2E0     		b	.L32
+ 1289              	.L44:
+ 246:main.c        ****         return false;
+ 1290              		.loc 1 246 0
+ 1291 008c 0023     		movs	r3, #0
+ 1292 008e F0E0     		b	.L32
+ 1293              	.L40:
+ 247:main.c        ****     }
+ 248:main.c        ****     else if (center_row == 39) {
+ 1294              		.loc 1 248 0
+ 1295 0090 7B68     		ldr	r3, [r7, #4]
+ 1296 0092 272B     		cmp	r3, #39
+ 1297 0094 11D1     		bne	.L45
+ 249:main.c        ****         if (center_col == 49 || center_col == 79)
+ 1298              		.loc 1 249 0
+ 1299 0096 3B68     		ldr	r3, [r7]
+ 1300 0098 312B     		cmp	r3, #49
+ 1301 009a 02D0     		beq	.L46
+ 1302              		.loc 1 249 0 is_stmt 0 discriminator 1
+ 1303 009c 3B68     		ldr	r3, [r7]
+ 1304 009e 4F2B     		cmp	r3, #79
+ 1305 00a0 01D1     		bne	.L47
+ 1306              	.L46:
+ 250:main.c        ****             return true;
+ 1307              		.loc 1 250 0 is_stmt 1
+ 1308 00a2 0123     		movs	r3, #1
+ 1309 00a4 E5E0     		b	.L32
+ 1310              	.L47:
+ 251:main.c        ****         else if (center_col > 54 && center_col < 74)
+ 1311              		.loc 1 251 0
+ 1312 00a6 3B68     		ldr	r3, [r7]
+ 1313 00a8 362B     		cmp	r3, #54
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 29
+
+
+ 1314 00aa 04DD     		ble	.L48
+ 1315              		.loc 1 251 0 is_stmt 0 discriminator 1
+ 1316 00ac 3B68     		ldr	r3, [r7]
+ 1317 00ae 492B     		cmp	r3, #73
+ 1318 00b0 01DC     		bgt	.L48
+ 252:main.c        ****             return true;
+ 1319              		.loc 1 252 0 is_stmt 1
+ 1320 00b2 0123     		movs	r3, #1
+ 1321 00b4 DDE0     		b	.L32
+ 1322              	.L48:
+ 253:main.c        ****         return false;
+ 1323              		.loc 1 253 0
+ 1324 00b6 0023     		movs	r3, #0
+ 1325 00b8 DBE0     		b	.L32
+ 1326              	.L45:
+ 254:main.c        ****     }
+ 255:main.c        ****     else if (center_row == 45) {
+ 1327              		.loc 1 255 0
+ 1328 00ba 7B68     		ldr	r3, [r7, #4]
+ 1329 00bc 2D2B     		cmp	r3, #45
+ 1330 00be 09D1     		bne	.L49
+ 256:main.c        ****         if (center_col < 56 || center_col > 72)
+ 1331              		.loc 1 256 0
+ 1332 00c0 3B68     		ldr	r3, [r7]
+ 1333 00c2 372B     		cmp	r3, #55
+ 1334 00c4 02DD     		ble	.L50
+ 1335              		.loc 1 256 0 is_stmt 0 discriminator 1
+ 1336 00c6 3B68     		ldr	r3, [r7]
+ 1337 00c8 482B     		cmp	r3, #72
+ 1338 00ca 01DD     		ble	.L51
+ 1339              	.L50:
+ 257:main.c        ****             return true;
+ 1340              		.loc 1 257 0 is_stmt 1
+ 1341 00cc 0123     		movs	r3, #1
+ 1342 00ce D0E0     		b	.L32
+ 1343              	.L51:
+ 258:main.c        ****         return false;
+ 1344              		.loc 1 258 0
+ 1345 00d0 0023     		movs	r3, #0
+ 1346 00d2 CEE0     		b	.L32
+ 1347              	.L49:
+ 259:main.c        ****     }
+ 260:main.c        ****     else if (center_row == 51) {
+ 1348              		.loc 1 260 0
+ 1349 00d4 7B68     		ldr	r3, [r7, #4]
+ 1350 00d6 332B     		cmp	r3, #51
+ 1351 00d8 11D1     		bne	.L52
+ 261:main.c        ****         if (center_col == 49 || center_col == 79)
+ 1352              		.loc 1 261 0
+ 1353 00da 3B68     		ldr	r3, [r7]
+ 1354 00dc 312B     		cmp	r3, #49
+ 1355 00de 02D0     		beq	.L53
+ 1356              		.loc 1 261 0 is_stmt 0 discriminator 1
+ 1357 00e0 3B68     		ldr	r3, [r7]
+ 1358 00e2 4F2B     		cmp	r3, #79
+ 1359 00e4 01D1     		bne	.L54
+ 1360              	.L53:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 30
+
+
+ 262:main.c        ****             return true;
+ 1361              		.loc 1 262 0 is_stmt 1
+ 1362 00e6 0123     		movs	r3, #1
+ 1363 00e8 C3E0     		b	.L32
+ 1364              	.L54:
+ 263:main.c        ****         else if (center_col > 54 && center_col < 74)
+ 1365              		.loc 1 263 0
+ 1366 00ea 3B68     		ldr	r3, [r7]
+ 1367 00ec 362B     		cmp	r3, #54
+ 1368 00ee 04DD     		ble	.L55
+ 1369              		.loc 1 263 0 is_stmt 0 discriminator 1
+ 1370 00f0 3B68     		ldr	r3, [r7]
+ 1371 00f2 492B     		cmp	r3, #73
+ 1372 00f4 01DC     		bgt	.L55
+ 264:main.c        ****             return true;
+ 1373              		.loc 1 264 0 is_stmt 1
+ 1374 00f6 0123     		movs	r3, #1
+ 1375 00f8 BBE0     		b	.L32
+ 1376              	.L55:
+ 265:main.c        ****         return false;
+ 1377              		.loc 1 265 0
+ 1378 00fa 0023     		movs	r3, #0
+ 1379 00fc B9E0     		b	.L32
+ 1380              	.L52:
+ 266:main.c        ****     }
+ 267:main.c        ****     else if (center_row == 57) {
+ 1381              		.loc 1 267 0
+ 1382 00fe 7B68     		ldr	r3, [r7, #4]
+ 1383 0100 392B     		cmp	r3, #57
+ 1384 0102 09D1     		bne	.L56
+ 268:main.c        ****         if (center_col < 62 || center_col > 66)
+ 1385              		.loc 1 268 0
+ 1386 0104 3B68     		ldr	r3, [r7]
+ 1387 0106 3D2B     		cmp	r3, #61
+ 1388 0108 02DD     		ble	.L57
+ 1389              		.loc 1 268 0 is_stmt 0 discriminator 1
+ 1390 010a 3B68     		ldr	r3, [r7]
+ 1391 010c 422B     		cmp	r3, #66
+ 1392 010e 01DD     		ble	.L58
+ 1393              	.L57:
+ 269:main.c        ****             return true;
+ 1394              		.loc 1 269 0 is_stmt 1
+ 1395 0110 0123     		movs	r3, #1
+ 1396 0112 AEE0     		b	.L32
+ 1397              	.L58:
+ 270:main.c        ****         return false;
+ 1398              		.loc 1 270 0
+ 1399 0114 0023     		movs	r3, #0
+ 1400 0116 ACE0     		b	.L32
+ 1401              	.L56:
+ 271:main.c        ****     }
+ 272:main.c        ****     else if (center_row == 63) {
+ 1402              		.loc 1 272 0
+ 1403 0118 7B68     		ldr	r3, [r7, #4]
+ 1404 011a 3F2B     		cmp	r3, #63
+ 1405 011c 11D1     		bne	.L59
+ 273:main.c        ****         if (center_col < 44 || center_col > 84)
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 31
+
+
+ 1406              		.loc 1 273 0
+ 1407 011e 3B68     		ldr	r3, [r7]
+ 1408 0120 2B2B     		cmp	r3, #43
+ 1409 0122 02DD     		ble	.L60
+ 1410              		.loc 1 273 0 is_stmt 0 discriminator 1
+ 1411 0124 3B68     		ldr	r3, [r7]
+ 1412 0126 542B     		cmp	r3, #84
+ 1413 0128 01DD     		ble	.L61
+ 1414              	.L60:
+ 274:main.c        ****             return true;
+ 1415              		.loc 1 274 0 is_stmt 1
+ 1416 012a 0123     		movs	r3, #1
+ 1417 012c A1E0     		b	.L32
+ 1418              	.L61:
+ 275:main.c        ****         else if (center_col > 48 && center_col < 80)
+ 1419              		.loc 1 275 0
+ 1420 012e 3B68     		ldr	r3, [r7]
+ 1421 0130 302B     		cmp	r3, #48
+ 1422 0132 04DD     		ble	.L62
+ 1423              		.loc 1 275 0 is_stmt 0 discriminator 1
+ 1424 0134 3B68     		ldr	r3, [r7]
+ 1425 0136 4F2B     		cmp	r3, #79
+ 1426 0138 01DC     		bgt	.L62
+ 276:main.c        ****             return true;
+ 1427              		.loc 1 276 0 is_stmt 1
+ 1428 013a 0123     		movs	r3, #1
+ 1429 013c 99E0     		b	.L32
+ 1430              	.L62:
+ 277:main.c        ****         return false;
+ 1431              		.loc 1 277 0
+ 1432 013e 0023     		movs	r3, #0
+ 1433 0140 97E0     		b	.L32
+ 1434              	.L59:
+ 278:main.c        ****     }
+ 279:main.c        ****     else if (center_row == 69) {
+ 1435              		.loc 1 279 0
+ 1436 0142 7B68     		ldr	r3, [r7, #4]
+ 1437 0144 452B     		cmp	r3, #69
+ 1438 0146 19D1     		bne	.L63
+ 280:main.c        ****         if (center_col < 50 || center_col > 78)
+ 1439              		.loc 1 280 0
+ 1440 0148 3B68     		ldr	r3, [r7]
+ 1441 014a 312B     		cmp	r3, #49
+ 1442 014c 02DD     		ble	.L64
+ 1443              		.loc 1 280 0 is_stmt 0 discriminator 1
+ 1444 014e 3B68     		ldr	r3, [r7]
+ 1445 0150 4E2B     		cmp	r3, #78
+ 1446 0152 01DD     		ble	.L65
+ 1447              	.L64:
+ 281:main.c        ****             return true;
+ 1448              		.loc 1 281 0 is_stmt 1
+ 1449 0154 0123     		movs	r3, #1
+ 1450 0156 8CE0     		b	.L32
+ 1451              	.L65:
+ 282:main.c        ****         else if (center_col > 54 && center_col < 62)
+ 1452              		.loc 1 282 0
+ 1453 0158 3B68     		ldr	r3, [r7]
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 32
+
+
+ 1454 015a 362B     		cmp	r3, #54
+ 1455 015c 04DD     		ble	.L66
+ 1456              		.loc 1 282 0 is_stmt 0 discriminator 1
+ 1457 015e 3B68     		ldr	r3, [r7]
+ 1458 0160 3D2B     		cmp	r3, #61
+ 1459 0162 01DC     		bgt	.L66
+ 283:main.c        ****             return true;
+ 1460              		.loc 1 283 0 is_stmt 1
+ 1461 0164 0123     		movs	r3, #1
+ 1462 0166 84E0     		b	.L32
+ 1463              	.L66:
+ 284:main.c        ****         else if (center_col > 66 && center_col < 74)
+ 1464              		.loc 1 284 0
+ 1465 0168 3B68     		ldr	r3, [r7]
+ 1466 016a 422B     		cmp	r3, #66
+ 1467 016c 04DD     		ble	.L67
+ 1468              		.loc 1 284 0 is_stmt 0 discriminator 1
+ 1469 016e 3B68     		ldr	r3, [r7]
+ 1470 0170 492B     		cmp	r3, #73
+ 1471 0172 01DC     		bgt	.L67
+ 285:main.c        ****             return true;
+ 1472              		.loc 1 285 0 is_stmt 1
+ 1473 0174 0123     		movs	r3, #1
+ 1474 0176 7CE0     		b	.L32
+ 1475              	.L67:
+ 286:main.c        ****         return false;
+ 1476              		.loc 1 286 0
+ 1477 0178 0023     		movs	r3, #0
+ 1478 017a 7AE0     		b	.L32
+ 1479              	.L63:
+ 287:main.c        ****     }
+ 288:main.c        ****     else if (center_row == 75) {
+ 1480              		.loc 1 288 0
+ 1481 017c 7B68     		ldr	r3, [r7, #4]
+ 1482 017e 4B2B     		cmp	r3, #75
+ 1483 0180 01D1     		bne	.L68
+ 289:main.c        ****         return true;
+ 1484              		.loc 1 289 0
+ 1485 0182 0123     		movs	r3, #1
+ 1486 0184 75E0     		b	.L32
+ 1487              	.L68:
+ 290:main.c        ****     }
+ 291:main.c        ****     //vertical bars
+ 292:main.c        ****     if (center_col == 39 || center_col==89) {
+ 1488              		.loc 1 292 0
+ 1489 0186 3B68     		ldr	r3, [r7]
+ 1490 0188 272B     		cmp	r3, #39
+ 1491 018a 02D0     		beq	.L69
+ 1492              		.loc 1 292 0 is_stmt 0 discriminator 1
+ 1493 018c 3B68     		ldr	r3, [r7]
+ 1494 018e 592B     		cmp	r3, #89
+ 1495 0190 11D1     		bne	.L70
+ 1496              	.L69:
+ 293:main.c        ****         if (center_row < 34 || center_row > 68)
+ 1497              		.loc 1 293 0 is_stmt 1
+ 1498 0192 7B68     		ldr	r3, [r7, #4]
+ 1499 0194 212B     		cmp	r3, #33
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 33
+
+
+ 1500 0196 02DD     		ble	.L71
+ 1501              		.loc 1 293 0 is_stmt 0 discriminator 1
+ 1502 0198 7B68     		ldr	r3, [r7, #4]
+ 1503 019a 442B     		cmp	r3, #68
+ 1504 019c 01DD     		ble	.L72
+ 1505              	.L71:
+ 294:main.c        ****             return true;
+ 1506              		.loc 1 294 0 is_stmt 1
+ 1507 019e 0123     		movs	r3, #1
+ 1508 01a0 67E0     		b	.L32
+ 1509              	.L72:
+ 295:main.c        ****         else if (center_row > 56 && center_row < 64)
+ 1510              		.loc 1 295 0
+ 1511 01a2 7B68     		ldr	r3, [r7, #4]
+ 1512 01a4 382B     		cmp	r3, #56
+ 1513 01a6 04DD     		ble	.L73
+ 1514              		.loc 1 295 0 is_stmt 0 discriminator 1
+ 1515 01a8 7B68     		ldr	r3, [r7, #4]
+ 1516 01aa 3F2B     		cmp	r3, #63
+ 1517 01ac 01DC     		bgt	.L73
+ 296:main.c        ****             return true;
+ 1518              		.loc 1 296 0 is_stmt 1
+ 1519 01ae 0123     		movs	r3, #1
+ 1520 01b0 5FE0     		b	.L32
+ 1521              	.L73:
+ 297:main.c        ****         return false;
+ 1522              		.loc 1 297 0
+ 1523 01b2 0023     		movs	r3, #0
+ 1524 01b4 5DE0     		b	.L32
+ 1525              	.L70:
+ 298:main.c        ****     }
+ 299:main.c        ****     else if (center_col==43 || center_col==85) {
+ 1526              		.loc 1 299 0
+ 1527 01b6 3B68     		ldr	r3, [r7]
+ 1528 01b8 2B2B     		cmp	r3, #43
+ 1529 01ba 02D0     		beq	.L74
+ 1530              		.loc 1 299 0 is_stmt 0 discriminator 1
+ 1531 01bc 3B68     		ldr	r3, [r7]
+ 1532 01be 552B     		cmp	r3, #85
+ 1533 01c0 09D1     		bne	.L75
+ 1534              	.L74:
+ 300:main.c        ****         if (center_row > 62 && center_row < 70)
+ 1535              		.loc 1 300 0 is_stmt 1
+ 1536 01c2 7B68     		ldr	r3, [r7, #4]
+ 1537 01c4 3E2B     		cmp	r3, #62
+ 1538 01c6 04DD     		ble	.L76
+ 1539              		.loc 1 300 0 is_stmt 0 discriminator 1
+ 1540 01c8 7B68     		ldr	r3, [r7, #4]
+ 1541 01ca 452B     		cmp	r3, #69
+ 1542 01cc 01DC     		bgt	.L76
+ 301:main.c        ****             return true;
+ 1543              		.loc 1 301 0 is_stmt 1
+ 1544 01ce 0123     		movs	r3, #1
+ 1545 01d0 4FE0     		b	.L32
+ 1546              	.L76:
+ 302:main.c        ****         return false;
+ 1547              		.loc 1 302 0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 34
+
+
+ 1548 01d2 0023     		movs	r3, #0
+ 1549 01d4 4DE0     		b	.L32
+ 1550              	.L75:
+ 303:main.c        ****     }
+ 304:main.c        ****     else if (center_col==49 || center_col==79) {
+ 1551              		.loc 1 304 0
+ 1552 01d6 3B68     		ldr	r3, [r7]
+ 1553 01d8 312B     		cmp	r3, #49
+ 1554 01da 02D0     		beq	.L77
+ 1555              		.loc 1 304 0 is_stmt 0 discriminator 1
+ 1556 01dc 3B68     		ldr	r3, [r7]
+ 1557 01de 4F2B     		cmp	r3, #79
+ 1558 01e0 06D1     		bne	.L78
+ 1559              	.L77:
+ 305:main.c        ****         if (center_row < 70)
+ 1560              		.loc 1 305 0 is_stmt 1
+ 1561 01e2 7B68     		ldr	r3, [r7, #4]
+ 1562 01e4 452B     		cmp	r3, #69
+ 1563 01e6 01DC     		bgt	.L79
+ 306:main.c        ****             return true;
+ 1564              		.loc 1 306 0
+ 1565 01e8 0123     		movs	r3, #1
+ 1566 01ea 42E0     		b	.L32
+ 1567              	.L79:
+ 307:main.c        ****         return false;
+ 1568              		.loc 1 307 0
+ 1569 01ec 0023     		movs	r3, #0
+ 1570 01ee 40E0     		b	.L32
+ 1571              	.L78:
+ 308:main.c        ****     }
+ 309:main.c        ****     else if (center_col==55 || center_col==73) {
+ 1572              		.loc 1 309 0
+ 1573 01f0 3B68     		ldr	r3, [r7]
+ 1574 01f2 372B     		cmp	r3, #55
+ 1575 01f4 02D0     		beq	.L80
+ 1576              		.loc 1 309 0 is_stmt 0 discriminator 1
+ 1577 01f6 3B68     		ldr	r3, [r7]
+ 1578 01f8 492B     		cmp	r3, #73
+ 1579 01fa 19D1     		bne	.L81
+ 1580              	.L80:
+ 310:main.c        ****         if (center_row > 26 && center_row < 34)
+ 1581              		.loc 1 310 0 is_stmt 1
+ 1582 01fc 7B68     		ldr	r3, [r7, #4]
+ 1583 01fe 1A2B     		cmp	r3, #26
+ 1584 0200 04DD     		ble	.L82
+ 1585              		.loc 1 310 0 is_stmt 0 discriminator 1
+ 1586 0202 7B68     		ldr	r3, [r7, #4]
+ 1587 0204 212B     		cmp	r3, #33
+ 1588 0206 01DC     		bgt	.L82
+ 311:main.c        ****             return true;
+ 1589              		.loc 1 311 0 is_stmt 1
+ 1590 0208 0123     		movs	r3, #1
+ 1591 020a 32E0     		b	.L32
+ 1592              	.L82:
+ 312:main.c        ****         else if (center_row > 38 && center_row < 58)
+ 1593              		.loc 1 312 0
+ 1594 020c 7B68     		ldr	r3, [r7, #4]
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 35
+
+
+ 1595 020e 262B     		cmp	r3, #38
+ 1596 0210 04DD     		ble	.L83
+ 1597              		.loc 1 312 0 is_stmt 0 discriminator 1
+ 1598 0212 7B68     		ldr	r3, [r7, #4]
+ 1599 0214 392B     		cmp	r3, #57
+ 1600 0216 01DC     		bgt	.L83
+ 313:main.c        ****             return true;
+ 1601              		.loc 1 313 0 is_stmt 1
+ 1602 0218 0123     		movs	r3, #1
+ 1603 021a 2AE0     		b	.L32
+ 1604              	.L83:
+ 314:main.c        ****         else if (center_row > 62 && center_row < 70)
+ 1605              		.loc 1 314 0
+ 1606 021c 7B68     		ldr	r3, [r7, #4]
+ 1607 021e 3E2B     		cmp	r3, #62
+ 1608 0220 04DD     		ble	.L84
+ 1609              		.loc 1 314 0 is_stmt 0 discriminator 1
+ 1610 0222 7B68     		ldr	r3, [r7, #4]
+ 1611 0224 452B     		cmp	r3, #69
+ 1612 0226 01DC     		bgt	.L84
+ 315:main.c        ****             return true;
+ 1613              		.loc 1 315 0 is_stmt 1
+ 1614 0228 0123     		movs	r3, #1
+ 1615 022a 22E0     		b	.L32
+ 1616              	.L84:
+ 316:main.c        ****         return false;
+ 1617              		.loc 1 316 0
+ 1618 022c 0023     		movs	r3, #0
+ 1619 022e 20E0     		b	.L32
+ 1620              	.L81:
+ 317:main.c        ****     }
+ 318:main.c        ****     else if (center_col==61 || center_col==67) {
+ 1621              		.loc 1 318 0
+ 1622 0230 3B68     		ldr	r3, [r7]
+ 1623 0232 3D2B     		cmp	r3, #61
+ 1624 0234 02D0     		beq	.L85
+ 1625              		.loc 1 318 0 is_stmt 0 discriminator 1
+ 1626 0236 3B68     		ldr	r3, [r7]
+ 1627 0238 432B     		cmp	r3, #67
+ 1628 023a 19D1     		bne	.L86
+ 1629              	.L85:
+ 319:main.c        ****         if (center_row < 28 || center_row > 68)
+ 1630              		.loc 1 319 0 is_stmt 1
+ 1631 023c 7B68     		ldr	r3, [r7, #4]
+ 1632 023e 1B2B     		cmp	r3, #27
+ 1633 0240 02DD     		ble	.L87
+ 1634              		.loc 1 319 0 is_stmt 0 discriminator 1
+ 1635 0242 7B68     		ldr	r3, [r7, #4]
+ 1636 0244 442B     		cmp	r3, #68
+ 1637 0246 01DD     		ble	.L88
+ 1638              	.L87:
+ 320:main.c        ****             return true;
+ 1639              		.loc 1 320 0 is_stmt 1
+ 1640 0248 0123     		movs	r3, #1
+ 1641 024a 12E0     		b	.L32
+ 1642              	.L88:
+ 321:main.c        ****         else if (center_row > 32 && center_row < 40)
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 36
+
+
+ 1643              		.loc 1 321 0
+ 1644 024c 7B68     		ldr	r3, [r7, #4]
+ 1645 024e 202B     		cmp	r3, #32
+ 1646 0250 04DD     		ble	.L89
+ 1647              		.loc 1 321 0 is_stmt 0 discriminator 1
+ 1648 0252 7B68     		ldr	r3, [r7, #4]
+ 1649 0254 272B     		cmp	r3, #39
+ 1650 0256 01DC     		bgt	.L89
+ 322:main.c        ****             return true;
+ 1651              		.loc 1 322 0 is_stmt 1
+ 1652 0258 0123     		movs	r3, #1
+ 1653 025a 0AE0     		b	.L32
+ 1654              	.L89:
+ 323:main.c        ****         else if (center_row > 56 && center_row < 64)
+ 1655              		.loc 1 323 0
+ 1656 025c 7B68     		ldr	r3, [r7, #4]
+ 1657 025e 382B     		cmp	r3, #56
+ 1658 0260 04DD     		ble	.L90
+ 1659              		.loc 1 323 0 is_stmt 0 discriminator 1
+ 1660 0262 7B68     		ldr	r3, [r7, #4]
+ 1661 0264 3F2B     		cmp	r3, #63
+ 1662 0266 01DC     		bgt	.L90
+ 324:main.c        ****             return true;
+ 1663              		.loc 1 324 0 is_stmt 1
+ 1664 0268 0123     		movs	r3, #1
+ 1665 026a 02E0     		b	.L32
+ 1666              	.L90:
+ 325:main.c        ****         return false;
+ 1667              		.loc 1 325 0
+ 1668 026c 0023     		movs	r3, #0
+ 1669 026e 00E0     		b	.L32
+ 1670              	.L86:
+ 326:main.c        ****     }
+ 327:main.c        ****     //invalid coord
+ 328:main.c        ****     return false;
+ 1671              		.loc 1 328 0
+ 1672 0270 0023     		movs	r3, #0
+ 1673              	.L32:
+ 329:main.c        **** }
+ 1674              		.loc 1 329 0
+ 1675 0272 1846     		mov	r0, r3
+ 1676 0274 0C37     		adds	r7, r7, #12
+ 1677              		.cfi_def_cfa_offset 4
+ 1678 0276 BD46     		mov	sp, r7
+ 1679              		.cfi_def_cfa_register 13
+ 1680              		@ sp needed
+ 1681 0278 80BC     		pop	{r7}
+ 1682              		.cfi_restore 7
+ 1683              		.cfi_def_cfa_offset 0
+ 1684 027a 7047     		bx	lr
+ 1685              		.cfi_endproc
+ 1686              	.LFE70:
+ 1687              		.size	isValidCoord, .-isValidCoord
+ 1688              		.section	.text.getControllerDir,"ax",%progbits
+ 1689              		.align	2
+ 1690              		.global	getControllerDir
+ 1691              		.thumb
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 37
+
+
+ 1692              		.thumb_func
+ 1693              		.type	getControllerDir, %function
+ 1694              	getControllerDir:
+ 1695              	.LFB71:
+ 330:main.c        **** 
+ 331:main.c        **** enum controller_dir getControllerDir() {
+ 1696              		.loc 1 331 0
+ 1697              		.cfi_startproc
+ 1698              		@ args = 0, pretend = 0, frame = 8
+ 1699              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1700 0000 80B5     		push	{r7, lr}
+ 1701              		.cfi_def_cfa_offset 8
+ 1702              		.cfi_offset 7, -8
+ 1703              		.cfi_offset 14, -4
+ 1704 0002 82B0     		sub	sp, sp, #8
+ 1705              		.cfi_def_cfa_offset 16
+ 1706 0004 00AF     		add	r7, sp, #0
+ 1707              		.cfi_def_cfa_register 7
+ 332:main.c        ****     //Reads DACs to get the direction the controller is in.
+ 333:main.c        ****     enum controller_dir dir;
+ 334:main.c        ****     int16 adcx;
+ 335:main.c        ****     int16 adcy;
+ 336:main.c        ****     //Joystick x
+ 337:main.c        ****     if( ADC_SAR_1_IsEndConversion(ADC_SAR_1_WAIT_FOR_RESULT) )
+ 1708              		.loc 1 337 0
+ 1709 0006 0020     		movs	r0, #0
+ 1710 0008 FFF7FEFF 		bl	ADC_SAR_1_IsEndConversion
+ 1711 000c 0346     		mov	r3, r0
+ 1712 000e 002B     		cmp	r3, #0
+ 1713 0010 03D0     		beq	.L92
+ 338:main.c        **** 	{
+ 339:main.c        **** 		adcx = ADC_SAR_1_GetResult16();		// read the adc and assign the value adcResult 
+ 1714              		.loc 1 339 0
+ 1715 0012 FFF7FEFF 		bl	ADC_SAR_1_GetResult16
+ 1716 0016 0346     		mov	r3, r0
+ 1717 0018 FB80     		strh	r3, [r7, #6]	@ movhi
+ 1718              	.L92:
+ 340:main.c        **** 	}
+ 341:main.c        ****     if (adcx <= 60) {
+ 1719              		.loc 1 341 0
+ 1720 001a B7F90630 		ldrsh	r3, [r7, #6]
+ 1721 001e 3C2B     		cmp	r3, #60
+ 1722 0020 03DC     		bgt	.L93
+ 342:main.c        ****         dir = left;
+ 1723              		.loc 1 342 0
+ 1724 0022 0223     		movs	r3, #2
+ 1725 0024 FB70     		strb	r3, [r7, #3]
+ 343:main.c        ****         return dir;
+ 1726              		.loc 1 343 0
+ 1727 0026 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 1728 0028 24E0     		b	.L94
+ 1729              	.L93:
+ 344:main.c        ****     }
+ 345:main.c        ****     else if (adcx >= 200) {
+ 1730              		.loc 1 345 0
+ 1731 002a B7F90630 		ldrsh	r3, [r7, #6]
+ 1732 002e C72B     		cmp	r3, #199
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 38
+
+
+ 1733 0030 03DD     		ble	.L95
+ 346:main.c        ****         dir = right;
+ 1734              		.loc 1 346 0
+ 1735 0032 0323     		movs	r3, #3
+ 1736 0034 FB70     		strb	r3, [r7, #3]
+ 347:main.c        ****         return dir;
+ 1737              		.loc 1 347 0
+ 1738 0036 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 1739 0038 1CE0     		b	.L94
+ 1740              	.L95:
+ 348:main.c        ****     }
+ 349:main.c        ****     //Joystick y
+ 350:main.c        ****     if( ADC_SAR_2_IsEndConversion(ADC_SAR_2_WAIT_FOR_RESULT) )
+ 1741              		.loc 1 350 0
+ 1742 003a 0020     		movs	r0, #0
+ 1743 003c FFF7FEFF 		bl	ADC_SAR_2_IsEndConversion
+ 1744 0040 0346     		mov	r3, r0
+ 1745 0042 002B     		cmp	r3, #0
+ 1746 0044 03D0     		beq	.L96
+ 351:main.c        **** 	{
+ 352:main.c        **** 		adcy = ADC_SAR_2_GetResult16();		// read the adc and assign the value adcResult 
+ 1747              		.loc 1 352 0
+ 1748 0046 FFF7FEFF 		bl	ADC_SAR_2_GetResult16
+ 1749 004a 0346     		mov	r3, r0
+ 1750 004c BB80     		strh	r3, [r7, #4]	@ movhi
+ 1751              	.L96:
+ 353:main.c        **** 	}
+ 354:main.c        ****     if (adcy <= 60) {
+ 1752              		.loc 1 354 0
+ 1753 004e B7F90430 		ldrsh	r3, [r7, #4]
+ 1754 0052 3C2B     		cmp	r3, #60
+ 1755 0054 03DC     		bgt	.L97
+ 355:main.c        ****         dir = down;
+ 1756              		.loc 1 355 0
+ 1757 0056 0123     		movs	r3, #1
+ 1758 0058 FB70     		strb	r3, [r7, #3]
+ 356:main.c        ****         return dir;
+ 1759              		.loc 1 356 0
+ 1760 005a FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 1761 005c 0AE0     		b	.L94
+ 1762              	.L97:
+ 357:main.c        ****     }
+ 358:main.c        ****     else if (adcy >= 200) {
+ 1763              		.loc 1 358 0
+ 1764 005e B7F90430 		ldrsh	r3, [r7, #4]
+ 1765 0062 C72B     		cmp	r3, #199
+ 1766 0064 03DD     		ble	.L98
+ 359:main.c        ****         dir = up;
+ 1767              		.loc 1 359 0
+ 1768 0066 0023     		movs	r3, #0
+ 1769 0068 FB70     		strb	r3, [r7, #3]
+ 360:main.c        ****         return dir;
+ 1770              		.loc 1 360 0
+ 1771 006a FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 1772 006c 02E0     		b	.L94
+ 1773              	.L98:
+ 361:main.c        ****     }
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 39
+
+
+ 362:main.c        ****     //centered
+ 363:main.c        ****     dir = center;
+ 1774              		.loc 1 363 0
+ 1775 006e 0423     		movs	r3, #4
+ 1776 0070 FB70     		strb	r3, [r7, #3]
+ 364:main.c        ****     return dir;
+ 1777              		.loc 1 364 0
+ 1778 0072 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 1779              	.L94:
+ 365:main.c        **** }
+ 1780              		.loc 1 365 0
+ 1781 0074 1846     		mov	r0, r3
+ 1782 0076 0837     		adds	r7, r7, #8
+ 1783              		.cfi_def_cfa_offset 8
+ 1784 0078 BD46     		mov	sp, r7
+ 1785              		.cfi_def_cfa_register 13
+ 1786              		@ sp needed
+ 1787 007a 80BD     		pop	{r7, pc}
+ 1788              		.cfi_endproc
+ 1789              	.LFE71:
+ 1790              		.size	getControllerDir, .-getControllerDir
+ 1791              		.section	.text.movePacman,"ax",%progbits
+ 1792              		.align	2
+ 1793              		.global	movePacman
+ 1794              		.thumb
+ 1795              		.thumb_func
+ 1796              		.type	movePacman, %function
+ 1797              	movePacman:
+ 1798              	.LFB72:
+ 366:main.c        **** 
+ 367:main.c        **** void movePacman(int center_row, int center_col, enum controller_dir dir) {
+ 1799              		.loc 1 367 0
+ 1800              		.cfi_startproc
+ 1801              		@ args = 0, pretend = 0, frame = 16
+ 1802              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1803 0000 80B5     		push	{r7, lr}
+ 1804              		.cfi_def_cfa_offset 8
+ 1805              		.cfi_offset 7, -8
+ 1806              		.cfi_offset 14, -4
+ 1807 0002 84B0     		sub	sp, sp, #16
+ 1808              		.cfi_def_cfa_offset 24
+ 1809 0004 00AF     		add	r7, sp, #0
+ 1810              		.cfi_def_cfa_register 7
+ 1811 0006 F860     		str	r0, [r7, #12]
+ 1812 0008 B960     		str	r1, [r7, #8]
+ 1813 000a 1346     		mov	r3, r2
+ 1814 000c FB71     		strb	r3, [r7, #7]
+ 368:main.c        ****     //Given Pac-Man old coords and a controller direction, move Pac-Man
+ 369:main.c        ****     //by 1 pixel in controller direction if it's valid.
+ 370:main.c        ****     if (dir == left) {
+ 1815              		.loc 1 370 0
+ 1816 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1817 0010 022B     		cmp	r3, #2
+ 1818 0012 2FD1     		bne	.L100
+ 371:main.c        ****         if (center_row == 45 && center_col == 39) { //teleportation l->r
+ 1819              		.loc 1 371 0
+ 1820 0014 FB68     		ldr	r3, [r7, #12]
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 40
+
+
+ 1821 0016 2D2B     		cmp	r3, #45
+ 1822 0018 12D1     		bne	.L101
+ 1823              		.loc 1 371 0 is_stmt 0 discriminator 1
+ 1824 001a BB68     		ldr	r3, [r7, #8]
+ 1825 001c 272B     		cmp	r3, #39
+ 1826 001e 0FD1     		bne	.L101
+ 372:main.c        ****             pacman_center_y = 89;
+ 1827              		.loc 1 372 0 is_stmt 1
+ 1828 0020 554B     		ldr	r3, .L111
+ 1829 0022 5922     		movs	r2, #89
+ 1830 0024 1A60     		str	r2, [r3]
+ 373:main.c        ****             removePacman(center_row, center_col);
+ 1831              		.loc 1 373 0
+ 1832 0026 B968     		ldr	r1, [r7, #8]
+ 1833 0028 F868     		ldr	r0, [r7, #12]
+ 1834 002a FFF7FEFF 		bl	removePacman
+ 374:main.c        ****             generatePacman(pacman_center_x, pacman_center_y, left);
+ 1835              		.loc 1 374 0
+ 1836 002e 534B     		ldr	r3, .L111+4
+ 1837 0030 1868     		ldr	r0, [r3]
+ 1838 0032 514B     		ldr	r3, .L111
+ 1839 0034 1B68     		ldr	r3, [r3]
+ 1840 0036 0222     		movs	r2, #2
+ 1841 0038 1946     		mov	r1, r3
+ 1842 003a FFF7FEFF 		bl	generatePacman
+ 1843 003e 85E0     		b	.L103
+ 1844              	.L101:
+ 375:main.c        ****         }
+ 376:main.c        ****         else if (isValidCoord(center_row, center_col-1)) {
+ 1845              		.loc 1 376 0
+ 1846 0040 BB68     		ldr	r3, [r7, #8]
+ 1847 0042 013B     		subs	r3, r3, #1
+ 1848 0044 1946     		mov	r1, r3
+ 1849 0046 F868     		ldr	r0, [r7, #12]
+ 1850 0048 FFF7FEFF 		bl	isValidCoord
+ 1851 004c 0346     		mov	r3, r0
+ 1852 004e 002B     		cmp	r3, #0
+ 1853 0050 7CD0     		beq	.L103
+ 377:main.c        ****             //move pacman
+ 378:main.c        ****             pacman_center_y -= 1;
+ 1854              		.loc 1 378 0
+ 1855 0052 494B     		ldr	r3, .L111
+ 1856 0054 1B68     		ldr	r3, [r3]
+ 1857 0056 013B     		subs	r3, r3, #1
+ 1858 0058 474A     		ldr	r2, .L111
+ 1859 005a 1360     		str	r3, [r2]
+ 379:main.c        ****             removePacman(center_row, center_col);
+ 1860              		.loc 1 379 0
+ 1861 005c B968     		ldr	r1, [r7, #8]
+ 1862 005e F868     		ldr	r0, [r7, #12]
+ 1863 0060 FFF7FEFF 		bl	removePacman
+ 380:main.c        ****             generatePacman(center_row, center_col-1, left);
+ 1864              		.loc 1 380 0
+ 1865 0064 BB68     		ldr	r3, [r7, #8]
+ 1866 0066 013B     		subs	r3, r3, #1
+ 1867 0068 0222     		movs	r2, #2
+ 1868 006a 1946     		mov	r1, r3
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 41
+
+
+ 1869 006c F868     		ldr	r0, [r7, #12]
+ 1870 006e FFF7FEFF 		bl	generatePacman
+ 1871 0072 6BE0     		b	.L103
+ 1872              	.L100:
+ 381:main.c        ****         }
+ 382:main.c        ****     }
+ 383:main.c        ****     else if (dir == right) {
+ 1873              		.loc 1 383 0
+ 1874 0074 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1875 0076 032B     		cmp	r3, #3
+ 1876 0078 2FD1     		bne	.L104
+ 384:main.c        ****         if (center_row == 45 && center_col == 89) { //teleportation r->l
+ 1877              		.loc 1 384 0
+ 1878 007a FB68     		ldr	r3, [r7, #12]
+ 1879 007c 2D2B     		cmp	r3, #45
+ 1880 007e 12D1     		bne	.L105
+ 1881              		.loc 1 384 0 is_stmt 0 discriminator 1
+ 1882 0080 BB68     		ldr	r3, [r7, #8]
+ 1883 0082 592B     		cmp	r3, #89
+ 1884 0084 0FD1     		bne	.L105
+ 385:main.c        ****             pacman_center_y = 39;
+ 1885              		.loc 1 385 0 is_stmt 1
+ 1886 0086 3C4B     		ldr	r3, .L111
+ 1887 0088 2722     		movs	r2, #39
+ 1888 008a 1A60     		str	r2, [r3]
+ 386:main.c        ****             removePacman(center_row, center_col);
+ 1889              		.loc 1 386 0
+ 1890 008c B968     		ldr	r1, [r7, #8]
+ 1891 008e F868     		ldr	r0, [r7, #12]
+ 1892 0090 FFF7FEFF 		bl	removePacman
+ 387:main.c        ****             generatePacman(pacman_center_x, pacman_center_y, right);
+ 1893              		.loc 1 387 0
+ 1894 0094 394B     		ldr	r3, .L111+4
+ 1895 0096 1868     		ldr	r0, [r3]
+ 1896 0098 374B     		ldr	r3, .L111
+ 1897 009a 1B68     		ldr	r3, [r3]
+ 1898 009c 0322     		movs	r2, #3
+ 1899 009e 1946     		mov	r1, r3
+ 1900 00a0 FFF7FEFF 		bl	generatePacman
+ 1901 00a4 52E0     		b	.L103
+ 1902              	.L105:
+ 388:main.c        ****         }
+ 389:main.c        ****         else if (isValidCoord(center_row, center_col+1)) {
+ 1903              		.loc 1 389 0
+ 1904 00a6 BB68     		ldr	r3, [r7, #8]
+ 1905 00a8 0133     		adds	r3, r3, #1
+ 1906 00aa 1946     		mov	r1, r3
+ 1907 00ac F868     		ldr	r0, [r7, #12]
+ 1908 00ae FFF7FEFF 		bl	isValidCoord
+ 1909 00b2 0346     		mov	r3, r0
+ 1910 00b4 002B     		cmp	r3, #0
+ 1911 00b6 49D0     		beq	.L103
+ 390:main.c        ****             //move pacman
+ 391:main.c        ****             pacman_center_y += 1;
+ 1912              		.loc 1 391 0
+ 1913 00b8 2F4B     		ldr	r3, .L111
+ 1914 00ba 1B68     		ldr	r3, [r3]
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 42
+
+
+ 1915 00bc 0133     		adds	r3, r3, #1
+ 1916 00be 2E4A     		ldr	r2, .L111
+ 1917 00c0 1360     		str	r3, [r2]
+ 392:main.c        ****             removePacman(center_row, center_col);
+ 1918              		.loc 1 392 0
+ 1919 00c2 B968     		ldr	r1, [r7, #8]
+ 1920 00c4 F868     		ldr	r0, [r7, #12]
+ 1921 00c6 FFF7FEFF 		bl	removePacman
+ 393:main.c        ****             generatePacman(center_row, center_col+1, right);
+ 1922              		.loc 1 393 0
+ 1923 00ca BB68     		ldr	r3, [r7, #8]
+ 1924 00cc 0133     		adds	r3, r3, #1
+ 1925 00ce 0322     		movs	r2, #3
+ 1926 00d0 1946     		mov	r1, r3
+ 1927 00d2 F868     		ldr	r0, [r7, #12]
+ 1928 00d4 FFF7FEFF 		bl	generatePacman
+ 1929 00d8 38E0     		b	.L103
+ 1930              	.L104:
+ 394:main.c        ****         }
+ 395:main.c        ****     }
+ 396:main.c        ****     else if (dir == up) {
+ 1931              		.loc 1 396 0
+ 1932 00da FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1933 00dc 002B     		cmp	r3, #0
+ 1934 00de 19D1     		bne	.L107
+ 397:main.c        ****         if (isValidCoord(center_row+1, center_col)) {
+ 1935              		.loc 1 397 0
+ 1936 00e0 FB68     		ldr	r3, [r7, #12]
+ 1937 00e2 0133     		adds	r3, r3, #1
+ 1938 00e4 B968     		ldr	r1, [r7, #8]
+ 1939 00e6 1846     		mov	r0, r3
+ 1940 00e8 FFF7FEFF 		bl	isValidCoord
+ 1941 00ec 0346     		mov	r3, r0
+ 1942 00ee 002B     		cmp	r3, #0
+ 1943 00f0 2CD0     		beq	.L103
+ 398:main.c        ****             //move pacman
+ 399:main.c        ****             pacman_center_x += 1;
+ 1944              		.loc 1 399 0
+ 1945 00f2 224B     		ldr	r3, .L111+4
+ 1946 00f4 1B68     		ldr	r3, [r3]
+ 1947 00f6 0133     		adds	r3, r3, #1
+ 1948 00f8 204A     		ldr	r2, .L111+4
+ 1949 00fa 1360     		str	r3, [r2]
+ 400:main.c        ****             removePacman(center_row, center_col);
+ 1950              		.loc 1 400 0
+ 1951 00fc B968     		ldr	r1, [r7, #8]
+ 1952 00fe F868     		ldr	r0, [r7, #12]
+ 1953 0100 FFF7FEFF 		bl	removePacman
+ 401:main.c        ****             generatePacman(center_row+1, center_col, up);
+ 1954              		.loc 1 401 0
+ 1955 0104 FB68     		ldr	r3, [r7, #12]
+ 1956 0106 0133     		adds	r3, r3, #1
+ 1957 0108 0022     		movs	r2, #0
+ 1958 010a B968     		ldr	r1, [r7, #8]
+ 1959 010c 1846     		mov	r0, r3
+ 1960 010e FFF7FEFF 		bl	generatePacman
+ 1961 0112 1BE0     		b	.L103
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 43
+
+
+ 1962              	.L107:
+ 402:main.c        ****         }
+ 403:main.c        ****     }
+ 404:main.c        ****     else if (dir == down) {
+ 1963              		.loc 1 404 0
+ 1964 0114 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1965 0116 012B     		cmp	r3, #1
+ 1966 0118 18D1     		bne	.L103
+ 405:main.c        ****         if (isValidCoord(center_row-1, center_col)) {
+ 1967              		.loc 1 405 0
+ 1968 011a FB68     		ldr	r3, [r7, #12]
+ 1969 011c 013B     		subs	r3, r3, #1
+ 1970 011e B968     		ldr	r1, [r7, #8]
+ 1971 0120 1846     		mov	r0, r3
+ 1972 0122 FFF7FEFF 		bl	isValidCoord
+ 1973 0126 0346     		mov	r3, r0
+ 1974 0128 002B     		cmp	r3, #0
+ 1975 012a 0FD0     		beq	.L103
+ 406:main.c        ****             //move pacman
+ 407:main.c        ****             pacman_center_x -= 1;
+ 1976              		.loc 1 407 0
+ 1977 012c 134B     		ldr	r3, .L111+4
+ 1978 012e 1B68     		ldr	r3, [r3]
+ 1979 0130 013B     		subs	r3, r3, #1
+ 1980 0132 124A     		ldr	r2, .L111+4
+ 1981 0134 1360     		str	r3, [r2]
+ 408:main.c        ****             removePacman(center_row, center_col);
+ 1982              		.loc 1 408 0
+ 1983 0136 B968     		ldr	r1, [r7, #8]
+ 1984 0138 F868     		ldr	r0, [r7, #12]
+ 1985 013a FFF7FEFF 		bl	removePacman
+ 409:main.c        ****             generatePacman(center_row-1, center_col, down);
+ 1986              		.loc 1 409 0
+ 1987 013e FB68     		ldr	r3, [r7, #12]
+ 1988 0140 013B     		subs	r3, r3, #1
+ 1989 0142 0122     		movs	r2, #1
+ 1990 0144 B968     		ldr	r1, [r7, #8]
+ 1991 0146 1846     		mov	r0, r3
+ 1992 0148 FFF7FEFF 		bl	generatePacman
+ 1993              	.L103:
+ 410:main.c        ****         }
+ 411:main.c        ****     }
+ 412:main.c        ****     //check for dots
+ 413:main.c        ****     if (uneatenDot(pacman_center_x, pacman_center_y)) {
+ 1994              		.loc 1 413 0
+ 1995 014c 0B4B     		ldr	r3, .L111+4
+ 1996 014e 1A68     		ldr	r2, [r3]
+ 1997 0150 094B     		ldr	r3, .L111
+ 1998 0152 1B68     		ldr	r3, [r3]
+ 1999 0154 1946     		mov	r1, r3
+ 2000 0156 1046     		mov	r0, r2
+ 2001 0158 FFF7FEFF 		bl	uneatenDot
+ 2002 015c 0346     		mov	r3, r0
+ 2003 015e 002B     		cmp	r3, #0
+ 2004 0160 05D0     		beq	.L110
+ 414:main.c        ****         score+=1;
+ 2005              		.loc 1 414 0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 44
+
+
+ 2006 0162 074B     		ldr	r3, .L111+8
+ 2007 0164 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2008 0166 0133     		adds	r3, r3, #1
+ 2009 0168 DAB2     		uxtb	r2, r3
+ 2010 016a 054B     		ldr	r3, .L111+8
+ 2011 016c 1A70     		strb	r2, [r3]
+ 2012              	.L110:
+ 415:main.c        ****     }
+ 416:main.c        **** }
+ 2013              		.loc 1 416 0
+ 2014 016e 00BF     		nop
+ 2015 0170 1037     		adds	r7, r7, #16
+ 2016              		.cfi_def_cfa_offset 8
+ 2017 0172 BD46     		mov	sp, r7
+ 2018              		.cfi_def_cfa_register 13
+ 2019              		@ sp needed
+ 2020 0174 80BD     		pop	{r7, pc}
+ 2021              	.L112:
+ 2022 0176 00BF     		.align	2
+ 2023              	.L111:
+ 2024 0178 00000000 		.word	pacman_center_y
+ 2025 017c 00000000 		.word	pacman_center_x
+ 2026 0180 00000000 		.word	score
+ 2027              		.cfi_endproc
+ 2028              	.LFE72:
+ 2029              		.size	movePacman, .-movePacman
+ 2030              		.section	.text.generateDots,"ax",%progbits
+ 2031              		.align	2
+ 2032              		.global	generateDots
+ 2033              		.thumb
+ 2034              		.thumb_func
+ 2035              		.type	generateDots, %function
+ 2036              	generateDots:
+ 2037              	.LFB73:
+ 417:main.c        **** 
+ 418:main.c        **** void generateDots() {
+ 2038              		.loc 1 418 0
+ 2039              		.cfi_startproc
+ 2040              		@ args = 0, pretend = 0, frame = 24
+ 2041              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2042 0000 80B5     		push	{r7, lr}
+ 2043              		.cfi_def_cfa_offset 8
+ 2044              		.cfi_offset 7, -8
+ 2045              		.cfi_offset 14, -4
+ 2046 0002 86B0     		sub	sp, sp, #24
+ 2047              		.cfi_def_cfa_offset 32
+ 2048 0004 00AF     		add	r7, sp, #0
+ 2049              		.cfi_def_cfa_register 7
+ 419:main.c        ****     //Generates inital dots
+ 420:main.c        ****     int row;
+ 421:main.c        ****     int col;
+ 422:main.c        ****     int inx = 0;
+ 2050              		.loc 1 422 0
+ 2051 0006 0023     		movs	r3, #0
+ 2052 0008 FB60     		str	r3, [r7, #12]
+ 423:main.c        ****     coordTuple tmp;
+ 424:main.c        ****     //top half
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 45
+
+
+ 425:main.c        ****     for (row=19; row<34; row+=2) {
+ 2053              		.loc 1 425 0
+ 2054 000a 1323     		movs	r3, #19
+ 2055 000c 7B61     		str	r3, [r7, #20]
+ 2056 000e 2BE0     		b	.L114
+ 2057              	.L118:
+ 426:main.c        ****         for (col=39; col<90; col+=2) {
+ 2058              		.loc 1 426 0
+ 2059 0010 2723     		movs	r3, #39
+ 2060 0012 3B61     		str	r3, [r7, #16]
+ 2061 0014 22E0     		b	.L115
+ 2062              	.L117:
+ 427:main.c        ****             if (isValidCoord(row, col)) {
+ 2063              		.loc 1 427 0
+ 2064 0016 3969     		ldr	r1, [r7, #16]
+ 2065 0018 7869     		ldr	r0, [r7, #20]
+ 2066 001a FFF7FEFF 		bl	isValidCoord
+ 2067 001e 0346     		mov	r3, r0
+ 2068 0020 002B     		cmp	r3, #0
+ 2069 0022 18D0     		beq	.L116
+ 428:main.c        ****                 buf[row][col] = Colors_WHITE;
+ 2070              		.loc 1 428 0
+ 2071 0024 3F21     		movs	r1, #63
+ 2072 0026 524A     		ldr	r2, .L129
+ 2073 0028 7B69     		ldr	r3, [r7, #20]
+ 2074 002a DB01     		lsls	r3, r3, #7
+ 2075 002c 1A44     		add	r2, r2, r3
+ 2076 002e 3B69     		ldr	r3, [r7, #16]
+ 2077 0030 1344     		add	r3, r3, r2
+ 2078 0032 0A46     		mov	r2, r1
+ 2079 0034 1A70     		strb	r2, [r3]
+ 429:main.c        ****                 tmp.row = row;
+ 2080              		.loc 1 429 0
+ 2081 0036 7B69     		ldr	r3, [r7, #20]
+ 2082 0038 7B60     		str	r3, [r7, #4]
+ 430:main.c        ****                 tmp.col = col;
+ 2083              		.loc 1 430 0
+ 2084 003a 3B69     		ldr	r3, [r7, #16]
+ 2085 003c BB60     		str	r3, [r7, #8]
+ 431:main.c        ****                 dotsCoords[inx] = tmp;
+ 2086              		.loc 1 431 0
+ 2087 003e 4D4A     		ldr	r2, .L129+4
+ 2088 0040 FB68     		ldr	r3, [r7, #12]
+ 2089 0042 DB00     		lsls	r3, r3, #3
+ 2090 0044 1344     		add	r3, r3, r2
+ 2091 0046 3A1D     		adds	r2, r7, #4
+ 2092 0048 92E80300 		ldmia	r2, {r0, r1}
+ 2093 004c 83E80300 		stmia	r3, {r0, r1}
+ 432:main.c        ****                 inx+=1;
+ 2094              		.loc 1 432 0
+ 2095 0050 FB68     		ldr	r3, [r7, #12]
+ 2096 0052 0133     		adds	r3, r3, #1
+ 2097 0054 FB60     		str	r3, [r7, #12]
+ 2098              	.L116:
+ 426:main.c        ****             if (isValidCoord(row, col)) {
+ 2099              		.loc 1 426 0 discriminator 2
+ 2100 0056 3B69     		ldr	r3, [r7, #16]
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 46
+
+
+ 2101 0058 0233     		adds	r3, r3, #2
+ 2102 005a 3B61     		str	r3, [r7, #16]
+ 2103              	.L115:
+ 426:main.c        ****             if (isValidCoord(row, col)) {
+ 2104              		.loc 1 426 0 is_stmt 0 discriminator 1
+ 2105 005c 3B69     		ldr	r3, [r7, #16]
+ 2106 005e 592B     		cmp	r3, #89
+ 2107 0060 D9DD     		ble	.L117
+ 425:main.c        ****         for (col=39; col<90; col+=2) {
+ 2108              		.loc 1 425 0 is_stmt 1 discriminator 2
+ 2109 0062 7B69     		ldr	r3, [r7, #20]
+ 2110 0064 0233     		adds	r3, r3, #2
+ 2111 0066 7B61     		str	r3, [r7, #20]
+ 2112              	.L114:
+ 425:main.c        ****         for (col=39; col<90; col+=2) {
+ 2113              		.loc 1 425 0 is_stmt 0 discriminator 1
+ 2114 0068 7B69     		ldr	r3, [r7, #20]
+ 2115 006a 212B     		cmp	r3, #33
+ 2116 006c D0DD     		ble	.L118
+ 433:main.c        ****             }
+ 434:main.c        ****         }
+ 435:main.c        ****     }
+ 436:main.c        ****     //bottom half
+ 437:main.c        ****     for (row=57; row<76; row+=2) {
+ 2117              		.loc 1 437 0 is_stmt 1
+ 2118 006e 3923     		movs	r3, #57
+ 2119 0070 7B61     		str	r3, [r7, #20]
+ 2120 0072 34E0     		b	.L119
+ 2121              	.L124:
+ 438:main.c        ****         for (col=39; col<90; col+=2) {
+ 2122              		.loc 1 438 0
+ 2123 0074 2723     		movs	r3, #39
+ 2124 0076 3B61     		str	r3, [r7, #16]
+ 2125 0078 2BE0     		b	.L120
+ 2126              	.L123:
+ 439:main.c        ****             if (isValidCoord(row, col)) {
+ 2127              		.loc 1 439 0
+ 2128 007a 3969     		ldr	r1, [r7, #16]
+ 2129 007c 7869     		ldr	r0, [r7, #20]
+ 2130 007e FFF7FEFF 		bl	isValidCoord
+ 2131 0082 0346     		mov	r3, r0
+ 2132 0084 002B     		cmp	r3, #0
+ 2133 0086 21D0     		beq	.L121
+ 440:main.c        ****                 if ((row!=63) || (col<62||col>66)) { //no dots on starting pacman pos
+ 2134              		.loc 1 440 0
+ 2135 0088 7B69     		ldr	r3, [r7, #20]
+ 2136 008a 3F2B     		cmp	r3, #63
+ 2137 008c 05D1     		bne	.L122
+ 2138              		.loc 1 440 0 is_stmt 0 discriminator 1
+ 2139 008e 3B69     		ldr	r3, [r7, #16]
+ 2140 0090 3D2B     		cmp	r3, #61
+ 2141 0092 02DD     		ble	.L122
+ 2142              		.loc 1 440 0 discriminator 2
+ 2143 0094 3B69     		ldr	r3, [r7, #16]
+ 2144 0096 422B     		cmp	r3, #66
+ 2145 0098 18DD     		ble	.L121
+ 2146              	.L122:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 47
+
+
+ 441:main.c        ****                     buf[row][col] = Colors_WHITE;
+ 2147              		.loc 1 441 0 is_stmt 1
+ 2148 009a 3F21     		movs	r1, #63
+ 2149 009c 344A     		ldr	r2, .L129
+ 2150 009e 7B69     		ldr	r3, [r7, #20]
+ 2151 00a0 DB01     		lsls	r3, r3, #7
+ 2152 00a2 1A44     		add	r2, r2, r3
+ 2153 00a4 3B69     		ldr	r3, [r7, #16]
+ 2154 00a6 1344     		add	r3, r3, r2
+ 2155 00a8 0A46     		mov	r2, r1
+ 2156 00aa 1A70     		strb	r2, [r3]
+ 442:main.c        ****                     tmp.row = row;
+ 2157              		.loc 1 442 0
+ 2158 00ac 7B69     		ldr	r3, [r7, #20]
+ 2159 00ae 7B60     		str	r3, [r7, #4]
+ 443:main.c        ****                     tmp.col = col;
+ 2160              		.loc 1 443 0
+ 2161 00b0 3B69     		ldr	r3, [r7, #16]
+ 2162 00b2 BB60     		str	r3, [r7, #8]
+ 444:main.c        ****                     dotsCoords[inx] = tmp;
+ 2163              		.loc 1 444 0
+ 2164 00b4 2F4A     		ldr	r2, .L129+4
+ 2165 00b6 FB68     		ldr	r3, [r7, #12]
+ 2166 00b8 DB00     		lsls	r3, r3, #3
+ 2167 00ba 1344     		add	r3, r3, r2
+ 2168 00bc 3A1D     		adds	r2, r7, #4
+ 2169 00be 92E80300 		ldmia	r2, {r0, r1}
+ 2170 00c2 83E80300 		stmia	r3, {r0, r1}
+ 445:main.c        ****                     inx+=1;
+ 2171              		.loc 1 445 0
+ 2172 00c6 FB68     		ldr	r3, [r7, #12]
+ 2173 00c8 0133     		adds	r3, r3, #1
+ 2174 00ca FB60     		str	r3, [r7, #12]
+ 2175              	.L121:
+ 438:main.c        ****             if (isValidCoord(row, col)) {
+ 2176              		.loc 1 438 0 discriminator 2
+ 2177 00cc 3B69     		ldr	r3, [r7, #16]
+ 2178 00ce 0233     		adds	r3, r3, #2
+ 2179 00d0 3B61     		str	r3, [r7, #16]
+ 2180              	.L120:
+ 438:main.c        ****             if (isValidCoord(row, col)) {
+ 2181              		.loc 1 438 0 is_stmt 0 discriminator 1
+ 2182 00d2 3B69     		ldr	r3, [r7, #16]
+ 2183 00d4 592B     		cmp	r3, #89
+ 2184 00d6 D0DD     		ble	.L123
+ 437:main.c        ****         for (col=39; col<90; col+=2) {
+ 2185              		.loc 1 437 0 is_stmt 1 discriminator 2
+ 2186 00d8 7B69     		ldr	r3, [r7, #20]
+ 2187 00da 0233     		adds	r3, r3, #2
+ 2188 00dc 7B61     		str	r3, [r7, #20]
+ 2189              	.L119:
+ 437:main.c        ****         for (col=39; col<90; col+=2) {
+ 2190              		.loc 1 437 0 is_stmt 0 discriminator 1
+ 2191 00de 7B69     		ldr	r3, [r7, #20]
+ 2192 00e0 4B2B     		cmp	r3, #75
+ 2193 00e2 C7DD     		ble	.L124
+ 446:main.c        ****                 }
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 48
+
+
+ 447:main.c        ****             }
+ 448:main.c        ****         }
+ 449:main.c        ****     }
+ 450:main.c        ****     //left col
+ 451:main.c        ****     for (row=35; row<56; row+=2) {
+ 2194              		.loc 1 451 0 is_stmt 1
+ 2195 00e4 2323     		movs	r3, #35
+ 2196 00e6 7B61     		str	r3, [r7, #20]
+ 2197 00e8 1AE0     		b	.L125
+ 2198              	.L126:
+ 452:main.c        ****         buf[row][49] = Colors_WHITE;
+ 2199              		.loc 1 452 0 discriminator 3
+ 2200 00ea 3F21     		movs	r1, #63
+ 2201 00ec 204A     		ldr	r2, .L129
+ 2202 00ee 7B69     		ldr	r3, [r7, #20]
+ 2203 00f0 DB01     		lsls	r3, r3, #7
+ 2204 00f2 1344     		add	r3, r3, r2
+ 2205 00f4 3133     		adds	r3, r3, #49
+ 2206 00f6 0A46     		mov	r2, r1
+ 2207 00f8 1A70     		strb	r2, [r3]
+ 453:main.c        ****         tmp.row = row;
+ 2208              		.loc 1 453 0 discriminator 3
+ 2209 00fa 7B69     		ldr	r3, [r7, #20]
+ 2210 00fc 7B60     		str	r3, [r7, #4]
+ 454:main.c        ****         tmp.col = col;
+ 2211              		.loc 1 454 0 discriminator 3
+ 2212 00fe 3B69     		ldr	r3, [r7, #16]
+ 2213 0100 BB60     		str	r3, [r7, #8]
+ 455:main.c        ****         dotsCoords[inx] = tmp;
+ 2214              		.loc 1 455 0 discriminator 3
+ 2215 0102 1C4A     		ldr	r2, .L129+4
+ 2216 0104 FB68     		ldr	r3, [r7, #12]
+ 2217 0106 DB00     		lsls	r3, r3, #3
+ 2218 0108 1344     		add	r3, r3, r2
+ 2219 010a 3A1D     		adds	r2, r7, #4
+ 2220 010c 92E80300 		ldmia	r2, {r0, r1}
+ 2221 0110 83E80300 		stmia	r3, {r0, r1}
+ 456:main.c        ****         inx+=1;
+ 2222              		.loc 1 456 0 discriminator 3
+ 2223 0114 FB68     		ldr	r3, [r7, #12]
+ 2224 0116 0133     		adds	r3, r3, #1
+ 2225 0118 FB60     		str	r3, [r7, #12]
+ 451:main.c        ****         buf[row][49] = Colors_WHITE;
+ 2226              		.loc 1 451 0 discriminator 3
+ 2227 011a 7B69     		ldr	r3, [r7, #20]
+ 2228 011c 0233     		adds	r3, r3, #2
+ 2229 011e 7B61     		str	r3, [r7, #20]
+ 2230              	.L125:
+ 451:main.c        ****         buf[row][49] = Colors_WHITE;
+ 2231              		.loc 1 451 0 is_stmt 0 discriminator 1
+ 2232 0120 7B69     		ldr	r3, [r7, #20]
+ 2233 0122 372B     		cmp	r3, #55
+ 2234 0124 E1DD     		ble	.L126
+ 457:main.c        ****     }
+ 458:main.c        ****     //right col
+ 459:main.c        ****     for (row=35; row<56; row+=2) {
+ 2235              		.loc 1 459 0 is_stmt 1
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 49
+
+
+ 2236 0126 2323     		movs	r3, #35
+ 2237 0128 7B61     		str	r3, [r7, #20]
+ 2238 012a 1AE0     		b	.L127
+ 2239              	.L128:
+ 460:main.c        ****         buf[row][79] = Colors_WHITE;
+ 2240              		.loc 1 460 0 discriminator 3
+ 2241 012c 3F21     		movs	r1, #63
+ 2242 012e 104A     		ldr	r2, .L129
+ 2243 0130 7B69     		ldr	r3, [r7, #20]
+ 2244 0132 DB01     		lsls	r3, r3, #7
+ 2245 0134 1344     		add	r3, r3, r2
+ 2246 0136 4F33     		adds	r3, r3, #79
+ 2247 0138 0A46     		mov	r2, r1
+ 2248 013a 1A70     		strb	r2, [r3]
+ 461:main.c        ****         tmp.row = row;
+ 2249              		.loc 1 461 0 discriminator 3
+ 2250 013c 7B69     		ldr	r3, [r7, #20]
+ 2251 013e 7B60     		str	r3, [r7, #4]
+ 462:main.c        ****         tmp.col = col;
+ 2252              		.loc 1 462 0 discriminator 3
+ 2253 0140 3B69     		ldr	r3, [r7, #16]
+ 2254 0142 BB60     		str	r3, [r7, #8]
+ 463:main.c        ****         dotsCoords[inx] = tmp;
+ 2255              		.loc 1 463 0 discriminator 3
+ 2256 0144 0B4A     		ldr	r2, .L129+4
+ 2257 0146 FB68     		ldr	r3, [r7, #12]
+ 2258 0148 DB00     		lsls	r3, r3, #3
+ 2259 014a 1344     		add	r3, r3, r2
+ 2260 014c 3A1D     		adds	r2, r7, #4
+ 2261 014e 92E80300 		ldmia	r2, {r0, r1}
+ 2262 0152 83E80300 		stmia	r3, {r0, r1}
+ 464:main.c        ****         inx+=1;
+ 2263              		.loc 1 464 0 discriminator 3
+ 2264 0156 FB68     		ldr	r3, [r7, #12]
+ 2265 0158 0133     		adds	r3, r3, #1
+ 2266 015a FB60     		str	r3, [r7, #12]
+ 459:main.c        ****         buf[row][79] = Colors_WHITE;
+ 2267              		.loc 1 459 0 discriminator 3
+ 2268 015c 7B69     		ldr	r3, [r7, #20]
+ 2269 015e 0233     		adds	r3, r3, #2
+ 2270 0160 7B61     		str	r3, [r7, #20]
+ 2271              	.L127:
+ 459:main.c        ****         buf[row][79] = Colors_WHITE;
+ 2272              		.loc 1 459 0 is_stmt 0 discriminator 1
+ 2273 0162 7B69     		ldr	r3, [r7, #20]
+ 2274 0164 372B     		cmp	r3, #55
+ 2275 0166 E1DD     		ble	.L128
+ 465:main.c        ****     }
+ 466:main.c        **** }
+ 2276              		.loc 1 466 0 is_stmt 1
+ 2277 0168 00BF     		nop
+ 2278 016a 1837     		adds	r7, r7, #24
+ 2279              		.cfi_def_cfa_offset 8
+ 2280 016c BD46     		mov	sp, r7
+ 2281              		.cfi_def_cfa_register 13
+ 2282              		@ sp needed
+ 2283 016e 80BD     		pop	{r7, pc}
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 50
+
+
+ 2284              	.L130:
+ 2285              		.align	2
+ 2286              	.L129:
+ 2287 0170 00000000 		.word	buf
+ 2288 0174 00000000 		.word	dotsCoords
+ 2289              		.cfi_endproc
+ 2290              	.LFE73:
+ 2291              		.size	generateDots, .-generateDots
+ 2292              		.section	.text.uneatenDot,"ax",%progbits
+ 2293              		.align	2
+ 2294              		.global	uneatenDot
+ 2295              		.thumb
+ 2296              		.thumb_func
+ 2297              		.type	uneatenDot, %function
+ 2298              	uneatenDot:
+ 2299              	.LFB74:
+ 467:main.c        **** 
+ 468:main.c        **** bool uneatenDot(int row, int col) {
+ 2300              		.loc 1 468 0
+ 2301              		.cfi_startproc
+ 2302              		@ args = 0, pretend = 0, frame = 16
+ 2303              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2304              		@ link register save eliminated.
+ 2305 0000 80B4     		push	{r7}
+ 2306              		.cfi_def_cfa_offset 4
+ 2307              		.cfi_offset 7, -4
+ 2308 0002 85B0     		sub	sp, sp, #20
+ 2309              		.cfi_def_cfa_offset 24
+ 2310 0004 00AF     		add	r7, sp, #0
+ 2311              		.cfi_def_cfa_register 7
+ 2312 0006 7860     		str	r0, [r7, #4]
+ 2313 0008 3960     		str	r1, [r7]
+ 469:main.c        ****     //Returns True if dot is uneaten and changes it to eaten
+ 470:main.c        ****     //and False if dot has been eaten
+ 471:main.c        ****     int i;
+ 472:main.c        ****     for (i=0; i<244; i++) {
+ 2314              		.loc 1 472 0
+ 2315 000a 0023     		movs	r3, #0
+ 2316 000c FB60     		str	r3, [r7, #12]
+ 2317 000e 21E0     		b	.L132
+ 2318              	.L135:
+ 473:main.c        ****         if (dotsCoords[i].row==row && dotsCoords[i].col==col && !isEaten[i]) {
+ 2319              		.loc 1 473 0
+ 2320 0010 154A     		ldr	r2, .L136
+ 2321 0012 FB68     		ldr	r3, [r7, #12]
+ 2322 0014 52F83320 		ldr	r2, [r2, r3, lsl #3]
+ 2323 0018 7B68     		ldr	r3, [r7, #4]
+ 2324 001a 9A42     		cmp	r2, r3
+ 2325 001c 17D1     		bne	.L133
+ 2326              		.loc 1 473 0 is_stmt 0 discriminator 1
+ 2327 001e 124A     		ldr	r2, .L136
+ 2328 0020 FB68     		ldr	r3, [r7, #12]
+ 2329 0022 DB00     		lsls	r3, r3, #3
+ 2330 0024 1344     		add	r3, r3, r2
+ 2331 0026 5A68     		ldr	r2, [r3, #4]
+ 2332 0028 3B68     		ldr	r3, [r7]
+ 2333 002a 9A42     		cmp	r2, r3
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 51
+
+
+ 2334 002c 0FD1     		bne	.L133
+ 2335              		.loc 1 473 0 discriminator 2
+ 2336 002e 0F4A     		ldr	r2, .L136+4
+ 2337 0030 FB68     		ldr	r3, [r7, #12]
+ 2338 0032 1344     		add	r3, r3, r2
+ 2339 0034 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2340 0036 83F00103 		eor	r3, r3, #1
+ 2341 003a DBB2     		uxtb	r3, r3
+ 2342 003c 002B     		cmp	r3, #0
+ 2343 003e 06D0     		beq	.L133
+ 474:main.c        ****             isEaten[i] = true;
+ 2344              		.loc 1 474 0 is_stmt 1
+ 2345 0040 0A4A     		ldr	r2, .L136+4
+ 2346 0042 FB68     		ldr	r3, [r7, #12]
+ 2347 0044 1344     		add	r3, r3, r2
+ 2348 0046 0122     		movs	r2, #1
+ 2349 0048 1A70     		strb	r2, [r3]
+ 475:main.c        ****             return true;
+ 2350              		.loc 1 475 0
+ 2351 004a 0123     		movs	r3, #1
+ 2352 004c 06E0     		b	.L134
+ 2353              	.L133:
+ 472:main.c        ****         if (dotsCoords[i].row==row && dotsCoords[i].col==col && !isEaten[i]) {
+ 2354              		.loc 1 472 0 discriminator 2
+ 2355 004e FB68     		ldr	r3, [r7, #12]
+ 2356 0050 0133     		adds	r3, r3, #1
+ 2357 0052 FB60     		str	r3, [r7, #12]
+ 2358              	.L132:
+ 472:main.c        ****         if (dotsCoords[i].row==row && dotsCoords[i].col==col && !isEaten[i]) {
+ 2359              		.loc 1 472 0 is_stmt 0 discriminator 1
+ 2360 0054 FB68     		ldr	r3, [r7, #12]
+ 2361 0056 F32B     		cmp	r3, #243
+ 2362 0058 DADD     		ble	.L135
+ 476:main.c        ****         }
+ 477:main.c        ****     }
+ 478:main.c        ****     return false; //not found
+ 2363              		.loc 1 478 0 is_stmt 1
+ 2364 005a 0023     		movs	r3, #0
+ 2365              	.L134:
+ 479:main.c        **** }
+ 2366              		.loc 1 479 0
+ 2367 005c 1846     		mov	r0, r3
+ 2368 005e 1437     		adds	r7, r7, #20
+ 2369              		.cfi_def_cfa_offset 4
+ 2370 0060 BD46     		mov	sp, r7
+ 2371              		.cfi_def_cfa_register 13
+ 2372              		@ sp needed
+ 2373 0062 80BC     		pop	{r7}
+ 2374              		.cfi_restore 7
+ 2375              		.cfi_def_cfa_offset 0
+ 2376 0064 7047     		bx	lr
+ 2377              	.L137:
+ 2378 0066 00BF     		.align	2
+ 2379              	.L136:
+ 2380 0068 00000000 		.word	dotsCoords
+ 2381 006c 00000000 		.word	isEaten
+ 2382              		.cfi_endproc
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 52
+
+
+ 2383              	.LFE74:
+ 2384              		.size	uneatenDot, .-uneatenDot
+ 2385              		.section	.text.main,"ax",%progbits
+ 2386              		.align	2
+ 2387              		.global	main
+ 2388              		.thumb
+ 2389              		.thumb_func
+ 2390              		.type	main, %function
+ 2391              	main:
+ 2392              	.LFB75:
+ 480:main.c        **** 
+ 481:main.c        **** ////////////////////////////////////////////////////////
+ 482:main.c        **** ///// Main                                         /////
+ 483:main.c        **** ////////////////////////////////////////////////////////
+ 484:main.c        **** void main() {
+ 2393              		.loc 1 484 0
+ 2394              		.cfi_startproc
+ 2395              		@ args = 0, pretend = 0, frame = 8
+ 2396              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2397 0000 80B5     		push	{r7, lr}
+ 2398              		.cfi_def_cfa_offset 8
+ 2399              		.cfi_offset 7, -8
+ 2400              		.cfi_offset 14, -4
+ 2401 0002 82B0     		sub	sp, sp, #8
+ 2402              		.cfi_def_cfa_offset 16
+ 2403 0004 00AF     		add	r7, sp, #0
+ 2404              		.cfi_def_cfa_register 7
+ 485:main.c        ****     CyGlobalIntEnable;
+ 2405              		.loc 1 485 0
+ 2406              		.syntax unified
+ 2407              	@ 485 "main.c" 1
+ 2408 0006 62B6     		CPSIE   i
+ 2409              	@ 0 "" 2
+ 486:main.c        ****     
+ 487:main.c        ****     //UART
+ 488:main.c        ****     UART_Start();
+ 2410              		.loc 1 488 0
+ 2411              		.thumb
+ 2412              		.syntax unified
+ 2413 0008 FFF7FEFF 		bl	UART_Start
+ 489:main.c        ****     
+ 490:main.c        ****     //ADC
+ 491:main.c        ****     ADC_SAR_1_Start();
+ 2414              		.loc 1 491 0
+ 2415 000c FFF7FEFF 		bl	ADC_SAR_1_Start
+ 492:main.c        ****     ADC_SAR_1_StartConvert();
+ 2416              		.loc 1 492 0
+ 2417 0010 FFF7FEFF 		bl	ADC_SAR_1_StartConvert
+ 493:main.c        ****     ADC_SAR_2_Start();
+ 2418              		.loc 1 493 0
+ 2419 0014 FFF7FEFF 		bl	ADC_SAR_2_Start
+ 494:main.c        ****     ADC_SAR_2_StartConvert();
+ 2420              		.loc 1 494 0
+ 2421 0018 FFF7FEFF 		bl	ADC_SAR_2_StartConvert
+ 495:main.c        ****     
+ 496:main.c        ****     // Initialize the DMA.
+ 497:main.c        ****     dma_td = CyDmaTdAllocate();
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 53
+
+
+ 2422              		.loc 1 497 0
+ 2423 001c FFF7FEFF 		bl	CyDmaTdAllocate
+ 2424 0020 0346     		mov	r3, r0
+ 2425 0022 1A46     		mov	r2, r3
+ 2426 0024 2D4B     		ldr	r3, .L140
+ 2427 0026 1A70     		strb	r2, [r3]
+ 498:main.c        ****     dma_chan = DMA_DmaInitialize(1, 0, HI16(CYDEV_SRAM_BASE), HI16(CYDEV_PERIPH_BASE));
+ 2428              		.loc 1 498 0
+ 2429 0028 4FF48043 		mov	r3, #16384
+ 2430 002c 41F6FF72 		movw	r2, #8191
+ 2431 0030 0021     		movs	r1, #0
+ 2432 0032 0120     		movs	r0, #1
+ 2433 0034 FFF7FEFF 		bl	DMA_DmaInitialize
+ 2434 0038 0346     		mov	r3, r0
+ 2435 003a 1A46     		mov	r2, r3
+ 2436 003c 284B     		ldr	r3, .L140+4
+ 2437 003e 1A70     		strb	r2, [r3]
+ 499:main.c        ****     CyDmaTdSetConfiguration(dma_td, 128, dma_td, DMA__TD_TERMOUT_EN | TD_INC_SRC_ADR);
+ 2438              		.loc 1 499 0
+ 2439 0040 264B     		ldr	r3, .L140
+ 2440 0042 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 2441 0044 254B     		ldr	r3, .L140
+ 2442 0046 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 2443 0048 0523     		movs	r3, #5
+ 2444 004a 8021     		movs	r1, #128
+ 2445 004c FFF7FEFF 		bl	CyDmaTdSetConfiguration
+ 500:main.c        ****     CyDmaTdSetAddress(dma_td, 0, LO16((uint32) PIXEL_Control_PTR));
+ 2446              		.loc 1 500 0
+ 2447 0050 224B     		ldr	r3, .L140
+ 2448 0052 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2449 0054 46F27752 		movw	r2, #25975
+ 2450 0058 0021     		movs	r1, #0
+ 2451 005a 1846     		mov	r0, r3
+ 2452 005c FFF7FEFF 		bl	CyDmaTdSetAddress
+ 501:main.c        ****     CyDmaChSetInitialTd(dma_chan, dma_td);
+ 2453              		.loc 1 501 0
+ 2454 0060 1F4B     		ldr	r3, .L140+4
+ 2455 0062 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 2456 0064 1D4B     		ldr	r3, .L140
+ 2457 0066 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2458 0068 1946     		mov	r1, r3
+ 2459 006a 1046     		mov	r0, r2
+ 2460 006c FFF7FEFF 		bl	CyDmaChSetInitialTd
+ 502:main.c        ****     CyDmaChEnable(dma_chan, 1);
+ 2461              		.loc 1 502 0
+ 2462 0070 1B4B     		ldr	r3, .L140+4
+ 2463 0072 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2464 0074 0121     		movs	r1, #1
+ 2465 0076 1846     		mov	r0, r3
+ 2466 0078 FFF7FEFF 		bl	CyDmaChEnable
+ 503:main.c        ****     
+ 504:main.c        ****     // Start all of the timing counters.
+ 505:main.c        ****     HORIZ_Start();
+ 2467              		.loc 1 505 0
+ 2468 007c FFF7FEFF 		bl	HORIZ_Start
+ 506:main.c        ****     VERT_Start();
+ 2469              		.loc 1 506 0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 54
+
+
+ 2470 0080 FFF7FEFF 		bl	VERT_Start
+ 507:main.c        ****     HSYNC_Start();
+ 2471              		.loc 1 507 0
+ 2472 0084 FFF7FEFF 		bl	HSYNC_Start
+ 508:main.c        ****     VSYNC_Start();
+ 2473              		.loc 1 508 0
+ 2474 0088 FFF7FEFF 		bl	VSYNC_Start
+ 509:main.c        ****     NEWLINE_StartEx(newline);
+ 2475              		.loc 1 509 0
+ 2476 008c 1548     		ldr	r0, .L140+8
+ 2477 008e FFF7FEFF 		bl	NEWLINE_StartEx
+ 510:main.c        ****     
+ 511:main.c        ****     //WALL GENERATE
+ 512:main.c        ****     generateWalls();
+ 2478              		.loc 1 512 0
+ 2479 0092 FFF7FEFF 		bl	generateWalls
+ 513:main.c        ****     generateDots();
+ 2480              		.loc 1 513 0
+ 2481 0096 FFF7FEFF 		bl	generateDots
+ 514:main.c        ****     generatePacman(pacman_center_x, pacman_center_y, center);
+ 2482              		.loc 1 514 0
+ 2483 009a 134B     		ldr	r3, .L140+12
+ 2484 009c 1868     		ldr	r0, [r3]
+ 2485 009e 134B     		ldr	r3, .L140+16
+ 2486 00a0 1B68     		ldr	r3, [r3]
+ 2487 00a2 0422     		movs	r2, #4
+ 2488 00a4 1946     		mov	r1, r3
+ 2489 00a6 FFF7FEFF 		bl	generatePacman
+ 515:main.c        ****     update();
+ 2490              		.loc 1 515 0
+ 2491 00aa FFF7FEFF 		bl	update
+ 2492              	.L139:
+ 2493              	.LBB2:
+ 516:main.c        ****     
+ 517:main.c        ****     for(;;) {
+ 518:main.c        ****         //move pacman
+ 519:main.c        ****         enum controller_dir dir = getControllerDir();
+ 2494              		.loc 1 519 0 discriminator 1
+ 2495 00ae FFF7FEFF 		bl	getControllerDir
+ 2496 00b2 0346     		mov	r3, r0
+ 2497 00b4 FB71     		strb	r3, [r7, #7]
+ 520:main.c        ****         movePacman(pacman_center_x, pacman_center_y, dir);
+ 2498              		.loc 1 520 0 discriminator 1
+ 2499 00b6 0C4B     		ldr	r3, .L140+12
+ 2500 00b8 1868     		ldr	r0, [r3]
+ 2501 00ba 0C4B     		ldr	r3, .L140+16
+ 2502 00bc 1B68     		ldr	r3, [r3]
+ 2503 00be FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 2504 00c0 1946     		mov	r1, r3
+ 2505 00c2 FFF7FEFF 		bl	movePacman
+ 521:main.c        ****         
+ 522:main.c        ****         //transmit score (UART)
+ 523:main.c        ****         UART_PutChar(score); //low byte
+ 2506              		.loc 1 523 0 discriminator 1
+ 2507 00c6 0A4B     		ldr	r3, .L140+20
+ 2508 00c8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2509 00ca 1846     		mov	r0, r3
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 55
+
+
+ 2510 00cc FFF7FEFF 		bl	UART_PutChar
+ 524:main.c        **** 
+ 525:main.c        ****         //misc.
+ 526:main.c        ****         update();
+ 2511              		.loc 1 526 0 discriminator 1
+ 2512 00d0 FFF7FEFF 		bl	update
+ 527:main.c        ****         CyDelay(55);  // can't check UART too quickly or bus saturation causes graphics blips
+ 2513              		.loc 1 527 0 discriminator 1
+ 2514 00d4 3720     		movs	r0, #55
+ 2515 00d6 FFF7FEFF 		bl	CyDelay
+ 2516              	.LBE2:
+ 528:main.c        ****     }
+ 2517              		.loc 1 528 0 discriminator 1
+ 2518 00da E8E7     		b	.L139
+ 2519              	.L141:
+ 2520              		.align	2
+ 2521              	.L140:
+ 2522 00dc 00000000 		.word	dma_td
+ 2523 00e0 00000000 		.word	dma_chan
+ 2524 00e4 00000000 		.word	newline
+ 2525 00e8 00000000 		.word	pacman_center_x
+ 2526 00ec 00000000 		.word	pacman_center_y
+ 2527 00f0 00000000 		.word	score
+ 2528              		.cfi_endproc
+ 2529              	.LFE75:
+ 2530              		.size	main, .-main
+ 2531              		.text
+ 2532              	.Letext0:
+ 2533              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 2534              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 2535              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 2536              		.file 5 "Generated_Source\\PSoC5/CYDMAC.H"
+ 2537              		.file 6 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 2538              		.file 7 "Generated_Source\\PSoC5/core_cm3.h"
+ 2539              		.section	.debug_info,"",%progbits
+ 2540              	.Ldebug_info0:
+ 2541 0000 C1050000 		.4byte	0x5c1
+ 2542 0004 0400     		.2byte	0x4
+ 2543 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 2544 000a 04       		.byte	0x4
+ 2545 000b 01       		.uleb128 0x1
+ 2546 000c D8000000 		.4byte	.LASF66
+ 2547 0010 0C       		.byte	0xc
+ 2548 0011 BE020000 		.4byte	.LASF67
+ 2549 0015 27000000 		.4byte	.LASF68
+ 2550 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 2551 001d 00000000 		.4byte	0
+ 2552 0021 00000000 		.4byte	.Ldebug_line0
+ 2553 0025 02       		.uleb128 0x2
+ 2554 0026 01       		.byte	0x1
+ 2555 0027 06       		.byte	0x6
+ 2556 0028 1C020000 		.4byte	.LASF0
+ 2557 002c 02       		.uleb128 0x2
+ 2558 002d 01       		.byte	0x1
+ 2559 002e 08       		.byte	0x8
+ 2560 002f 01020000 		.4byte	.LASF1
+ 2561 0033 02       		.uleb128 0x2
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 56
+
+
+ 2562 0034 02       		.byte	0x2
+ 2563 0035 05       		.byte	0x5
+ 2564 0036 9D000000 		.4byte	.LASF2
+ 2565 003a 02       		.uleb128 0x2
+ 2566 003b 02       		.byte	0x2
+ 2567 003c 07       		.byte	0x7
+ 2568 003d 81020000 		.4byte	.LASF3
+ 2569 0041 03       		.uleb128 0x3
+ 2570 0042 FC020000 		.4byte	.LASF9
+ 2571 0046 02       		.byte	0x2
+ 2572 0047 3F       		.byte	0x3f
+ 2573 0048 4C000000 		.4byte	0x4c
+ 2574 004c 02       		.uleb128 0x2
+ 2575 004d 04       		.byte	0x4
+ 2576 004e 05       		.byte	0x5
+ 2577 004f D8010000 		.4byte	.LASF4
+ 2578 0053 02       		.uleb128 0x2
+ 2579 0054 04       		.byte	0x4
+ 2580 0055 07       		.byte	0x7
+ 2581 0056 CA020000 		.4byte	.LASF5
+ 2582 005a 02       		.uleb128 0x2
+ 2583 005b 08       		.byte	0x8
+ 2584 005c 05       		.byte	0x5
+ 2585 005d A9010000 		.4byte	.LASF6
+ 2586 0061 02       		.uleb128 0x2
+ 2587 0062 08       		.byte	0x8
+ 2588 0063 07       		.byte	0x7
+ 2589 0064 2E020000 		.4byte	.LASF7
+ 2590 0068 04       		.uleb128 0x4
+ 2591 0069 04       		.byte	0x4
+ 2592 006a 05       		.byte	0x5
+ 2593 006b 696E7400 		.ascii	"int\000"
+ 2594 006f 02       		.uleb128 0x2
+ 2595 0070 04       		.byte	0x4
+ 2596 0071 07       		.byte	0x7
+ 2597 0072 45020000 		.4byte	.LASF8
+ 2598 0076 03       		.uleb128 0x3
+ 2599 0077 E1010000 		.4byte	.LASF10
+ 2600 007b 03       		.byte	0x3
+ 2601 007c 2C       		.byte	0x2c
+ 2602 007d 41000000 		.4byte	0x41
+ 2603 0081 05       		.uleb128 0x5
+ 2604 0082 98010000 		.4byte	.LASF11
+ 2605 0086 04       		.byte	0x4
+ 2606 0087 E401     		.2byte	0x1e4
+ 2607 0089 2C000000 		.4byte	0x2c
+ 2608 008d 05       		.uleb128 0x5
+ 2609 008e 8B010000 		.4byte	.LASF12
+ 2610 0092 04       		.byte	0x4
+ 2611 0093 E501     		.2byte	0x1e5
+ 2612 0095 3A000000 		.4byte	0x3a
+ 2613 0099 05       		.uleb128 0x5
+ 2614 009a B7020000 		.4byte	.LASF13
+ 2615 009e 04       		.byte	0x4
+ 2616 009f E601     		.2byte	0x1e6
+ 2617 00a1 53000000 		.4byte	0x53
+ 2618 00a5 05       		.uleb128 0x5
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 57
+
+
+ 2619 00a6 92010000 		.4byte	.LASF14
+ 2620 00aa 04       		.byte	0x4
+ 2621 00ab E801     		.2byte	0x1e8
+ 2622 00ad 33000000 		.4byte	0x33
+ 2623 00b1 02       		.uleb128 0x2
+ 2624 00b2 04       		.byte	0x4
+ 2625 00b3 04       		.byte	0x4
+ 2626 00b4 A3010000 		.4byte	.LASF15
+ 2627 00b8 02       		.uleb128 0x2
+ 2628 00b9 08       		.byte	0x8
+ 2629 00ba 04       		.byte	0x4
+ 2630 00bb DC020000 		.4byte	.LASF16
+ 2631 00bf 02       		.uleb128 0x2
+ 2632 00c0 01       		.byte	0x1
+ 2633 00c1 08       		.byte	0x8
+ 2634 00c2 94020000 		.4byte	.LASF17
+ 2635 00c6 05       		.uleb128 0x5
+ 2636 00c7 C5020000 		.4byte	.LASF18
+ 2637 00cb 04       		.byte	0x4
+ 2638 00cc 8E02     		.2byte	0x28e
+ 2639 00ce D2000000 		.4byte	0xd2
+ 2640 00d2 06       		.uleb128 0x6
+ 2641 00d3 81000000 		.4byte	0x81
+ 2642 00d7 05       		.uleb128 0x5
+ 2643 00d8 8C000000 		.4byte	.LASF19
+ 2644 00dc 04       		.byte	0x4
+ 2645 00dd 8F02     		.2byte	0x28f
+ 2646 00df E3000000 		.4byte	0xe3
+ 2647 00e3 06       		.uleb128 0x6
+ 2648 00e4 8D000000 		.4byte	0x8d
+ 2649 00e8 02       		.uleb128 0x2
+ 2650 00e9 08       		.byte	0x8
+ 2651 00ea 04       		.byte	0x4
+ 2652 00eb F5010000 		.4byte	.LASF20
+ 2653 00ef 02       		.uleb128 0x2
+ 2654 00f0 04       		.byte	0x4
+ 2655 00f1 07       		.byte	0x7
+ 2656 00f2 2F030000 		.4byte	.LASF21
+ 2657 00f6 07       		.uleb128 0x7
+ 2658 00f7 D2000000 		.4byte	0xd2
+ 2659 00fb 06010000 		.4byte	0x106
+ 2660 00ff 08       		.uleb128 0x8
+ 2661 0100 EF000000 		.4byte	0xef
+ 2662 0104 03       		.byte	0x3
+ 2663 0105 00       		.byte	0
+ 2664 0106 09       		.uleb128 0x9
+ 2665 0107 08000000 		.4byte	.LASF28
+ 2666 010b 08       		.byte	0x8
+ 2667 010c 05       		.byte	0x5
+ 2668 010d 59       		.byte	0x59
+ 2669 010e 2B010000 		.4byte	0x12b
+ 2670 0112 0A       		.uleb128 0xa
+ 2671 0113 54443000 		.ascii	"TD0\000"
+ 2672 0117 05       		.byte	0x5
+ 2673 0118 5B       		.byte	0x5b
+ 2674 0119 2B010000 		.4byte	0x12b
+ 2675 011d 00       		.byte	0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 58
+
+
+ 2676 011e 0A       		.uleb128 0xa
+ 2677 011f 54443100 		.ascii	"TD1\000"
+ 2678 0123 05       		.byte	0x5
+ 2679 0124 5C       		.byte	0x5c
+ 2680 0125 30010000 		.4byte	0x130
+ 2681 0129 04       		.byte	0x4
+ 2682 012a 00       		.byte	0
+ 2683 012b 06       		.uleb128 0x6
+ 2684 012c F6000000 		.4byte	0xf6
+ 2685 0130 06       		.uleb128 0x6
+ 2686 0131 F6000000 		.4byte	0xf6
+ 2687 0135 03       		.uleb128 0x3
+ 2688 0136 71020000 		.4byte	.LASF22
+ 2689 013a 05       		.byte	0x5
+ 2690 013b 5E       		.byte	0x5e
+ 2691 013c 06010000 		.4byte	0x106
+ 2692 0140 03       		.uleb128 0x3
+ 2693 0141 7B010000 		.4byte	.LASF23
+ 2694 0145 06       		.byte	0x6
+ 2695 0146 6C       		.byte	0x6c
+ 2696 0147 6F000000 		.4byte	0x6f
+ 2697 014b 0B       		.uleb128 0xb
+ 2698 014c 15030000 		.4byte	.LASF69
+ 2699 0150 01       		.byte	0x1
+ 2700 0151 2C000000 		.4byte	0x2c
+ 2701 0155 01       		.byte	0x1
+ 2702 0156 0A       		.byte	0xa
+ 2703 0157 79010000 		.4byte	0x179
+ 2704 015b 0C       		.uleb128 0xc
+ 2705 015c 757000   		.ascii	"up\000"
+ 2706 015f 00       		.byte	0
+ 2707 0160 0D       		.uleb128 0xd
+ 2708 0161 5A030000 		.4byte	.LASF24
+ 2709 0165 01       		.byte	0x1
+ 2710 0166 0D       		.uleb128 0xd
+ 2711 0167 7C020000 		.4byte	.LASF25
+ 2712 016b 02       		.byte	0x2
+ 2713 016c 0D       		.uleb128 0xd
+ 2714 016d 6D000000 		.4byte	.LASF26
+ 2715 0171 03       		.byte	0x3
+ 2716 0172 0D       		.uleb128 0xd
+ 2717 0173 85000000 		.4byte	.LASF27
+ 2718 0177 04       		.byte	0x4
+ 2719 0178 00       		.byte	0
+ 2720 0179 09       		.uleb128 0x9
+ 2721 017a 71030000 		.4byte	.LASF29
+ 2722 017e 08       		.byte	0x8
+ 2723 017f 01       		.byte	0x1
+ 2724 0180 0F       		.byte	0xf
+ 2725 0181 9E010000 		.4byte	0x19e
+ 2726 0185 0A       		.uleb128 0xa
+ 2727 0186 726F7700 		.ascii	"row\000"
+ 2728 018a 01       		.byte	0x1
+ 2729 018b 10       		.byte	0x10
+ 2730 018c 68000000 		.4byte	0x68
+ 2731 0190 00       		.byte	0
+ 2732 0191 0A       		.uleb128 0xa
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 59
+
+
+ 2733 0192 636F6C00 		.ascii	"col\000"
+ 2734 0196 01       		.byte	0x1
+ 2735 0197 11       		.byte	0x11
+ 2736 0198 68000000 		.4byte	0x68
+ 2737 019c 04       		.byte	0x4
+ 2738 019d 00       		.byte	0
+ 2739 019e 03       		.uleb128 0x3
+ 2740 019f BF010000 		.4byte	.LASF30
+ 2741 01a3 01       		.byte	0x1
+ 2742 01a4 12       		.byte	0x12
+ 2743 01a5 79010000 		.4byte	0x179
+ 2744 01a9 0E       		.uleb128 0xe
+ 2745 01aa B7010000 		.4byte	.LASF31
+ 2746 01ae 01       		.byte	0x1
+ 2747 01af 45       		.byte	0x45
+ 2748 01b0 00000000 		.4byte	.LFB64
+ 2749 01b4 AC000000 		.4byte	.LFE64-.LFB64
+ 2750 01b8 01       		.uleb128 0x1
+ 2751 01b9 9C       		.byte	0x9c
+ 2752 01ba CD010000 		.4byte	0x1cd
+ 2753 01be 0F       		.uleb128 0xf
+ 2754 01bf 9E010000 		.4byte	.LASF34
+ 2755 01c3 01       		.byte	0x1
+ 2756 01c4 46       		.byte	0x46
+ 2757 01c5 8D000000 		.4byte	0x8d
+ 2758 01c9 02       		.uleb128 0x2
+ 2759 01ca 91       		.byte	0x91
+ 2760 01cb 76       		.sleb128 -10
+ 2761 01cc 00       		.byte	0
+ 2762 01cd 10       		.uleb128 0x10
+ 2763 01ce CA010000 		.4byte	.LASF35
+ 2764 01d2 01       		.byte	0x1
+ 2765 01d3 5A       		.byte	0x5a
+ 2766 01d4 00000000 		.4byte	.LFB65
+ 2767 01d8 20000000 		.4byte	.LFE65-.LFB65
+ 2768 01dc 01       		.uleb128 0x1
+ 2769 01dd 9C       		.byte	0x9c
+ 2770 01de 11       		.uleb128 0x11
+ 2771 01df 48030000 		.4byte	.LASF32
+ 2772 01e3 01       		.byte	0x1
+ 2773 01e4 5F       		.byte	0x5f
+ 2774 01e5 00000000 		.4byte	.LFB66
+ 2775 01e9 60000000 		.4byte	.LFE66-.LFB66
+ 2776 01ed 01       		.uleb128 0x1
+ 2777 01ee 9C       		.byte	0x9c
+ 2778 01ef 4E020000 		.4byte	0x24e
+ 2779 01f3 12       		.uleb128 0x12
+ 2780 01f4 783100   		.ascii	"x1\000"
+ 2781 01f7 01       		.byte	0x1
+ 2782 01f8 5F       		.byte	0x5f
+ 2783 01f9 68000000 		.4byte	0x68
+ 2784 01fd 02       		.uleb128 0x2
+ 2785 01fe 91       		.byte	0x91
+ 2786 01ff 6C       		.sleb128 -20
+ 2787 0200 12       		.uleb128 0x12
+ 2788 0201 793100   		.ascii	"y1\000"
+ 2789 0204 01       		.byte	0x1
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 60
+
+
+ 2790 0205 5F       		.byte	0x5f
+ 2791 0206 68000000 		.4byte	0x68
+ 2792 020a 02       		.uleb128 0x2
+ 2793 020b 91       		.byte	0x91
+ 2794 020c 68       		.sleb128 -24
+ 2795 020d 12       		.uleb128 0x12
+ 2796 020e 783200   		.ascii	"x2\000"
+ 2797 0211 01       		.byte	0x1
+ 2798 0212 5F       		.byte	0x5f
+ 2799 0213 68000000 		.4byte	0x68
+ 2800 0217 02       		.uleb128 0x2
+ 2801 0218 91       		.byte	0x91
+ 2802 0219 64       		.sleb128 -28
+ 2803 021a 12       		.uleb128 0x12
+ 2804 021b 793200   		.ascii	"y2\000"
+ 2805 021e 01       		.byte	0x1
+ 2806 021f 5F       		.byte	0x5f
+ 2807 0220 68000000 		.4byte	0x68
+ 2808 0224 02       		.uleb128 0x2
+ 2809 0225 91       		.byte	0x91
+ 2810 0226 60       		.sleb128 -32
+ 2811 0227 13       		.uleb128 0x13
+ 2812 0228 BF000000 		.4byte	.LASF33
+ 2813 022c 01       		.byte	0x1
+ 2814 022d 5F       		.byte	0x5f
+ 2815 022e 40010000 		.4byte	0x140
+ 2816 0232 02       		.uleb128 0x2
+ 2817 0233 91       		.byte	0x91
+ 2818 0234 00       		.sleb128 0
+ 2819 0235 14       		.uleb128 0x14
+ 2820 0236 6900     		.ascii	"i\000"
+ 2821 0238 01       		.byte	0x1
+ 2822 0239 63       		.byte	0x63
+ 2823 023a 68000000 		.4byte	0x68
+ 2824 023e 02       		.uleb128 0x2
+ 2825 023f 91       		.byte	0x91
+ 2826 0240 74       		.sleb128 -12
+ 2827 0241 14       		.uleb128 0x14
+ 2828 0242 6A00     		.ascii	"j\000"
+ 2829 0244 01       		.byte	0x1
+ 2830 0245 64       		.byte	0x64
+ 2831 0246 68000000 		.4byte	0x68
+ 2832 024a 02       		.uleb128 0x2
+ 2833 024b 91       		.byte	0x91
+ 2834 024c 70       		.sleb128 -16
+ 2835 024d 00       		.byte	0
+ 2836 024e 15       		.uleb128 0x15
+ 2837 024f C5000000 		.4byte	.LASF36
+ 2838 0253 01       		.byte	0x1
+ 2839 0254 6C       		.byte	0x6c
+ 2840 0255 00000000 		.4byte	.LFB67
+ 2841 0259 7C030000 		.4byte	.LFE67-.LFB67
+ 2842 025d 01       		.uleb128 0x1
+ 2843 025e 9C       		.byte	0x9c
+ 2844 025f 11       		.uleb128 0x11
+ 2845 0260 06030000 		.4byte	.LASF37
+ 2846 0264 01       		.byte	0x1
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 61
+
+
+ 2847 0265 AE       		.byte	0xae
+ 2848 0266 00000000 		.4byte	.LFB68
+ 2849 026a F8010000 		.4byte	.LFE68-.LFB68
+ 2850 026e 01       		.uleb128 0x1
+ 2851 026f 9C       		.byte	0x9c
+ 2852 0270 9F020000 		.4byte	0x29f
+ 2853 0274 13       		.uleb128 0x13
+ 2854 0275 80010000 		.4byte	.LASF38
+ 2855 0279 01       		.byte	0x1
+ 2856 027a AE       		.byte	0xae
+ 2857 027b 68000000 		.4byte	0x68
+ 2858 027f 02       		.uleb128 0x2
+ 2859 0280 91       		.byte	0x91
+ 2860 0281 74       		.sleb128 -12
+ 2861 0282 13       		.uleb128 0x13
+ 2862 0283 38030000 		.4byte	.LASF39
+ 2863 0287 01       		.byte	0x1
+ 2864 0288 AE       		.byte	0xae
+ 2865 0289 68000000 		.4byte	0x68
+ 2866 028d 02       		.uleb128 0x2
+ 2867 028e 91       		.byte	0x91
+ 2868 028f 70       		.sleb128 -16
+ 2869 0290 12       		.uleb128 0x12
+ 2870 0291 64697200 		.ascii	"dir\000"
+ 2871 0295 01       		.byte	0x1
+ 2872 0296 AE       		.byte	0xae
+ 2873 0297 4B010000 		.4byte	0x14b
+ 2874 029b 02       		.uleb128 0x2
+ 2875 029c 91       		.byte	0x91
+ 2876 029d 6F       		.sleb128 -17
+ 2877 029e 00       		.byte	0
+ 2878 029f 0E       		.uleb128 0xe
+ 2879 02a0 B2000000 		.4byte	.LASF40
+ 2880 02a4 01       		.byte	0x1
+ 2881 02a5 D4       		.byte	0xd4
+ 2882 02a6 00000000 		.4byte	.LFB69
+ 2883 02aa 2A000000 		.4byte	.LFE69-.LFB69
+ 2884 02ae 01       		.uleb128 0x1
+ 2885 02af 9C       		.byte	0x9c
+ 2886 02b0 D1020000 		.4byte	0x2d1
+ 2887 02b4 13       		.uleb128 0x13
+ 2888 02b5 80010000 		.4byte	.LASF38
+ 2889 02b9 01       		.byte	0x1
+ 2890 02ba D4       		.byte	0xd4
+ 2891 02bb 68000000 		.4byte	0x68
+ 2892 02bf 02       		.uleb128 0x2
+ 2893 02c0 91       		.byte	0x91
+ 2894 02c1 6C       		.sleb128 -20
+ 2895 02c2 13       		.uleb128 0x13
+ 2896 02c3 38030000 		.4byte	.LASF39
+ 2897 02c7 01       		.byte	0x1
+ 2898 02c8 D4       		.byte	0xd4
+ 2899 02c9 68000000 		.4byte	0x68
+ 2900 02cd 02       		.uleb128 0x2
+ 2901 02ce 91       		.byte	0x91
+ 2902 02cf 68       		.sleb128 -24
+ 2903 02d0 00       		.byte	0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 62
+
+
+ 2904 02d1 16       		.uleb128 0x16
+ 2905 02d2 5F030000 		.4byte	.LASF46
+ 2906 02d6 01       		.byte	0x1
+ 2907 02d7 DA       		.byte	0xda
+ 2908 02d8 07030000 		.4byte	0x307
+ 2909 02dc 00000000 		.4byte	.LFB70
+ 2910 02e0 7C020000 		.4byte	.LFE70-.LFB70
+ 2911 02e4 01       		.uleb128 0x1
+ 2912 02e5 9C       		.byte	0x9c
+ 2913 02e6 07030000 		.4byte	0x307
+ 2914 02ea 13       		.uleb128 0x13
+ 2915 02eb 80010000 		.4byte	.LASF38
+ 2916 02ef 01       		.byte	0x1
+ 2917 02f0 DA       		.byte	0xda
+ 2918 02f1 68000000 		.4byte	0x68
+ 2919 02f5 02       		.uleb128 0x2
+ 2920 02f6 91       		.byte	0x91
+ 2921 02f7 74       		.sleb128 -12
+ 2922 02f8 13       		.uleb128 0x13
+ 2923 02f9 38030000 		.4byte	.LASF39
+ 2924 02fd 01       		.byte	0x1
+ 2925 02fe DA       		.byte	0xda
+ 2926 02ff 68000000 		.4byte	0x68
+ 2927 0303 02       		.uleb128 0x2
+ 2928 0304 91       		.byte	0x91
+ 2929 0305 70       		.sleb128 -16
+ 2930 0306 00       		.byte	0
+ 2931 0307 02       		.uleb128 0x2
+ 2932 0308 01       		.byte	0x1
+ 2933 0309 02       		.byte	0x2
+ 2934 030a A6020000 		.4byte	.LASF41
+ 2935 030e 17       		.uleb128 0x17
+ 2936 030f 60020000 		.4byte	.LASF42
+ 2937 0313 01       		.byte	0x1
+ 2938 0314 4B01     		.2byte	0x14b
+ 2939 0316 4B010000 		.4byte	0x14b
+ 2940 031a 00000000 		.4byte	.LFB71
+ 2941 031e 7C000000 		.4byte	.LFE71-.LFB71
+ 2942 0322 01       		.uleb128 0x1
+ 2943 0323 9C       		.byte	0x9c
+ 2944 0324 56030000 		.4byte	0x356
+ 2945 0328 18       		.uleb128 0x18
+ 2946 0329 64697200 		.ascii	"dir\000"
+ 2947 032d 01       		.byte	0x1
+ 2948 032e 4D01     		.2byte	0x14d
+ 2949 0330 4B010000 		.4byte	0x14b
+ 2950 0334 02       		.uleb128 0x2
+ 2951 0335 91       		.byte	0x91
+ 2952 0336 73       		.sleb128 -13
+ 2953 0337 19       		.uleb128 0x19
+ 2954 0338 D3000000 		.4byte	.LASF43
+ 2955 033c 01       		.byte	0x1
+ 2956 033d 4E01     		.2byte	0x14e
+ 2957 033f A5000000 		.4byte	0xa5
+ 2958 0343 02       		.uleb128 0x2
+ 2959 0344 91       		.byte	0x91
+ 2960 0345 76       		.sleb128 -10
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 63
+
+
+ 2961 0346 19       		.uleb128 0x19
+ 2962 0347 6C030000 		.4byte	.LASF44
+ 2963 034b 01       		.byte	0x1
+ 2964 034c 4F01     		.2byte	0x14f
+ 2965 034e A5000000 		.4byte	0xa5
+ 2966 0352 02       		.uleb128 0x2
+ 2967 0353 91       		.byte	0x91
+ 2968 0354 74       		.sleb128 -12
+ 2969 0355 00       		.byte	0
+ 2970 0356 1A       		.uleb128 0x1a
+ 2971 0357 AC020000 		.4byte	.LASF45
+ 2972 035b 01       		.byte	0x1
+ 2973 035c 6F01     		.2byte	0x16f
+ 2974 035e 00000000 		.4byte	.LFB72
+ 2975 0362 84010000 		.4byte	.LFE72-.LFB72
+ 2976 0366 01       		.uleb128 0x1
+ 2977 0367 9C       		.byte	0x9c
+ 2978 0368 9A030000 		.4byte	0x39a
+ 2979 036c 1B       		.uleb128 0x1b
+ 2980 036d 80010000 		.4byte	.LASF38
+ 2981 0371 01       		.byte	0x1
+ 2982 0372 6F01     		.2byte	0x16f
+ 2983 0374 68000000 		.4byte	0x68
+ 2984 0378 02       		.uleb128 0x2
+ 2985 0379 91       		.byte	0x91
+ 2986 037a 74       		.sleb128 -12
+ 2987 037b 1B       		.uleb128 0x1b
+ 2988 037c 38030000 		.4byte	.LASF39
+ 2989 0380 01       		.byte	0x1
+ 2990 0381 6F01     		.2byte	0x16f
+ 2991 0383 68000000 		.4byte	0x68
+ 2992 0387 02       		.uleb128 0x2
+ 2993 0388 91       		.byte	0x91
+ 2994 0389 70       		.sleb128 -16
+ 2995 038a 1C       		.uleb128 0x1c
+ 2996 038b 64697200 		.ascii	"dir\000"
+ 2997 038f 01       		.byte	0x1
+ 2998 0390 6F01     		.2byte	0x16f
+ 2999 0392 4B010000 		.4byte	0x14b
+ 3000 0396 02       		.uleb128 0x2
+ 3001 0397 91       		.byte	0x91
+ 3002 0398 6F       		.sleb128 -17
+ 3003 0399 00       		.byte	0
+ 3004 039a 1D       		.uleb128 0x1d
+ 3005 039b 0F020000 		.4byte	.LASF48
+ 3006 039f 01       		.byte	0x1
+ 3007 03a0 A201     		.2byte	0x1a2
+ 3008 03a2 00000000 		.4byte	.LFB73
+ 3009 03a6 78010000 		.4byte	.LFE73-.LFB73
+ 3010 03aa 01       		.uleb128 0x1
+ 3011 03ab 9C       		.byte	0x9c
+ 3012 03ac ED030000 		.4byte	0x3ed
+ 3013 03b0 18       		.uleb128 0x18
+ 3014 03b1 726F7700 		.ascii	"row\000"
+ 3015 03b5 01       		.byte	0x1
+ 3016 03b6 A401     		.2byte	0x1a4
+ 3017 03b8 68000000 		.4byte	0x68
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 64
+
+
+ 3018 03bc 02       		.uleb128 0x2
+ 3019 03bd 91       		.byte	0x91
+ 3020 03be 74       		.sleb128 -12
+ 3021 03bf 18       		.uleb128 0x18
+ 3022 03c0 636F6C00 		.ascii	"col\000"
+ 3023 03c4 01       		.byte	0x1
+ 3024 03c5 A501     		.2byte	0x1a5
+ 3025 03c7 68000000 		.4byte	0x68
+ 3026 03cb 02       		.uleb128 0x2
+ 3027 03cc 91       		.byte	0x91
+ 3028 03cd 70       		.sleb128 -16
+ 3029 03ce 18       		.uleb128 0x18
+ 3030 03cf 696E7800 		.ascii	"inx\000"
+ 3031 03d3 01       		.byte	0x1
+ 3032 03d4 A601     		.2byte	0x1a6
+ 3033 03d6 68000000 		.4byte	0x68
+ 3034 03da 02       		.uleb128 0x2
+ 3035 03db 91       		.byte	0x91
+ 3036 03dc 6C       		.sleb128 -20
+ 3037 03dd 18       		.uleb128 0x18
+ 3038 03de 746D7000 		.ascii	"tmp\000"
+ 3039 03e2 01       		.byte	0x1
+ 3040 03e3 A701     		.2byte	0x1a7
+ 3041 03e5 9E010000 		.4byte	0x19e
+ 3042 03e9 02       		.uleb128 0x2
+ 3043 03ea 91       		.byte	0x91
+ 3044 03eb 64       		.sleb128 -28
+ 3045 03ec 00       		.byte	0
+ 3046 03ed 1E       		.uleb128 0x1e
+ 3047 03ee 24030000 		.4byte	.LASF47
+ 3048 03f2 01       		.byte	0x1
+ 3049 03f3 D401     		.2byte	0x1d4
+ 3050 03f5 07030000 		.4byte	0x307
+ 3051 03f9 00000000 		.4byte	.LFB74
+ 3052 03fd 70000000 		.4byte	.LFE74-.LFB74
+ 3053 0401 01       		.uleb128 0x1
+ 3054 0402 9C       		.byte	0x9c
+ 3055 0403 33040000 		.4byte	0x433
+ 3056 0407 1C       		.uleb128 0x1c
+ 3057 0408 726F7700 		.ascii	"row\000"
+ 3058 040c 01       		.byte	0x1
+ 3059 040d D401     		.2byte	0x1d4
+ 3060 040f 68000000 		.4byte	0x68
+ 3061 0413 02       		.uleb128 0x2
+ 3062 0414 91       		.byte	0x91
+ 3063 0415 6C       		.sleb128 -20
+ 3064 0416 1C       		.uleb128 0x1c
+ 3065 0417 636F6C00 		.ascii	"col\000"
+ 3066 041b 01       		.byte	0x1
+ 3067 041c D401     		.2byte	0x1d4
+ 3068 041e 68000000 		.4byte	0x68
+ 3069 0422 02       		.uleb128 0x2
+ 3070 0423 91       		.byte	0x91
+ 3071 0424 68       		.sleb128 -24
+ 3072 0425 18       		.uleb128 0x18
+ 3073 0426 6900     		.ascii	"i\000"
+ 3074 0428 01       		.byte	0x1
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 65
+
+
+ 3075 0429 D701     		.2byte	0x1d7
+ 3076 042b 68000000 		.4byte	0x68
+ 3077 042f 02       		.uleb128 0x2
+ 3078 0430 91       		.byte	0x91
+ 3079 0431 74       		.sleb128 -12
+ 3080 0432 00       		.byte	0
+ 3081 0433 1D       		.uleb128 0x1d
+ 3082 0434 76010000 		.4byte	.LASF49
+ 3083 0438 01       		.byte	0x1
+ 3084 0439 E401     		.2byte	0x1e4
+ 3085 043b 00000000 		.4byte	.LFB75
+ 3086 043f F4000000 		.4byte	.LFE75-.LFB75
+ 3087 0443 01       		.uleb128 0x1
+ 3088 0444 9C       		.byte	0x9c
+ 3089 0445 63040000 		.4byte	0x463
+ 3090 0449 1F       		.uleb128 0x1f
+ 3091 044a AE000000 		.4byte	.LBB2
+ 3092 044e 2C000000 		.4byte	.LBE2-.LBB2
+ 3093 0452 18       		.uleb128 0x18
+ 3094 0453 64697200 		.ascii	"dir\000"
+ 3095 0457 01       		.byte	0x1
+ 3096 0458 0702     		.2byte	0x207
+ 3097 045a 4B010000 		.4byte	0x14b
+ 3098 045e 02       		.uleb128 0x2
+ 3099 045f 91       		.byte	0x91
+ 3100 0460 77       		.sleb128 -9
+ 3101 0461 00       		.byte	0
+ 3102 0462 00       		.byte	0
+ 3103 0463 20       		.uleb128 0x20
+ 3104 0464 4D030000 		.4byte	.LASF50
+ 3105 0468 07       		.byte	0x7
+ 3106 0469 1207     		.2byte	0x712
+ 3107 046b 6F040000 		.4byte	0x46f
+ 3108 046f 06       		.uleb128 0x6
+ 3109 0470 76000000 		.4byte	0x76
+ 3110 0474 21       		.uleb128 0x21
+ 3111 0475 99020000 		.4byte	.LASF51
+ 3112 0479 01       		.byte	0x1
+ 3113 047a 25       		.byte	0x25
+ 3114 047b 85040000 		.4byte	0x485
+ 3115 047f 05       		.uleb128 0x5
+ 3116 0480 03       		.byte	0x3
+ 3117 0481 00000000 		.4byte	Colors_BLACK
+ 3118 0485 22       		.uleb128 0x22
+ 3119 0486 81000000 		.4byte	0x81
+ 3120 048a 21       		.uleb128 0x21
+ 3121 048b A7000000 		.4byte	.LASF52
+ 3122 048f 01       		.byte	0x1
+ 3123 0490 26       		.byte	0x26
+ 3124 0491 85040000 		.4byte	0x485
+ 3125 0495 05       		.uleb128 0x5
+ 3126 0496 03       		.byte	0x3
+ 3127 0497 00000000 		.4byte	Colors_RED
+ 3128 049b 21       		.uleb128 0x21
+ 3129 049c 73000000 		.4byte	.LASF53
+ 3130 04a0 01       		.byte	0x1
+ 3131 04a1 27       		.byte	0x27
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 66
+
+
+ 3132 04a2 85040000 		.4byte	0x485
+ 3133 04a6 05       		.uleb128 0x5
+ 3134 04a7 03       		.byte	0x3
+ 3135 04a8 00000000 		.4byte	Colors_GREEN
+ 3136 04ac 21       		.uleb128 0x21
+ 3137 04ad E9010000 		.4byte	.LASF54
+ 3138 04b1 01       		.byte	0x1
+ 3139 04b2 28       		.byte	0x28
+ 3140 04b3 85040000 		.4byte	0x485
+ 3141 04b7 05       		.uleb128 0x5
+ 3142 04b8 03       		.byte	0x3
+ 3143 04b9 00000000 		.4byte	Colors_BLUE
+ 3144 04bd 21       		.uleb128 0x21
+ 3145 04be 1A000000 		.4byte	.LASF55
+ 3146 04c2 01       		.byte	0x1
+ 3147 04c3 29       		.byte	0x29
+ 3148 04c4 85040000 		.4byte	0x485
+ 3149 04c8 05       		.uleb128 0x5
+ 3150 04c9 03       		.byte	0x3
+ 3151 04ca 00000000 		.4byte	Colors_WHITE
+ 3152 04ce 21       		.uleb128 0x21
+ 3153 04cf 52020000 		.4byte	.LASF56
+ 3154 04d3 01       		.byte	0x1
+ 3155 04d4 2A       		.byte	0x2a
+ 3156 04d5 85040000 		.4byte	0x485
+ 3157 04d9 05       		.uleb128 0x5
+ 3158 04da 03       		.byte	0x3
+ 3159 04db 00000000 		.4byte	Colors_YELLOW
+ 3160 04df 21       		.uleb128 0x21
+ 3161 04e0 EC020000 		.4byte	.LASF57
+ 3162 04e4 01       		.byte	0x1
+ 3163 04e5 34       		.byte	0x34
+ 3164 04e6 68000000 		.4byte	0x68
+ 3165 04ea 05       		.uleb128 0x5
+ 3166 04eb 03       		.byte	0x3
+ 3167 04ec 00000000 		.4byte	pacman_center_x
+ 3168 04f0 21       		.uleb128 0x21
+ 3169 04f1 66010000 		.4byte	.LASF58
+ 3170 04f5 01       		.byte	0x1
+ 3171 04f6 35       		.byte	0x35
+ 3172 04f7 68000000 		.4byte	0x68
+ 3173 04fb 05       		.uleb128 0x5
+ 3174 04fc 03       		.byte	0x3
+ 3175 04fd 00000000 		.4byte	pacman_center_y
+ 3176 0501 07       		.uleb128 0x7
+ 3177 0502 9E010000 		.4byte	0x19e
+ 3178 0506 11050000 		.4byte	0x511
+ 3179 050a 08       		.uleb128 0x8
+ 3180 050b EF000000 		.4byte	0xef
+ 3181 050f F3       		.byte	0xf3
+ 3182 0510 00       		.byte	0
+ 3183 0511 21       		.uleb128 0x21
+ 3184 0512 92000000 		.4byte	.LASF59
+ 3185 0516 01       		.byte	0x1
+ 3186 0517 36       		.byte	0x36
+ 3187 0518 01050000 		.4byte	0x501
+ 3188 051c 05       		.uleb128 0x5
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 67
+
+
+ 3189 051d 03       		.byte	0x3
+ 3190 051e 00000000 		.4byte	dotsCoords
+ 3191 0522 07       		.uleb128 0x7
+ 3192 0523 07030000 		.4byte	0x307
+ 3193 0527 32050000 		.4byte	0x532
+ 3194 052b 08       		.uleb128 0x8
+ 3195 052c EF000000 		.4byte	0xef
+ 3196 0530 F3       		.byte	0xf3
+ 3197 0531 00       		.byte	0
+ 3198 0532 21       		.uleb128 0x21
+ 3199 0533 00000000 		.4byte	.LASF60
+ 3200 0537 01       		.byte	0x1
+ 3201 0538 37       		.byte	0x37
+ 3202 0539 22050000 		.4byte	0x522
+ 3203 053d 05       		.uleb128 0x5
+ 3204 053e 03       		.byte	0x3
+ 3205 053f 00000000 		.4byte	isEaten
+ 3206 0543 21       		.uleb128 0x21
+ 3207 0544 28020000 		.4byte	.LASF61
+ 3208 0548 01       		.byte	0x1
+ 3209 0549 38       		.byte	0x38
+ 3210 054a 81000000 		.4byte	0x81
+ 3211 054e 05       		.uleb128 0x5
+ 3212 054f 03       		.byte	0x3
+ 3213 0550 00000000 		.4byte	score
+ 3214 0554 07       		.uleb128 0x7
+ 3215 0555 81000000 		.4byte	0x81
+ 3216 0559 6A050000 		.4byte	0x56a
+ 3217 055d 08       		.uleb128 0x8
+ 3218 055e EF000000 		.4byte	0xef
+ 3219 0562 5F       		.byte	0x5f
+ 3220 0563 08       		.uleb128 0x8
+ 3221 0564 EF000000 		.4byte	0xef
+ 3222 0568 7F       		.byte	0x7f
+ 3223 0569 00       		.byte	0
+ 3224 056a 23       		.uleb128 0x23
+ 3225 056b 62756600 		.ascii	"buf\000"
+ 3226 056f 01       		.byte	0x1
+ 3227 0570 3D       		.byte	0x3d
+ 3228 0571 54050000 		.4byte	0x554
+ 3229 0575 05       		.uleb128 0x5
+ 3230 0576 03       		.byte	0x3
+ 3231 0577 00000000 		.4byte	buf
+ 3232 057b 21       		.uleb128 0x21
+ 3233 057c 80000000 		.4byte	.LASF62
+ 3234 0580 01       		.byte	0x1
+ 3235 0581 3D       		.byte	0x3d
+ 3236 0582 54050000 		.4byte	0x554
+ 3237 0586 05       		.uleb128 0x5
+ 3238 0587 03       		.byte	0x3
+ 3239 0588 00000000 		.4byte	vbuf
+ 3240 058c 21       		.uleb128 0x21
+ 3241 058d E3020000 		.4byte	.LASF63
+ 3242 0591 01       		.byte	0x1
+ 3243 0592 43       		.byte	0x43
+ 3244 0593 81000000 		.4byte	0x81
+ 3245 0597 05       		.uleb128 0x5
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 68
+
+
+ 3246 0598 03       		.byte	0x3
+ 3247 0599 00000000 		.4byte	dma_chan
+ 3248 059d 21       		.uleb128 0x21
+ 3249 059e D1010000 		.4byte	.LASF64
+ 3250 05a2 01       		.byte	0x1
+ 3251 05a3 43       		.byte	0x43
+ 3252 05a4 81000000 		.4byte	0x81
+ 3253 05a8 05       		.uleb128 0x5
+ 3254 05a9 03       		.byte	0x3
+ 3255 05aa 00000000 		.4byte	dma_td
+ 3256 05ae 21       		.uleb128 0x21
+ 3257 05af 43030000 		.4byte	.LASF65
+ 3258 05b3 01       		.byte	0x1
+ 3259 05b4 44       		.byte	0x44
+ 3260 05b5 BF050000 		.4byte	0x5bf
+ 3261 05b9 05       		.uleb128 0x5
+ 3262 05ba 03       		.byte	0x3
+ 3263 05bb 00000000 		.4byte	flag
+ 3264 05bf 06       		.uleb128 0x6
+ 3265 05c0 68000000 		.4byte	0x68
+ 3266 05c4 00       		.byte	0
+ 3267              		.section	.debug_abbrev,"",%progbits
+ 3268              	.Ldebug_abbrev0:
+ 3269 0000 01       		.uleb128 0x1
+ 3270 0001 11       		.uleb128 0x11
+ 3271 0002 01       		.byte	0x1
+ 3272 0003 25       		.uleb128 0x25
+ 3273 0004 0E       		.uleb128 0xe
+ 3274 0005 13       		.uleb128 0x13
+ 3275 0006 0B       		.uleb128 0xb
+ 3276 0007 03       		.uleb128 0x3
+ 3277 0008 0E       		.uleb128 0xe
+ 3278 0009 1B       		.uleb128 0x1b
+ 3279 000a 0E       		.uleb128 0xe
+ 3280 000b 55       		.uleb128 0x55
+ 3281 000c 17       		.uleb128 0x17
+ 3282 000d 11       		.uleb128 0x11
+ 3283 000e 01       		.uleb128 0x1
+ 3284 000f 10       		.uleb128 0x10
+ 3285 0010 17       		.uleb128 0x17
+ 3286 0011 00       		.byte	0
+ 3287 0012 00       		.byte	0
+ 3288 0013 02       		.uleb128 0x2
+ 3289 0014 24       		.uleb128 0x24
+ 3290 0015 00       		.byte	0
+ 3291 0016 0B       		.uleb128 0xb
+ 3292 0017 0B       		.uleb128 0xb
+ 3293 0018 3E       		.uleb128 0x3e
+ 3294 0019 0B       		.uleb128 0xb
+ 3295 001a 03       		.uleb128 0x3
+ 3296 001b 0E       		.uleb128 0xe
+ 3297 001c 00       		.byte	0
+ 3298 001d 00       		.byte	0
+ 3299 001e 03       		.uleb128 0x3
+ 3300 001f 16       		.uleb128 0x16
+ 3301 0020 00       		.byte	0
+ 3302 0021 03       		.uleb128 0x3
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 69
+
+
+ 3303 0022 0E       		.uleb128 0xe
+ 3304 0023 3A       		.uleb128 0x3a
+ 3305 0024 0B       		.uleb128 0xb
+ 3306 0025 3B       		.uleb128 0x3b
+ 3307 0026 0B       		.uleb128 0xb
+ 3308 0027 49       		.uleb128 0x49
+ 3309 0028 13       		.uleb128 0x13
+ 3310 0029 00       		.byte	0
+ 3311 002a 00       		.byte	0
+ 3312 002b 04       		.uleb128 0x4
+ 3313 002c 24       		.uleb128 0x24
+ 3314 002d 00       		.byte	0
+ 3315 002e 0B       		.uleb128 0xb
+ 3316 002f 0B       		.uleb128 0xb
+ 3317 0030 3E       		.uleb128 0x3e
+ 3318 0031 0B       		.uleb128 0xb
+ 3319 0032 03       		.uleb128 0x3
+ 3320 0033 08       		.uleb128 0x8
+ 3321 0034 00       		.byte	0
+ 3322 0035 00       		.byte	0
+ 3323 0036 05       		.uleb128 0x5
+ 3324 0037 16       		.uleb128 0x16
+ 3325 0038 00       		.byte	0
+ 3326 0039 03       		.uleb128 0x3
+ 3327 003a 0E       		.uleb128 0xe
+ 3328 003b 3A       		.uleb128 0x3a
+ 3329 003c 0B       		.uleb128 0xb
+ 3330 003d 3B       		.uleb128 0x3b
+ 3331 003e 05       		.uleb128 0x5
+ 3332 003f 49       		.uleb128 0x49
+ 3333 0040 13       		.uleb128 0x13
+ 3334 0041 00       		.byte	0
+ 3335 0042 00       		.byte	0
+ 3336 0043 06       		.uleb128 0x6
+ 3337 0044 35       		.uleb128 0x35
+ 3338 0045 00       		.byte	0
+ 3339 0046 49       		.uleb128 0x49
+ 3340 0047 13       		.uleb128 0x13
+ 3341 0048 00       		.byte	0
+ 3342 0049 00       		.byte	0
+ 3343 004a 07       		.uleb128 0x7
+ 3344 004b 01       		.uleb128 0x1
+ 3345 004c 01       		.byte	0x1
+ 3346 004d 49       		.uleb128 0x49
+ 3347 004e 13       		.uleb128 0x13
+ 3348 004f 01       		.uleb128 0x1
+ 3349 0050 13       		.uleb128 0x13
+ 3350 0051 00       		.byte	0
+ 3351 0052 00       		.byte	0
+ 3352 0053 08       		.uleb128 0x8
+ 3353 0054 21       		.uleb128 0x21
+ 3354 0055 00       		.byte	0
+ 3355 0056 49       		.uleb128 0x49
+ 3356 0057 13       		.uleb128 0x13
+ 3357 0058 2F       		.uleb128 0x2f
+ 3358 0059 0B       		.uleb128 0xb
+ 3359 005a 00       		.byte	0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 70
+
+
+ 3360 005b 00       		.byte	0
+ 3361 005c 09       		.uleb128 0x9
+ 3362 005d 13       		.uleb128 0x13
+ 3363 005e 01       		.byte	0x1
+ 3364 005f 03       		.uleb128 0x3
+ 3365 0060 0E       		.uleb128 0xe
+ 3366 0061 0B       		.uleb128 0xb
+ 3367 0062 0B       		.uleb128 0xb
+ 3368 0063 3A       		.uleb128 0x3a
+ 3369 0064 0B       		.uleb128 0xb
+ 3370 0065 3B       		.uleb128 0x3b
+ 3371 0066 0B       		.uleb128 0xb
+ 3372 0067 01       		.uleb128 0x1
+ 3373 0068 13       		.uleb128 0x13
+ 3374 0069 00       		.byte	0
+ 3375 006a 00       		.byte	0
+ 3376 006b 0A       		.uleb128 0xa
+ 3377 006c 0D       		.uleb128 0xd
+ 3378 006d 00       		.byte	0
+ 3379 006e 03       		.uleb128 0x3
+ 3380 006f 08       		.uleb128 0x8
+ 3381 0070 3A       		.uleb128 0x3a
+ 3382 0071 0B       		.uleb128 0xb
+ 3383 0072 3B       		.uleb128 0x3b
+ 3384 0073 0B       		.uleb128 0xb
+ 3385 0074 49       		.uleb128 0x49
+ 3386 0075 13       		.uleb128 0x13
+ 3387 0076 38       		.uleb128 0x38
+ 3388 0077 0B       		.uleb128 0xb
+ 3389 0078 00       		.byte	0
+ 3390 0079 00       		.byte	0
+ 3391 007a 0B       		.uleb128 0xb
+ 3392 007b 04       		.uleb128 0x4
+ 3393 007c 01       		.byte	0x1
+ 3394 007d 03       		.uleb128 0x3
+ 3395 007e 0E       		.uleb128 0xe
+ 3396 007f 0B       		.uleb128 0xb
+ 3397 0080 0B       		.uleb128 0xb
+ 3398 0081 49       		.uleb128 0x49
+ 3399 0082 13       		.uleb128 0x13
+ 3400 0083 3A       		.uleb128 0x3a
+ 3401 0084 0B       		.uleb128 0xb
+ 3402 0085 3B       		.uleb128 0x3b
+ 3403 0086 0B       		.uleb128 0xb
+ 3404 0087 01       		.uleb128 0x1
+ 3405 0088 13       		.uleb128 0x13
+ 3406 0089 00       		.byte	0
+ 3407 008a 00       		.byte	0
+ 3408 008b 0C       		.uleb128 0xc
+ 3409 008c 28       		.uleb128 0x28
+ 3410 008d 00       		.byte	0
+ 3411 008e 03       		.uleb128 0x3
+ 3412 008f 08       		.uleb128 0x8
+ 3413 0090 1C       		.uleb128 0x1c
+ 3414 0091 0B       		.uleb128 0xb
+ 3415 0092 00       		.byte	0
+ 3416 0093 00       		.byte	0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 71
+
+
+ 3417 0094 0D       		.uleb128 0xd
+ 3418 0095 28       		.uleb128 0x28
+ 3419 0096 00       		.byte	0
+ 3420 0097 03       		.uleb128 0x3
+ 3421 0098 0E       		.uleb128 0xe
+ 3422 0099 1C       		.uleb128 0x1c
+ 3423 009a 0B       		.uleb128 0xb
+ 3424 009b 00       		.byte	0
+ 3425 009c 00       		.byte	0
+ 3426 009d 0E       		.uleb128 0xe
+ 3427 009e 2E       		.uleb128 0x2e
+ 3428 009f 01       		.byte	0x1
+ 3429 00a0 3F       		.uleb128 0x3f
+ 3430 00a1 19       		.uleb128 0x19
+ 3431 00a2 03       		.uleb128 0x3
+ 3432 00a3 0E       		.uleb128 0xe
+ 3433 00a4 3A       		.uleb128 0x3a
+ 3434 00a5 0B       		.uleb128 0xb
+ 3435 00a6 3B       		.uleb128 0x3b
+ 3436 00a7 0B       		.uleb128 0xb
+ 3437 00a8 27       		.uleb128 0x27
+ 3438 00a9 19       		.uleb128 0x19
+ 3439 00aa 11       		.uleb128 0x11
+ 3440 00ab 01       		.uleb128 0x1
+ 3441 00ac 12       		.uleb128 0x12
+ 3442 00ad 06       		.uleb128 0x6
+ 3443 00ae 40       		.uleb128 0x40
+ 3444 00af 18       		.uleb128 0x18
+ 3445 00b0 9642     		.uleb128 0x2116
+ 3446 00b2 19       		.uleb128 0x19
+ 3447 00b3 01       		.uleb128 0x1
+ 3448 00b4 13       		.uleb128 0x13
+ 3449 00b5 00       		.byte	0
+ 3450 00b6 00       		.byte	0
+ 3451 00b7 0F       		.uleb128 0xf
+ 3452 00b8 34       		.uleb128 0x34
+ 3453 00b9 00       		.byte	0
+ 3454 00ba 03       		.uleb128 0x3
+ 3455 00bb 0E       		.uleb128 0xe
+ 3456 00bc 3A       		.uleb128 0x3a
+ 3457 00bd 0B       		.uleb128 0xb
+ 3458 00be 3B       		.uleb128 0x3b
+ 3459 00bf 0B       		.uleb128 0xb
+ 3460 00c0 49       		.uleb128 0x49
+ 3461 00c1 13       		.uleb128 0x13
+ 3462 00c2 02       		.uleb128 0x2
+ 3463 00c3 18       		.uleb128 0x18
+ 3464 00c4 00       		.byte	0
+ 3465 00c5 00       		.byte	0
+ 3466 00c6 10       		.uleb128 0x10
+ 3467 00c7 2E       		.uleb128 0x2e
+ 3468 00c8 00       		.byte	0
+ 3469 00c9 3F       		.uleb128 0x3f
+ 3470 00ca 19       		.uleb128 0x19
+ 3471 00cb 03       		.uleb128 0x3
+ 3472 00cc 0E       		.uleb128 0xe
+ 3473 00cd 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 72
+
+
+ 3474 00ce 0B       		.uleb128 0xb
+ 3475 00cf 3B       		.uleb128 0x3b
+ 3476 00d0 0B       		.uleb128 0xb
+ 3477 00d1 11       		.uleb128 0x11
+ 3478 00d2 01       		.uleb128 0x1
+ 3479 00d3 12       		.uleb128 0x12
+ 3480 00d4 06       		.uleb128 0x6
+ 3481 00d5 40       		.uleb128 0x40
+ 3482 00d6 18       		.uleb128 0x18
+ 3483 00d7 9742     		.uleb128 0x2117
+ 3484 00d9 19       		.uleb128 0x19
+ 3485 00da 00       		.byte	0
+ 3486 00db 00       		.byte	0
+ 3487 00dc 11       		.uleb128 0x11
+ 3488 00dd 2E       		.uleb128 0x2e
+ 3489 00de 01       		.byte	0x1
+ 3490 00df 3F       		.uleb128 0x3f
+ 3491 00e0 19       		.uleb128 0x19
+ 3492 00e1 03       		.uleb128 0x3
+ 3493 00e2 0E       		.uleb128 0xe
+ 3494 00e3 3A       		.uleb128 0x3a
+ 3495 00e4 0B       		.uleb128 0xb
+ 3496 00e5 3B       		.uleb128 0x3b
+ 3497 00e6 0B       		.uleb128 0xb
+ 3498 00e7 27       		.uleb128 0x27
+ 3499 00e8 19       		.uleb128 0x19
+ 3500 00e9 11       		.uleb128 0x11
+ 3501 00ea 01       		.uleb128 0x1
+ 3502 00eb 12       		.uleb128 0x12
+ 3503 00ec 06       		.uleb128 0x6
+ 3504 00ed 40       		.uleb128 0x40
+ 3505 00ee 18       		.uleb128 0x18
+ 3506 00ef 9742     		.uleb128 0x2117
+ 3507 00f1 19       		.uleb128 0x19
+ 3508 00f2 01       		.uleb128 0x1
+ 3509 00f3 13       		.uleb128 0x13
+ 3510 00f4 00       		.byte	0
+ 3511 00f5 00       		.byte	0
+ 3512 00f6 12       		.uleb128 0x12
+ 3513 00f7 05       		.uleb128 0x5
+ 3514 00f8 00       		.byte	0
+ 3515 00f9 03       		.uleb128 0x3
+ 3516 00fa 08       		.uleb128 0x8
+ 3517 00fb 3A       		.uleb128 0x3a
+ 3518 00fc 0B       		.uleb128 0xb
+ 3519 00fd 3B       		.uleb128 0x3b
+ 3520 00fe 0B       		.uleb128 0xb
+ 3521 00ff 49       		.uleb128 0x49
+ 3522 0100 13       		.uleb128 0x13
+ 3523 0101 02       		.uleb128 0x2
+ 3524 0102 18       		.uleb128 0x18
+ 3525 0103 00       		.byte	0
+ 3526 0104 00       		.byte	0
+ 3527 0105 13       		.uleb128 0x13
+ 3528 0106 05       		.uleb128 0x5
+ 3529 0107 00       		.byte	0
+ 3530 0108 03       		.uleb128 0x3
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 73
+
+
+ 3531 0109 0E       		.uleb128 0xe
+ 3532 010a 3A       		.uleb128 0x3a
+ 3533 010b 0B       		.uleb128 0xb
+ 3534 010c 3B       		.uleb128 0x3b
+ 3535 010d 0B       		.uleb128 0xb
+ 3536 010e 49       		.uleb128 0x49
+ 3537 010f 13       		.uleb128 0x13
+ 3538 0110 02       		.uleb128 0x2
+ 3539 0111 18       		.uleb128 0x18
+ 3540 0112 00       		.byte	0
+ 3541 0113 00       		.byte	0
+ 3542 0114 14       		.uleb128 0x14
+ 3543 0115 34       		.uleb128 0x34
+ 3544 0116 00       		.byte	0
+ 3545 0117 03       		.uleb128 0x3
+ 3546 0118 08       		.uleb128 0x8
+ 3547 0119 3A       		.uleb128 0x3a
+ 3548 011a 0B       		.uleb128 0xb
+ 3549 011b 3B       		.uleb128 0x3b
+ 3550 011c 0B       		.uleb128 0xb
+ 3551 011d 49       		.uleb128 0x49
+ 3552 011e 13       		.uleb128 0x13
+ 3553 011f 02       		.uleb128 0x2
+ 3554 0120 18       		.uleb128 0x18
+ 3555 0121 00       		.byte	0
+ 3556 0122 00       		.byte	0
+ 3557 0123 15       		.uleb128 0x15
+ 3558 0124 2E       		.uleb128 0x2e
+ 3559 0125 00       		.byte	0
+ 3560 0126 3F       		.uleb128 0x3f
+ 3561 0127 19       		.uleb128 0x19
+ 3562 0128 03       		.uleb128 0x3
+ 3563 0129 0E       		.uleb128 0xe
+ 3564 012a 3A       		.uleb128 0x3a
+ 3565 012b 0B       		.uleb128 0xb
+ 3566 012c 3B       		.uleb128 0x3b
+ 3567 012d 0B       		.uleb128 0xb
+ 3568 012e 11       		.uleb128 0x11
+ 3569 012f 01       		.uleb128 0x1
+ 3570 0130 12       		.uleb128 0x12
+ 3571 0131 06       		.uleb128 0x6
+ 3572 0132 40       		.uleb128 0x40
+ 3573 0133 18       		.uleb128 0x18
+ 3574 0134 9642     		.uleb128 0x2116
+ 3575 0136 19       		.uleb128 0x19
+ 3576 0137 00       		.byte	0
+ 3577 0138 00       		.byte	0
+ 3578 0139 16       		.uleb128 0x16
+ 3579 013a 2E       		.uleb128 0x2e
+ 3580 013b 01       		.byte	0x1
+ 3581 013c 3F       		.uleb128 0x3f
+ 3582 013d 19       		.uleb128 0x19
+ 3583 013e 03       		.uleb128 0x3
+ 3584 013f 0E       		.uleb128 0xe
+ 3585 0140 3A       		.uleb128 0x3a
+ 3586 0141 0B       		.uleb128 0xb
+ 3587 0142 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 74
+
+
+ 3588 0143 0B       		.uleb128 0xb
+ 3589 0144 27       		.uleb128 0x27
+ 3590 0145 19       		.uleb128 0x19
+ 3591 0146 49       		.uleb128 0x49
+ 3592 0147 13       		.uleb128 0x13
+ 3593 0148 11       		.uleb128 0x11
+ 3594 0149 01       		.uleb128 0x1
+ 3595 014a 12       		.uleb128 0x12
+ 3596 014b 06       		.uleb128 0x6
+ 3597 014c 40       		.uleb128 0x40
+ 3598 014d 18       		.uleb128 0x18
+ 3599 014e 9742     		.uleb128 0x2117
+ 3600 0150 19       		.uleb128 0x19
+ 3601 0151 01       		.uleb128 0x1
+ 3602 0152 13       		.uleb128 0x13
+ 3603 0153 00       		.byte	0
+ 3604 0154 00       		.byte	0
+ 3605 0155 17       		.uleb128 0x17
+ 3606 0156 2E       		.uleb128 0x2e
+ 3607 0157 01       		.byte	0x1
+ 3608 0158 3F       		.uleb128 0x3f
+ 3609 0159 19       		.uleb128 0x19
+ 3610 015a 03       		.uleb128 0x3
+ 3611 015b 0E       		.uleb128 0xe
+ 3612 015c 3A       		.uleb128 0x3a
+ 3613 015d 0B       		.uleb128 0xb
+ 3614 015e 3B       		.uleb128 0x3b
+ 3615 015f 05       		.uleb128 0x5
+ 3616 0160 49       		.uleb128 0x49
+ 3617 0161 13       		.uleb128 0x13
+ 3618 0162 11       		.uleb128 0x11
+ 3619 0163 01       		.uleb128 0x1
+ 3620 0164 12       		.uleb128 0x12
+ 3621 0165 06       		.uleb128 0x6
+ 3622 0166 40       		.uleb128 0x40
+ 3623 0167 18       		.uleb128 0x18
+ 3624 0168 9642     		.uleb128 0x2116
+ 3625 016a 19       		.uleb128 0x19
+ 3626 016b 01       		.uleb128 0x1
+ 3627 016c 13       		.uleb128 0x13
+ 3628 016d 00       		.byte	0
+ 3629 016e 00       		.byte	0
+ 3630 016f 18       		.uleb128 0x18
+ 3631 0170 34       		.uleb128 0x34
+ 3632 0171 00       		.byte	0
+ 3633 0172 03       		.uleb128 0x3
+ 3634 0173 08       		.uleb128 0x8
+ 3635 0174 3A       		.uleb128 0x3a
+ 3636 0175 0B       		.uleb128 0xb
+ 3637 0176 3B       		.uleb128 0x3b
+ 3638 0177 05       		.uleb128 0x5
+ 3639 0178 49       		.uleb128 0x49
+ 3640 0179 13       		.uleb128 0x13
+ 3641 017a 02       		.uleb128 0x2
+ 3642 017b 18       		.uleb128 0x18
+ 3643 017c 00       		.byte	0
+ 3644 017d 00       		.byte	0
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 75
+
+
+ 3645 017e 19       		.uleb128 0x19
+ 3646 017f 34       		.uleb128 0x34
+ 3647 0180 00       		.byte	0
+ 3648 0181 03       		.uleb128 0x3
+ 3649 0182 0E       		.uleb128 0xe
+ 3650 0183 3A       		.uleb128 0x3a
+ 3651 0184 0B       		.uleb128 0xb
+ 3652 0185 3B       		.uleb128 0x3b
+ 3653 0186 05       		.uleb128 0x5
+ 3654 0187 49       		.uleb128 0x49
+ 3655 0188 13       		.uleb128 0x13
+ 3656 0189 02       		.uleb128 0x2
+ 3657 018a 18       		.uleb128 0x18
+ 3658 018b 00       		.byte	0
+ 3659 018c 00       		.byte	0
+ 3660 018d 1A       		.uleb128 0x1a
+ 3661 018e 2E       		.uleb128 0x2e
+ 3662 018f 01       		.byte	0x1
+ 3663 0190 3F       		.uleb128 0x3f
+ 3664 0191 19       		.uleb128 0x19
+ 3665 0192 03       		.uleb128 0x3
+ 3666 0193 0E       		.uleb128 0xe
+ 3667 0194 3A       		.uleb128 0x3a
+ 3668 0195 0B       		.uleb128 0xb
+ 3669 0196 3B       		.uleb128 0x3b
+ 3670 0197 05       		.uleb128 0x5
+ 3671 0198 27       		.uleb128 0x27
+ 3672 0199 19       		.uleb128 0x19
+ 3673 019a 11       		.uleb128 0x11
+ 3674 019b 01       		.uleb128 0x1
+ 3675 019c 12       		.uleb128 0x12
+ 3676 019d 06       		.uleb128 0x6
+ 3677 019e 40       		.uleb128 0x40
+ 3678 019f 18       		.uleb128 0x18
+ 3679 01a0 9642     		.uleb128 0x2116
+ 3680 01a2 19       		.uleb128 0x19
+ 3681 01a3 01       		.uleb128 0x1
+ 3682 01a4 13       		.uleb128 0x13
+ 3683 01a5 00       		.byte	0
+ 3684 01a6 00       		.byte	0
+ 3685 01a7 1B       		.uleb128 0x1b
+ 3686 01a8 05       		.uleb128 0x5
+ 3687 01a9 00       		.byte	0
+ 3688 01aa 03       		.uleb128 0x3
+ 3689 01ab 0E       		.uleb128 0xe
+ 3690 01ac 3A       		.uleb128 0x3a
+ 3691 01ad 0B       		.uleb128 0xb
+ 3692 01ae 3B       		.uleb128 0x3b
+ 3693 01af 05       		.uleb128 0x5
+ 3694 01b0 49       		.uleb128 0x49
+ 3695 01b1 13       		.uleb128 0x13
+ 3696 01b2 02       		.uleb128 0x2
+ 3697 01b3 18       		.uleb128 0x18
+ 3698 01b4 00       		.byte	0
+ 3699 01b5 00       		.byte	0
+ 3700 01b6 1C       		.uleb128 0x1c
+ 3701 01b7 05       		.uleb128 0x5
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 76
+
+
+ 3702 01b8 00       		.byte	0
+ 3703 01b9 03       		.uleb128 0x3
+ 3704 01ba 08       		.uleb128 0x8
+ 3705 01bb 3A       		.uleb128 0x3a
+ 3706 01bc 0B       		.uleb128 0xb
+ 3707 01bd 3B       		.uleb128 0x3b
+ 3708 01be 05       		.uleb128 0x5
+ 3709 01bf 49       		.uleb128 0x49
+ 3710 01c0 13       		.uleb128 0x13
+ 3711 01c1 02       		.uleb128 0x2
+ 3712 01c2 18       		.uleb128 0x18
+ 3713 01c3 00       		.byte	0
+ 3714 01c4 00       		.byte	0
+ 3715 01c5 1D       		.uleb128 0x1d
+ 3716 01c6 2E       		.uleb128 0x2e
+ 3717 01c7 01       		.byte	0x1
+ 3718 01c8 3F       		.uleb128 0x3f
+ 3719 01c9 19       		.uleb128 0x19
+ 3720 01ca 03       		.uleb128 0x3
+ 3721 01cb 0E       		.uleb128 0xe
+ 3722 01cc 3A       		.uleb128 0x3a
+ 3723 01cd 0B       		.uleb128 0xb
+ 3724 01ce 3B       		.uleb128 0x3b
+ 3725 01cf 05       		.uleb128 0x5
+ 3726 01d0 11       		.uleb128 0x11
+ 3727 01d1 01       		.uleb128 0x1
+ 3728 01d2 12       		.uleb128 0x12
+ 3729 01d3 06       		.uleb128 0x6
+ 3730 01d4 40       		.uleb128 0x40
+ 3731 01d5 18       		.uleb128 0x18
+ 3732 01d6 9642     		.uleb128 0x2116
+ 3733 01d8 19       		.uleb128 0x19
+ 3734 01d9 01       		.uleb128 0x1
+ 3735 01da 13       		.uleb128 0x13
+ 3736 01db 00       		.byte	0
+ 3737 01dc 00       		.byte	0
+ 3738 01dd 1E       		.uleb128 0x1e
+ 3739 01de 2E       		.uleb128 0x2e
+ 3740 01df 01       		.byte	0x1
+ 3741 01e0 3F       		.uleb128 0x3f
+ 3742 01e1 19       		.uleb128 0x19
+ 3743 01e2 03       		.uleb128 0x3
+ 3744 01e3 0E       		.uleb128 0xe
+ 3745 01e4 3A       		.uleb128 0x3a
+ 3746 01e5 0B       		.uleb128 0xb
+ 3747 01e6 3B       		.uleb128 0x3b
+ 3748 01e7 05       		.uleb128 0x5
+ 3749 01e8 27       		.uleb128 0x27
+ 3750 01e9 19       		.uleb128 0x19
+ 3751 01ea 49       		.uleb128 0x49
+ 3752 01eb 13       		.uleb128 0x13
+ 3753 01ec 11       		.uleb128 0x11
+ 3754 01ed 01       		.uleb128 0x1
+ 3755 01ee 12       		.uleb128 0x12
+ 3756 01ef 06       		.uleb128 0x6
+ 3757 01f0 40       		.uleb128 0x40
+ 3758 01f1 18       		.uleb128 0x18
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 77
+
+
+ 3759 01f2 9742     		.uleb128 0x2117
+ 3760 01f4 19       		.uleb128 0x19
+ 3761 01f5 01       		.uleb128 0x1
+ 3762 01f6 13       		.uleb128 0x13
+ 3763 01f7 00       		.byte	0
+ 3764 01f8 00       		.byte	0
+ 3765 01f9 1F       		.uleb128 0x1f
+ 3766 01fa 0B       		.uleb128 0xb
+ 3767 01fb 01       		.byte	0x1
+ 3768 01fc 11       		.uleb128 0x11
+ 3769 01fd 01       		.uleb128 0x1
+ 3770 01fe 12       		.uleb128 0x12
+ 3771 01ff 06       		.uleb128 0x6
+ 3772 0200 00       		.byte	0
+ 3773 0201 00       		.byte	0
+ 3774 0202 20       		.uleb128 0x20
+ 3775 0203 34       		.uleb128 0x34
+ 3776 0204 00       		.byte	0
+ 3777 0205 03       		.uleb128 0x3
+ 3778 0206 0E       		.uleb128 0xe
+ 3779 0207 3A       		.uleb128 0x3a
+ 3780 0208 0B       		.uleb128 0xb
+ 3781 0209 3B       		.uleb128 0x3b
+ 3782 020a 05       		.uleb128 0x5
+ 3783 020b 49       		.uleb128 0x49
+ 3784 020c 13       		.uleb128 0x13
+ 3785 020d 3F       		.uleb128 0x3f
+ 3786 020e 19       		.uleb128 0x19
+ 3787 020f 3C       		.uleb128 0x3c
+ 3788 0210 19       		.uleb128 0x19
+ 3789 0211 00       		.byte	0
+ 3790 0212 00       		.byte	0
+ 3791 0213 21       		.uleb128 0x21
+ 3792 0214 34       		.uleb128 0x34
+ 3793 0215 00       		.byte	0
+ 3794 0216 03       		.uleb128 0x3
+ 3795 0217 0E       		.uleb128 0xe
+ 3796 0218 3A       		.uleb128 0x3a
+ 3797 0219 0B       		.uleb128 0xb
+ 3798 021a 3B       		.uleb128 0x3b
+ 3799 021b 0B       		.uleb128 0xb
+ 3800 021c 49       		.uleb128 0x49
+ 3801 021d 13       		.uleb128 0x13
+ 3802 021e 3F       		.uleb128 0x3f
+ 3803 021f 19       		.uleb128 0x19
+ 3804 0220 02       		.uleb128 0x2
+ 3805 0221 18       		.uleb128 0x18
+ 3806 0222 00       		.byte	0
+ 3807 0223 00       		.byte	0
+ 3808 0224 22       		.uleb128 0x22
+ 3809 0225 26       		.uleb128 0x26
+ 3810 0226 00       		.byte	0
+ 3811 0227 49       		.uleb128 0x49
+ 3812 0228 13       		.uleb128 0x13
+ 3813 0229 00       		.byte	0
+ 3814 022a 00       		.byte	0
+ 3815 022b 23       		.uleb128 0x23
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 78
+
+
+ 3816 022c 34       		.uleb128 0x34
+ 3817 022d 00       		.byte	0
+ 3818 022e 03       		.uleb128 0x3
+ 3819 022f 08       		.uleb128 0x8
+ 3820 0230 3A       		.uleb128 0x3a
+ 3821 0231 0B       		.uleb128 0xb
+ 3822 0232 3B       		.uleb128 0x3b
+ 3823 0233 0B       		.uleb128 0xb
+ 3824 0234 49       		.uleb128 0x49
+ 3825 0235 13       		.uleb128 0x13
+ 3826 0236 3F       		.uleb128 0x3f
+ 3827 0237 19       		.uleb128 0x19
+ 3828 0238 02       		.uleb128 0x2
+ 3829 0239 18       		.uleb128 0x18
+ 3830 023a 00       		.byte	0
+ 3831 023b 00       		.byte	0
+ 3832 023c 00       		.byte	0
+ 3833              		.section	.debug_aranges,"",%progbits
+ 3834 0000 74000000 		.4byte	0x74
+ 3835 0004 0200     		.2byte	0x2
+ 3836 0006 00000000 		.4byte	.Ldebug_info0
+ 3837 000a 04       		.byte	0x4
+ 3838 000b 00       		.byte	0
+ 3839 000c 0000     		.2byte	0
+ 3840 000e 0000     		.2byte	0
+ 3841 0010 00000000 		.4byte	.LFB64
+ 3842 0014 AC000000 		.4byte	.LFE64-.LFB64
+ 3843 0018 00000000 		.4byte	.LFB65
+ 3844 001c 20000000 		.4byte	.LFE65-.LFB65
+ 3845 0020 00000000 		.4byte	.LFB66
+ 3846 0024 60000000 		.4byte	.LFE66-.LFB66
+ 3847 0028 00000000 		.4byte	.LFB67
+ 3848 002c 7C030000 		.4byte	.LFE67-.LFB67
+ 3849 0030 00000000 		.4byte	.LFB68
+ 3850 0034 F8010000 		.4byte	.LFE68-.LFB68
+ 3851 0038 00000000 		.4byte	.LFB69
+ 3852 003c 2A000000 		.4byte	.LFE69-.LFB69
+ 3853 0040 00000000 		.4byte	.LFB70
+ 3854 0044 7C020000 		.4byte	.LFE70-.LFB70
+ 3855 0048 00000000 		.4byte	.LFB71
+ 3856 004c 7C000000 		.4byte	.LFE71-.LFB71
+ 3857 0050 00000000 		.4byte	.LFB72
+ 3858 0054 84010000 		.4byte	.LFE72-.LFB72
+ 3859 0058 00000000 		.4byte	.LFB73
+ 3860 005c 78010000 		.4byte	.LFE73-.LFB73
+ 3861 0060 00000000 		.4byte	.LFB74
+ 3862 0064 70000000 		.4byte	.LFE74-.LFB74
+ 3863 0068 00000000 		.4byte	.LFB75
+ 3864 006c F4000000 		.4byte	.LFE75-.LFB75
+ 3865 0070 00000000 		.4byte	0
+ 3866 0074 00000000 		.4byte	0
+ 3867              		.section	.debug_ranges,"",%progbits
+ 3868              	.Ldebug_ranges0:
+ 3869 0000 00000000 		.4byte	.LFB64
+ 3870 0004 AC000000 		.4byte	.LFE64
+ 3871 0008 00000000 		.4byte	.LFB65
+ 3872 000c 20000000 		.4byte	.LFE65
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 79
+
+
+ 3873 0010 00000000 		.4byte	.LFB66
+ 3874 0014 60000000 		.4byte	.LFE66
+ 3875 0018 00000000 		.4byte	.LFB67
+ 3876 001c 7C030000 		.4byte	.LFE67
+ 3877 0020 00000000 		.4byte	.LFB68
+ 3878 0024 F8010000 		.4byte	.LFE68
+ 3879 0028 00000000 		.4byte	.LFB69
+ 3880 002c 2A000000 		.4byte	.LFE69
+ 3881 0030 00000000 		.4byte	.LFB70
+ 3882 0034 7C020000 		.4byte	.LFE70
+ 3883 0038 00000000 		.4byte	.LFB71
+ 3884 003c 7C000000 		.4byte	.LFE71
+ 3885 0040 00000000 		.4byte	.LFB72
+ 3886 0044 84010000 		.4byte	.LFE72
+ 3887 0048 00000000 		.4byte	.LFB73
+ 3888 004c 78010000 		.4byte	.LFE73
+ 3889 0050 00000000 		.4byte	.LFB74
+ 3890 0054 70000000 		.4byte	.LFE74
+ 3891 0058 00000000 		.4byte	.LFB75
+ 3892 005c F4000000 		.4byte	.LFE75
+ 3893 0060 00000000 		.4byte	0
+ 3894 0064 00000000 		.4byte	0
+ 3895              		.section	.debug_line,"",%progbits
+ 3896              	.Ldebug_line0:
+ 3897 0000 2E050000 		.section	.debug_str,"MS",%progbits,1
+ 3897      02006301 
+ 3897      00000201 
+ 3897      FB0E0D00 
+ 3897      01010101 
+ 3898              	.LASF60:
+ 3899 0000 69734561 		.ascii	"isEaten\000"
+ 3899      74656E00 
+ 3900              	.LASF28:
+ 3901 0008 646D6163 		.ascii	"dmac_tdmem_struct\000"
+ 3901      5F74646D 
+ 3901      656D5F73 
+ 3901      74727563 
+ 3901      7400
+ 3902              	.LASF55:
+ 3903 001a 436F6C6F 		.ascii	"Colors_WHITE\000"
+ 3903      72735F57 
+ 3903      48495445 
+ 3903      00
+ 3904              	.LASF68:
+ 3905 0027 433A5C55 		.ascii	"C:\\Users\\Ahmad Negm\\Desktop\\6.115\\FP\\psoc_vga"
+ 3905      73657273 
+ 3905      5C41686D 
+ 3905      6164204E 
+ 3905      65676D5C 
+ 3906 0054 5F70726F 		.ascii	"_project final\\vga.cydsn\000"
+ 3906      6A656374 
+ 3906      2066696E 
+ 3906      616C5C76 
+ 3906      67612E63 
+ 3907              	.LASF26:
+ 3908 006d 72696768 		.ascii	"right\000"
+ 3908      7400
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 80
+
+
+ 3909              	.LASF53:
+ 3910 0073 436F6C6F 		.ascii	"Colors_GREEN\000"
+ 3910      72735F47 
+ 3910      5245454E 
+ 3910      00
+ 3911              	.LASF62:
+ 3912 0080 76627566 		.ascii	"vbuf\000"
+ 3912      00
+ 3913              	.LASF27:
+ 3914 0085 63656E74 		.ascii	"center\000"
+ 3914      657200
+ 3915              	.LASF19:
+ 3916 008c 72656731 		.ascii	"reg16\000"
+ 3916      3600
+ 3917              	.LASF59:
+ 3918 0092 646F7473 		.ascii	"dotsCoords\000"
+ 3918      436F6F72 
+ 3918      647300
+ 3919              	.LASF2:
+ 3920 009d 73686F72 		.ascii	"short int\000"
+ 3920      7420696E 
+ 3920      7400
+ 3921              	.LASF52:
+ 3922 00a7 436F6C6F 		.ascii	"Colors_RED\000"
+ 3922      72735F52 
+ 3922      454400
+ 3923              	.LASF40:
+ 3924 00b2 72656D6F 		.ascii	"removePacman\000"
+ 3924      76655061 
+ 3924      636D616E 
+ 3924      00
+ 3925              	.LASF33:
+ 3926 00bf 636F6C6F 		.ascii	"color\000"
+ 3926      7200
+ 3927              	.LASF36:
+ 3928 00c5 67656E65 		.ascii	"generateWalls\000"
+ 3928      72617465 
+ 3928      57616C6C 
+ 3928      7300
+ 3929              	.LASF43:
+ 3930 00d3 61646378 		.ascii	"adcx\000"
+ 3930      00
+ 3931              	.LASF66:
+ 3932 00d8 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 3932      43313120 
+ 3932      352E342E 
+ 3932      31203230 
+ 3932      31363036 
+ 3933 010b 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 3933      20726576 
+ 3933      6973696F 
+ 3933      6E203233 
+ 3933      37373135 
+ 3934 013e 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 3934      66756E63 
+ 3934      74696F6E 
+ 3934      2D736563 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 81
+
+
+ 3934      74696F6E 
+ 3935              	.LASF58:
+ 3936 0166 7061636D 		.ascii	"pacman_center_y\000"
+ 3936      616E5F63 
+ 3936      656E7465 
+ 3936      725F7900 
+ 3937              	.LASF49:
+ 3938 0176 6D61696E 		.ascii	"main\000"
+ 3938      00
+ 3939              	.LASF23:
+ 3940 017b 75696E74 		.ascii	"uint\000"
+ 3940      00
+ 3941              	.LASF38:
+ 3942 0180 63656E74 		.ascii	"center_row\000"
+ 3942      65725F72 
+ 3942      6F7700
+ 3943              	.LASF12:
+ 3944 018b 75696E74 		.ascii	"uint16\000"
+ 3944      313600
+ 3945              	.LASF14:
+ 3946 0192 696E7431 		.ascii	"int16\000"
+ 3946      3600
+ 3947              	.LASF11:
+ 3948 0198 75696E74 		.ascii	"uint8\000"
+ 3948      3800
+ 3949              	.LASF34:
+ 3950 019e 6C696E65 		.ascii	"line\000"
+ 3950      00
+ 3951              	.LASF15:
+ 3952 01a3 666C6F61 		.ascii	"float\000"
+ 3952      7400
+ 3953              	.LASF6:
+ 3954 01a9 6C6F6E67 		.ascii	"long long int\000"
+ 3954      206C6F6E 
+ 3954      6720696E 
+ 3954      7400
+ 3955              	.LASF31:
+ 3956 01b7 6E65776C 		.ascii	"newline\000"
+ 3956      696E6500 
+ 3957              	.LASF30:
+ 3958 01bf 636F6F72 		.ascii	"coordTuple\000"
+ 3958      64547570 
+ 3958      6C6500
+ 3959              	.LASF35:
+ 3960 01ca 75706461 		.ascii	"update\000"
+ 3960      746500
+ 3961              	.LASF64:
+ 3962 01d1 646D615F 		.ascii	"dma_td\000"
+ 3962      746400
+ 3963              	.LASF4:
+ 3964 01d8 6C6F6E67 		.ascii	"long int\000"
+ 3964      20696E74 
+ 3964      00
+ 3965              	.LASF10:
+ 3966 01e1 696E7433 		.ascii	"int32_t\000"
+ 3966      325F7400 
+ 3967              	.LASF54:
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 82
+
+
+ 3968 01e9 436F6C6F 		.ascii	"Colors_BLUE\000"
+ 3968      72735F42 
+ 3968      4C554500 
+ 3969              	.LASF20:
+ 3970 01f5 6C6F6E67 		.ascii	"long double\000"
+ 3970      20646F75 
+ 3970      626C6500 
+ 3971              	.LASF1:
+ 3972 0201 756E7369 		.ascii	"unsigned char\000"
+ 3972      676E6564 
+ 3972      20636861 
+ 3972      7200
+ 3973              	.LASF48:
+ 3974 020f 67656E65 		.ascii	"generateDots\000"
+ 3974      72617465 
+ 3974      446F7473 
+ 3974      00
+ 3975              	.LASF0:
+ 3976 021c 7369676E 		.ascii	"signed char\000"
+ 3976      65642063 
+ 3976      68617200 
+ 3977              	.LASF61:
+ 3978 0228 73636F72 		.ascii	"score\000"
+ 3978      6500
+ 3979              	.LASF7:
+ 3980 022e 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3980      206C6F6E 
+ 3980      6720756E 
+ 3980      7369676E 
+ 3980      65642069 
+ 3981              	.LASF8:
+ 3982 0245 756E7369 		.ascii	"unsigned int\000"
+ 3982      676E6564 
+ 3982      20696E74 
+ 3982      00
+ 3983              	.LASF56:
+ 3984 0252 436F6C6F 		.ascii	"Colors_YELLOW\000"
+ 3984      72735F59 
+ 3984      454C4C4F 
+ 3984      5700
+ 3985              	.LASF42:
+ 3986 0260 67657443 		.ascii	"getControllerDir\000"
+ 3986      6F6E7472 
+ 3986      6F6C6C65 
+ 3986      72446972 
+ 3986      00
+ 3987              	.LASF22:
+ 3988 0271 646D6163 		.ascii	"dmac_tdmem\000"
+ 3988      5F74646D 
+ 3988      656D00
+ 3989              	.LASF25:
+ 3990 027c 6C656674 		.ascii	"left\000"
+ 3990      00
+ 3991              	.LASF3:
+ 3992 0281 73686F72 		.ascii	"short unsigned int\000"
+ 3992      7420756E 
+ 3992      7369676E 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 83
+
+
+ 3992      65642069 
+ 3992      6E7400
+ 3993              	.LASF17:
+ 3994 0294 63686172 		.ascii	"char\000"
+ 3994      00
+ 3995              	.LASF51:
+ 3996 0299 436F6C6F 		.ascii	"Colors_BLACK\000"
+ 3996      72735F42 
+ 3996      4C41434B 
+ 3996      00
+ 3997              	.LASF41:
+ 3998 02a6 5F426F6F 		.ascii	"_Bool\000"
+ 3998      6C00
+ 3999              	.LASF45:
+ 4000 02ac 6D6F7665 		.ascii	"movePacman\000"
+ 4000      5061636D 
+ 4000      616E00
+ 4001              	.LASF13:
+ 4002 02b7 75696E74 		.ascii	"uint32\000"
+ 4002      333200
+ 4003              	.LASF67:
+ 4004 02be 6D61696E 		.ascii	"main.c\000"
+ 4004      2E6300
+ 4005              	.LASF18:
+ 4006 02c5 72656738 		.ascii	"reg8\000"
+ 4006      00
+ 4007              	.LASF5:
+ 4008 02ca 6C6F6E67 		.ascii	"long unsigned int\000"
+ 4008      20756E73 
+ 4008      69676E65 
+ 4008      6420696E 
+ 4008      7400
+ 4009              	.LASF16:
+ 4010 02dc 646F7562 		.ascii	"double\000"
+ 4010      6C6500
+ 4011              	.LASF63:
+ 4012 02e3 646D615F 		.ascii	"dma_chan\000"
+ 4012      6368616E 
+ 4012      00
+ 4013              	.LASF57:
+ 4014 02ec 7061636D 		.ascii	"pacman_center_x\000"
+ 4014      616E5F63 
+ 4014      656E7465 
+ 4014      725F7800 
+ 4015              	.LASF9:
+ 4016 02fc 5F5F696E 		.ascii	"__int32_t\000"
+ 4016      7433325F 
+ 4016      7400
+ 4017              	.LASF37:
+ 4018 0306 67656E65 		.ascii	"generatePacman\000"
+ 4018      72617465 
+ 4018      5061636D 
+ 4018      616E00
+ 4019              	.LASF69:
+ 4020 0315 636F6E74 		.ascii	"controller_dir\000"
+ 4020      726F6C6C 
+ 4020      65725F64 
+ARM GAS  C:\Users\AHMADN~1\AppData\Local\Temp\ccPFEzjo.s 			page 84
+
+
+ 4020      697200
+ 4021              	.LASF47:
+ 4022 0324 756E6561 		.ascii	"uneatenDot\000"
+ 4022      74656E44 
+ 4022      6F7400
+ 4023              	.LASF21:
+ 4024 032f 73697A65 		.ascii	"sizetype\000"
+ 4024      74797065 
+ 4024      00
+ 4025              	.LASF39:
+ 4026 0338 63656E74 		.ascii	"center_col\000"
+ 4026      65725F63 
+ 4026      6F6C00
+ 4027              	.LASF65:
+ 4028 0343 666C6167 		.ascii	"flag\000"
+ 4028      00
+ 4029              	.LASF32:
+ 4030 0348 72656374 		.ascii	"rect\000"
+ 4030      00
+ 4031              	.LASF50:
+ 4032 034d 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 4032      52784275 
+ 4032      66666572 
+ 4032      00
+ 4033              	.LASF24:
+ 4034 035a 646F776E 		.ascii	"down\000"
+ 4034      00
+ 4035              	.LASF46:
+ 4036 035f 69735661 		.ascii	"isValidCoord\000"
+ 4036      6C696443 
+ 4036      6F6F7264 
+ 4036      00
+ 4037              	.LASF44:
+ 4038 036c 61646379 		.ascii	"adcy\000"
+ 4038      00
+ 4039              	.LASF29:
+ 4040 0371 636F6F72 		.ascii	"coordTuples\000"
+ 4040      64547570 
+ 4040      6C657300 
+ 4041              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
